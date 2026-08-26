@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quantum LeetCode — Мастер-Холст Архитектуры и Roadmap</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --card-bg: #111827;
+      --card-border: #1f293d;
+      --accent-cyan: #06b6d4;
+      --accent-purple: #8b5cf6;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      user-select: none;
+    }
+    .grid-bg {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+    .canvas-card {
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      cursor: grab;
+      position: absolute;
+    }
+    .canvas-card:active {
+      cursor: grabbing;
+    }
+    .canvas-card:hover {
+      border-color: rgba(6, 182, 212, 0.6);
+      box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+      z-index: 40;
+    }
+    .canvas-card.highlighted {
+      border-color: #06b6d4 !important;
+      box-shadow: 0 0 30px rgba(6, 182, 212, 0.6) !important;
+      transform: scale(1.02);
+      z-index: 50 !important;
+    }
+    .canvas-card.dimmed {
+      opacity: 0.2;
+      filter: grayscale(80%);
+    }
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.2);
+      border-radius: 3px;
+    }
+    /* Group Frame */
+    .group-frame {
+      position: absolute;
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 16px;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .group-label {
+      position: absolute;
+      top: -14px;
+      left: 20px;
+      padding: 2px 12px;
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #94a3b8;
+    }
+    svg line, svg path {
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="h-screen w-screen relative select-none">
+
+  <!-- TOP APP BAR -->
+  <header class="absolute top-0 left-0 right-0 h-16 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 z-50 flex items-center justify-between px-6">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid fa-atom text-white text-sm"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-bold tracking-tight bg-gradient-to-r from-cyan-400 via-purple-300 to-emerald-400 bg-clip-text text-transparent">
+            Quantum LeetCode — Planning Canvas
+          </h1>
+          <p class="text-xs text-slate-400">Интерактивный мастер-холст для созвона & Roadmap</p>
+        </div>
+      </div>
+      <div class="h-6 w-px bg-slate-700 mx-2"></div>
+      <!-- STATS BADGES -->
+      <div class="hidden lg:flex items-center gap-2 text-xs">
+        <span class="px-2 py-1 rounded bg-cyan-950/80 border border-cyan-800/60 text-cyan-300 font-mono">14 Разделов</span>
+        <span class="px-2 py-1 rounded bg-purple-950/80 border border-purple-800/60 text-purple-300 font-mono">18 R&D Вопросов</span>
+        <span class="px-2 py-1 rounded bg-emerald-950/80 border border-emerald-800/60 text-emerald-300 font-mono">6 MVP Задач</span>
+      </div>
+    </div>
+
+    <!-- SEARCH & FILTER CONTROLS -->
+    <div class="flex items-center gap-3">
+      <!-- Search Input -->
+      <div class="relative w-64">
+        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <input id="searchInput" type="text" placeholder="Поиск по холсту (Qiskit, Bloch, MVP...)" 
+          class="w-full pl-9 pr-3 py-1.5 bg-slate-800/90 border border-slate-700 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition" />
+      </div>
+
+      <!-- Quick Filter Pills -->
+      <div class="flex items-center gap-1.5 bg-slate-800/60 p-1 rounded-lg border border-slate-700/60">
+        <button onclick="filterByBadge('ALL')" class="filter-btn active px-2.5 py-1 rounded text-xs font-medium bg-cyan-600 text-white transition">Все</button>
+        <button onclick="filterByBadge('MVP')" class="filter-btn px-2.5 py-1 rounded text-xs font-medium text-emerald-400 hover:bg-slate-700 transition">🎯 MVP</button>
+        <button onclick="filterByBadge('RESEARCH')" class="filter-btn px-2.5 py-1 rounded text-xs font-medium text-amber-400 hover:bg-slate-700 transition">❓ Непонятно</button>
+        <button onclick="filterByBadge('NUANCE')" class="filter-btn px-2.5 py-1 rounded text-xs font-medium text-purple-400 hover:bg-slate-700 transition">💡 Нюансы</button>
+        <button onclick="filterByBadge('SECURITY')" class="filter-btn px-2.5 py-1 rounded text-xs font-medium text-rose-400 hover:bg-slate-700 transition">🛡️ Защита</button>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2">
+        <button onclick="resetZoomAndCenter()" title="Сбросить масштаб и центрировать" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs transition">
+          <i class="fa-solid fa-crosshairs"></i>
+        </button>
+        <button onclick="toggleSideInfo()" title="Справка по монологу" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow transition flex items-center gap-1.5">
+          <i class="fa-solid fa-book-open"></i> Детали монолога
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN INTERACTIVE CANVAS VIEWPORT -->
+  <div id="viewport" class="w-full h-full pt-16 grid-bg relative overflow-hidden cursor-grab">
+    <div id="canvasSpace" class="absolute origin-top-left will-change-transform" style="transform: translate(100px, 120px) scale(0.65);">
+      <!-- SVG Connectors Layer -->
+      <svg id="svgConnectors" class="absolute top-0 left-0 w-[4500px] h-[3000px] pointer-events-none z-0"></svg>
+      
+      <!-- Group Frames Layer -->
+      <div id="groupsLayer"></div>
+      
+      <!-- Cards Layer -->
+      <div id="cardsLayer"></div>
+    </div>
+  </div>
+
+  <!-- FLOATING BOTTOM CONTROLS & MINIMAP TRIGGER -->
+  <div class="absolute bottom-6 left-6 z-40 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md border border-slate-800 p-1.5 rounded-xl shadow-2xl">
+    <button onclick="zoomStep(0.15)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs flex items-center justify-center transition">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+    <span id="zoomLevelDisplay" class="text-xs font-mono text-cyan-400 px-2 font-semibold min-w-[50px] text-center">65%</span>
+    <button onclick="zoomStep(-0.15)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs flex items-center justify-center transition">
+      <i class="fa-solid fa-minus"></i>
+    </button>
+    <div class="h-4 w-px bg-slate-700 mx-1"></div>
+    <button onclick="zoomToFit()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs transition">Fit All</button>
+  </div>
+
+  <!-- SIDE DRAWER: FULL MONOLOGUE & SECTION DETAILS -->
+  <aside id="sideDrawer" class="fixed top-16 right-0 bottom-0 w-[450px] bg-slate-900/95 backdrop-blur-xl border-l border-slate-800 z-50 transform translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+    <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-layer-group text-cyan-400"></i>
+        <h2 id="drawerTitle" class="text-sm font-bold text-slate-100">Детализация для планерки</h2>
+      </div>
+      <button onclick="closeSideDrawer()" class="text-slate-400 hover:text-slate-200 p-1">
+        <i class="fa-solid fa-xmark text-base"></i>
+      </button>
+    </div>
+    <div id="drawerBody" class="p-6 overflow-y-auto flex-1 space-y-4 text-xs text-slate-300 leading-relaxed">
+      <!-- Injected dynamically -->
+    </div>
+  </aside>
+
+  <script>
+    // DATA MODEL: Full decomposition of all 14 sections from the user's monologue
+    const canvasData = {
+      groups: [
+        { id: 'g_platform', label: '1. ОБЩАЯ ПЛАТФОРМА & UX', x: 50, y: 50, w: 820, h: 680, color: '#06b6d4' },
+        { id: 'g_simulator', label: '2. КВАНТОВЫЙ СИМУЛЯТОР & ПЕСОЧНИЦА', x: 50, y: 770, w: 820, h: 1200, color: '#10b981' },
+        { id: 'g_tasks', label: '3-7. ШАБЛОНИЗАЦИЯ ЗАДАЧ И БАЗИСЫ', x: 920, y: 50, w: 880, h: 1920, color: '#f59e0b' },
+        { id: 'g_judge', label: '8-11. AUTO-JUDGE, БЕЗОПАСНОСТЬ & АНТИЧИТ', x: 1850, y: 50, w: 880, h: 1920, color: '#f43f5e' },
+        { id: 'g_rd_mvp', label: '12-14. 18 R&D ТРЕКОВ, MVP ПРОТОТИП И РОЛИ', x: 2780, y: 50, w: 900, h: 1920, color: '#8b5cf6' }
+      ],
+      nodes: [
+        // HUB
+        {
+          id: 'root',
+          title: '🌌 КВАНТОВЫЙ LEETCODE (Ядро)',
+          type: 'HUB',
+          badges: ['MVP', 'ARCHITECTURE'],
+          x: 1400, y: -260, w: 500, h: 220,
+          color: 'purple',
+          desc: 'Первая соревновательно-обучающая платформа квантового программирования. Сочетает интуитивный визуальный WYSIWYG Composer, строгий WASM/gVisor грейдер и олимпиадный банк задач на алгоритмы и синтез схем.',
+          points: [
+            'Фокус: Алгоритмы, оракулы, синтез унитарных операторов, Uncomputation',
+            'Двухконтурный грейдер: 95% клиентский WASM (<50ms) + 5% Server gVisor',
+            'Защита от читерства и автоматического синтеза Qiskit (KAK/Shannon)'
+          ]
+        },
+
+        // 1. PLATFORM
+        {
+          id: 'n_catalog',
+          title: '📋 1.1. Каталог и открытие задач',
+          type: 'PLATFORM',
+          badges: ['TASK', 'NUANCE'],
+          x: 80, y: 100, w: 360, h: 260,
+          color: 'cyan',
+          desc: 'Каталог квантовых челленджей с глубокой фильтрацией.',
+          points: [
+            'Multi-tag: Сложность (Easy/Med/Hard), Оракулы, State Prep, QEC, Hardware-basis',
+            'Режимы: Solo Practice, Weekly Contests, Daily Quantum Streak',
+            '💡 НЮАНС: Четкий индикатор задачи — можно ли решить визуально в GUI или обязателен код.'
+          ]
+        },
+        {
+          id: 'n_workspace',
+          title: '🎯 1.2. Workspace (Split-View UI)',
+          type: 'PLATFORM',
+          badges: ['MVP', 'TASK'],
+          x: 470, y: 100, w: 370, h: 260,
+          color: 'emerald',
+          desc: 'Главная рабочая область решения квантовой задачи.',
+          points: [
+            'Левая колонка: Условие, формулы LaTeX, формальные лимиты гейтов/глубины',
+            'Правая верхняя: GUI Circuit Composer + Сфера Блоха + Probabilities',
+            'Правая нижняя: Monaco Code Editor (Python/Qiskit) с синхронизацией',
+            '🎯 MVP: Адаптивный split screen с реактивным откликом.'
+          ]
+        },
+        {
+          id: 'n_profile',
+          title: '👤 1.3. Профиль, Портфолио & ELO',
+          type: 'PLATFORM',
+          badges: ['TASK'],
+          x: 80, y: 400, w: 360, h: 290,
+          color: 'cyan',
+          desc: 'Геймификация и доказательство компетенций (Proof-of-Skill).',
+          points: [
+            'Quantum ELO Rating по направлениям (Алгоритмы, Синтез, Оптимизация)',
+            'Процентили эффективности: Gate count percentile, Depth percentile',
+            'Верифицированные бейджи для HR-воронки (Росатом, Сбер, РКЦ)',
+            'Публичная ссылка на портфолио решенных задач.'
+          ]
+        },
+        {
+          id: 'n_user_journey',
+          title: '🗺️ 1.4. User Journey (Путь пользователя)',
+          type: 'PLATFORM',
+          badges: ['TASK', 'NUANCE'],
+          x: 470, y: 400, w: 370, h: 290,
+          color: 'cyan',
+          desc: 'Сквозной сценарий взаимодействия разных когорт пользователей.',
+          points: [
+            'Новичок: Туториал → Свободная песочница → Базовые Bell/GHZ задачи',
+            'Олимпиадник: Каталог → Daily Challenge → Рейтинговые контесты → ELO',
+            'R&D Инженер: Задачи на Hardware Native Basis → Оптимизация глубины цепи'
+          ]
+        },
+
+        // 2. SIMULATOR & SANDBOX
+        {
+          id: 'n_sandbox_ux',
+          title: '🎯 2.1. Песочница & Эргономика UX',
+          type: 'SIMULATOR',
+          badges: ['MVP', 'NUANCE'],
+          x: 80, y: 820, w: 360, h: 330,
+          color: 'emerald',
+          desc: 'Автономный полигон свободного квантового конструирования.',
+          points: [
+            '💡 Референс IBM: Реактивное динамическое автообновление без кнопки «Run»!',
+            '💡 UX собственного симулятора: Палитра справа → Drag-and-Drop на шины кубитов',
+            '💡 2 Способа удаления: клик → корзина ИЛИ вытаскивание за границы (drag-out)',
+            '🎯 MVP: Мгновенная реактивность (<16ms) на 2–4 кубитах в браузере.'
+          ]
+        },
+        {
+          id: 'n_controls',
+          title: '🕹️ 2.2. Control Gates (Управляющие узлы)',
+          type: 'SIMULATOR',
+          badges: ['RESEARCH', 'NUANCE'],
+          x: 470, y: 820, w: 370, h: 330,
+          color: 'amber',
+          desc: 'Механика связывания управляющих и целевых узлов.',
+          points: [
+            '1 Control: CX, CZ, CRx, CRz, CH',
+            'Multi-Control: Toffoli (CCX), MCX, MCZ, k-controlled фазовые гейты',
+            'Negative Control: Активация по |0⟩ (полый кружок)',
+            '❓ R&D: Эргономика связки (инструмент-стрелка vs составной гейт палитры)',
+            '💡 НЮАНС: Запрет циклических зависимостей в одном таймслоте.'
+          ]
+        },
+        {
+          id: 'n_results_cas',
+          title: '🔮 2.3. Алгебраический CAS состояний',
+          type: 'SIMULATOR',
+          badges: ['RESEARCH', 'NUANCE'],
+          x: 80, y: 1190, w: 360, h: 320,
+          color: 'purple',
+          desc: 'Сворачивание численного вектора в красивую алгебраическую запись.',
+          points: [
+            '⚠️ Проблема: Вывод вероятностей 0.5, 0.5 плох для |+⟩, |-⟩ и суперпозиций',
+            '❓ R&D Задача: Символьный распознаватель квантовых состояний (CAS)',
+            'Пример: (0.707, 0.707) → (|0⟩+|1⟩)/√2 = |+⟩',
+            'Распознавание семейств: Bell States (|Φ±⟩, |Ψ±⟩), GHZ, W3, фаз e^{iφ}.'
+          ]
+        },
+        {
+          id: 'n_bloch',
+          title: '🌐 2.4. 3D Сфера Блоха (Bloch Sphere)',
+          type: 'SIMULATOR',
+          badges: ['MVP', 'TASK'],
+          x: 470, y: 1190, w: 370, h: 320,
+          color: 'emerald',
+          desc: 'Интерактивная трехмерная визуализация состояния кубита.',
+          points: [
+            '🎯 MVP: 3D сфера (Three.js / WebGL), вращение мышью, вектор (θ, φ)',
+            '💡 НЮАНС для N кубитов: Набор сфер через расчет редуцированной матрицы плотности ρ_i = Tr_{\\bar{i}}(|ψ⟩⟨ψ|)',
+            'Длина вектора < 1 при запутанности кубита с другими.'
+          ]
+        },
+        {
+          id: 'n_format_ast',
+          title: '⚙️ 2.5. Внутренний формат схемы (AST)',
+          type: 'SIMULATOR',
+          badges: ['RESEARCH', 'MVP'],
+          x: 80, y: 1550, w: 360, h: 360,
+          color: 'rose',
+          desc: 'Архитектура внутреннего представления цепей.',
+          points: [
+            '❓ Дилемма: Qiskit vs OpenQASM 3 vs Custom JSON AST',
+            'Архитектурное решение: Custom JSON AST в браузере (быстрота) + двусторонний транспайлер в OpenQASM 3 / Qiskit Python',
+            '🎯 MVP: Кнопка «Circuit → Code» (генерация чистого Python Qiskit кода).'
+          ]
+        },
+        {
+          id: 'n_modes_sync',
+          title: '🔄 2.6. Контекст & Синхронизация Код ↔ GUI',
+          type: 'SIMULATOR',
+          badges: ['RESEARCH', 'NUANCE'],
+          x: 470, y: 1550, w: 370, h: 360,
+          color: 'amber',
+          desc: 'Модульность симулятора и двусторонний биндинг.',
+          points: [
+            'Режим 1 (Свободный): Полный набор гейтов, неограниченный холст',
+            'Режим 2 (Задача): Whitelist гейтов, счетчик бюджета (4/8 гейтов)',
+            '❓ Двусторонняя синхронизация Code ↔ Circuit:',
+            'Написал код → схема обновилась; переместил гейт → код обновился.'
+          ]
+        },
+
+        // 3-7. TASKS & TEMPLATES
+        {
+          id: 'n_templates_engine',
+          title: '📐 3.1. Унифицированный движок шаблонов',
+          type: 'TASKS',
+          badges: ['TASK', 'ARCHITECTURE'],
+          x: 950, y: 100, w: 400, h: 260,
+          color: 'amber',
+          desc: 'Декларативная система создания задач для авторов.',
+          points: [
+            'Цель: Методисты не пишут докеры и стенды с нуля, а конфигурируют манифест',
+            'Параметризация: Входные параметры, контракт функции, лимиты гейтов/глубины',
+            'Стандартизация под 6 универсальных шаблонов (T1–T6).'
+          ]
+        },
+        {
+          id: 'n_answer_types',
+          title: '📤 3.2. Тип ответа: Тип A vs Тип B',
+          type: 'TASKS',
+          badges: ['TASK', 'NUANCE'],
+          x: 1380, y: 100, w: 390, h: 260,
+          color: 'amber',
+          desc: 'Контракт сдачи решения: функция синтеза схемы.',
+          points: [
+            'Контракт: `def solve(n, ...) -> QuantumCircuit`',
+            '💡 Тип A (Фиксированная схема): Схема всегда одна. Можно собрать 100% в GUI.',
+            '💡 Тип B (Параметризованная): Схема зависит от (n, s, f). В GUI дается интерактивный тестовый кейс для экспериментов.'
+          ]
+        },
+        {
+          id: 'n_initial_states',
+          title: '🎯 4. Таксономия начальных состояний',
+          type: 'TASKS',
+          badges: ['TASK', 'NUANCE'],
+          x: 950, y: 390, w: 400, h: 280,
+          color: 'amber',
+          desc: 'Классификация задач по типу входного квантового вектора.',
+          points: [
+            '4.1. Фиксированное состояние: |0...0⟩ (State Prep: Bell, GHZ, W-state)',
+            '4.2. Полностью произвольное: |ψ_in⟩ неизвестно заранее (Unitary operator, QFT, Phase flip, SWAP)',
+            '4.3. Параметризованное семейство: Вход генерируется из |ψ(θ)⟩.'
+          ]
+        },
+        {
+          id: 'n_dynamic_circuits',
+          title: '❓ 5. Динамические цепи («Серая зона»)',
+          type: 'TASKS',
+          badges: ['RESEARCH', 'RISK'],
+          x: 1380, y: 390, w: 390, h: 280,
+          color: 'rose',
+          desc: 'Схемы с измерениями и классической обратной связью.',
+          points: [
+            'Специфика: Mid-circuit measurement (`measure`) + условные гейты (`c_if`)',
+            'Кейсы: Телепортация, QEC синдромы, Iterative Phase Estimation',
+            '⚠️ РИСК: Матричный симулятор `Operator(qc)` ломается!',
+            '❓ R&D: Shots-грейдер на AerSimulator + 2 классические шины в GUI.'
+          ]
+        },
+        {
+          id: 'n_benchmark_platforms',
+          title: '🌍 6.1. Бенчмарк мировых платформ',
+          type: 'TASKS',
+          badges: ['TASK', 'RESEARCH'],
+          x: 950, y: 700, w: 400, h: 290,
+          color: 'cyan',
+          desc: 'Анализ существующих олимпиад и соревнований.',
+          points: [
+            'QCoder (Япония): 40+ задач (оракулы, арифметика, uncomputation)',
+            'Microsoft Quantum Katas: Q# туториалы, суперпозиции',
+            'IBM Quantum Challenge: VQE, Тоффоли декомпозиция, QEC',
+            '📋 Статус: 43 эталонные задачи уже спарсены в `resources/parsed_tasks/`.'
+          ]
+        },
+        {
+          id: 'n_six_templates',
+          title: '📦 6.2. Каталог 6 базовых шаблонов',
+          type: 'TASKS',
+          badges: ['TASK', 'ARCHITECTURE'],
+          x: 1380, y: 700, w: 390, h: 290,
+          color: 'emerald',
+          desc: 'Унифицированный каталог шаблонов Quantum LeetCode.',
+          points: [
+            'T1: State Synthesis — синтез целевого вектора из |0...0⟩',
+            'T2: Unitary Decomposition — синтез U с лимитом CNOT/Depth',
+            'T3: Quantum Oracle — булевы/фазовые оракулы с Uncomputation',
+            'T4: Quantum Algorithms — Grover, Simon, BV, QFT',
+            'T5: Hardware Mapping — в базисе реального чипа {CZ, Rz, √X}',
+            'T6: Dynamic & QEC — измерения и декодирование синдромов.'
+          ]
+        },
+        {
+          id: 'n_author_ui',
+          title: '✍️ 6.3. Конструктор задач для методистов',
+          type: 'TASKS',
+          badges: ['TASK'],
+          x: 950, y: 1020, w: 400, h: 260,
+          color: 'cyan',
+          desc: 'No-Code / Low-Code панель добавления задач.',
+          points: [
+            'Выбор шаблона → ввод описания Markdown → загрузка solution.py',
+            'Автоматическая генерация рандомизированных тестов',
+            'Авторасчет эталонного числа гейтов и глубины схемы.'
+          ]
+        },
+        {
+          id: 'n_gate_constraints',
+          title: '🔒 7. Ограничения на базисы гейтов',
+          type: 'TASKS',
+          badges: ['TASK', 'NUANCE'],
+          x: 1380, y: 1020, w: 390, h: 260,
+          color: 'amber',
+          desc: 'Спектр допустимых наборов операций в задачах.',
+          points: [
+            '7.1. Universal: {H, S, T, X, Y, Z, CX, CZ, Rx, Ry, Rz}',
+            '7.2. Restricted: Только {X, CX, CCX} (арифметика) или Clifford {H, S, CX}',
+            '7.3. Hardware Native: Сверхпроводники {CZ, Rz, √X}, Ионы {MS, Rx, Ry}.'
+          ]
+        },
+        {
+          id: 'n_uncomputation_deep',
+          title: '🧼 4.4. Аудит Uncomputation и анцилл',
+          type: 'TASKS',
+          badges: ['RESEARCH', 'NUANCE'],
+          x: 950, y: 1310, w: 820, h: 240,
+          color: 'rose',
+          desc: 'Фундаментальная математика очистки анцилл в оракулах.',
+          points: [
+            '💡 КРИТИЧЕСКИЙ НЮАНС: Грязная анцилла разрушает фазовую когерентность системы: ρ_x = Tr_{anc}(|ψ⟩⟨ψ|)',
+            'Теорема Чарльза Беннетта (1973): Вычисление → Копирование на CNOT → Обратный разворот (Uncompute)',
+            'No-Cloning барьер: анцилла не может быть просто скопирована или оставлена в суперпозиции',
+            '📋 Тест грейдера: Проверка возврата всех служебных анцилл строго в исходное |0...0⟩.'
+          ]
+        },
+
+        // 8-11. JUDGE & SECURITY
+        {
+          id: 'n_judge_arch',
+          title: '⚖️ 8.1. Клиентский vs Серверный грейдер',
+          type: 'JUDGE',
+          badges: ['MVP', 'ARCHITECTURE'],
+          x: 1880, y: 100, w: 400, h: 290,
+          color: 'emerald',
+          desc: 'Двухконтурная архитектура автоматической проверки решений.',
+          points: [
+            '🎯 Клиент (WASM / JS Simulator): n ≤ 6, открытые примеры, моментальный фидбек (<50ms), 0 ₽ нагрузки',
+            '📋 Сервер (gVisor + Docker + Celery): n > 6, закрытые олимпиадные тесты',
+            '💡 Инвариантность к фазе: F = |⟨ψ_target|ψ_user⟩|² ≥ 1 - ε.'
+          ]
+        },
+        {
+          id: 'n_test_generation',
+          title: '🧪 8.2. Генерация тестов & Shots',
+          type: 'JUDGE',
+          badges: ['TASK'],
+          x: 2310, y: 100, w: 390, h: 290,
+          color: 'amber',
+          desc: 'Методика составления тестовых наборов.',
+          points: [
+            'Автогенерация: Случайные битовые строки s, рандомные булевы функции, граничные точки (n=2, n=10)',
+            'Statevector: Аналитическая быстрая проверка для унитарных схем',
+            'Shots: Статистическая проверка с χ² критерием для динамических цепей.'
+          ]
+        },
+        {
+          id: 'n_sec_l1',
+          title: '🛡️ 9.1. L1 Защита: Хост & RCE',
+          type: 'JUDGE',
+          badges: ['SECURITY', 'ARCHITECTURE'],
+          x: 1880, y: 420, w: 400, h: 290,
+          color: 'rose',
+          desc: 'Первый уровень защиты: изоляция от взлома инфраструктуры.',
+          points: [
+            'Песочница: gVisor (runsc) / Firecracker microVM',
+            'Изоляция: `--net none`, Read-only rootfs, non-root user',
+            'Hard Limits: CPU 2 cores, RAM 512 MB, Time 5.0s',
+            'AST Whitelist: Запрет os, sys, subprocess, eval, exec, open, __import__.'
+          ]
+        },
+        {
+          id: 'n_sec_l2',
+          title: '🔒 9.2. L2 Защита: Qiskit API Abuse',
+          type: 'JUDGE',
+          badges: ['SECURITY'],
+          x: 2310, y: 420, w: 390, h: 290,
+          color: 'rose',
+          desc: 'Второй уровень защиты: предотвращение обхода условий через Qiskit.',
+          points: [
+            'Блокировка интроспекции фреймов (sys._getframe, inspect)',
+            'Запрет подмены бэкендов симулятора',
+            'Запрет переопределения служебных свойств и методов QuantumCircuit.'
+          ]
+        },
+        {
+          id: 'n_sec_l3',
+          title: '🕵️ 9.3. L3 Защита: Anti-Auto-Synthesis',
+          type: 'JUDGE',
+          badges: ['SECURITY', 'RESEARCH'],
+          x: 1880, y: 740, w: 820, h: 310,
+          color: 'rose',
+          desc: 'Третий уровень: Защита от автоматического синтеза Qiskit.',
+          points: [
+            '⚠️ Угроза: Участник скармливает матрицу в `qiskit.synthesis` / `decompose()` и Qiskit строит схему за него!',
+            '❓ 4 Эвристики детекции автосинтеза:',
+            '1. Иррациональные углы: θ = 1.234567... вместо дискретных фаз;',
+            '2. Сигнатуры KAK: Шаблоны стандартных декомпозиций Qiskit;',
+            '3. AST-бан: Запрет пакетов `qiskit.synthesis` и `scipy.linalg`;',
+            '4. Экспоненциальный масштаб: Тесты n=2..10 (синтез виснет по памяти).'
+          ]
+        },
+        {
+          id: 'n_smart_constraints',
+          title: '💡 10. UX Умных ограничений',
+          type: 'JUDGE',
+          badges: ['NUANCE', 'TASK'],
+          x: 1880, y: 1080, w: 820, h: 260,
+          color: 'amber',
+          desc: 'Педагогический баланс между защитой и понятностью.',
+          points: [
+            '⚠️ Проблема: Длинный «черный список запретов» путает и служит спойлером к решению',
+            '💡 Концепция «Позитивного контракта»: Формулируем только позитивные требования (Гейты {H, X, CX}, глубина ≤ 3n)',
+            'Лаконичные ошибки: `GateBudgetExceeded: 14/12 used`, `RestrictedGateUsed: T`.'
+          ]
+        },
+        {
+          id: 'n_judge_infra',
+          title: '🚀 11. Инфраструктура & Масштабирование',
+          type: 'JUDGE',
+          badges: ['ARCHITECTURE', 'TASK'],
+          x: 1880, y: 1370, w: 820, h: 260,
+          color: 'emerald',
+          desc: 'Высоконагруженный бэкенд грейдера под турниры.',
+          points: [
+            'Стек: FastAPI Gateway → Redis Queue → Celery воркеры в gVisor',
+            'C++ Ядро: Qulacs / QSim валидация 50 тестов за <50 ms',
+            'Автоскейлинг: До 500 сабмитов в минуту на всероссийских хакатонах',
+            'Unit-экономика: TCO <5 000 ₽/мес благодаря 95% клиентского WASM.'
+          ]
+        },
+
+        // 12-14. ROADMAP, R&D & MVP
+        {
+          id: 'n_17_pillars',
+          title: '🏛️ 12. 17 Столпов Архитектуры',
+          type: 'ROADMAP',
+          badges: ['ARCHITECTURE'],
+          x: 2810, y: 100, w: 840, h: 270,
+          color: 'purple',
+          desc: 'Полная карта 17 ключевых компонентов системы.',
+          points: [
+            '1. Web Platform | 2. Q-Simulator Core | 3. Dynamic Sandbox | 4. GUI Composer',
+            '5. CAS State Recognizer | 6. 3D Bloch Sphere | 7. Code-Circuit Sync',
+            '8. Task Templates | 9. Benchmark Catalog | 10. Author Studio | 11. Dynamic Circuits',
+            '12. Auto-Judge Engine | 13. Test Generator | 14. L1 Host Security',
+            '15. L2 Qiskit Security | 16. L3 Anti-Auto-Synthesis | 17. Highload Infra'
+          ]
+        },
+        {
+          id: 'n_18_questions',
+          title: '❓ 13. Сводка 18 R&D Вопросов («Куда копать»)',
+          type: 'ROADMAP',
+          badges: ['RESEARCH'],
+          x: 2810, y: 400, w: 840, h: 290,
+          color: 'amber',
+          desc: '18 исследовательских вопросов до окончательного релиза.',
+          points: [
+            'UI/UX: IBM Composer vs Quirk vs собственный легковесный UI',
+            'CAS: Алгоритм символьного распознавания базисов (|0⟩+|1⟩)/√2 → |+⟩',
+            'AST: Архитектура внутреннего JSON AST + QASM транспайлер',
+            'Dynamic: Эмуляция mid-circuit измерений и условной логики',
+            'Античит: Точные границы детекции автосинтеза Qiskit',
+            'Масштаб: Оптимизация валидатора на C++ до <50 ms.'
+          ]
+        },
+        {
+          id: 'n_mvp_proto',
+          title: '🎯 14.1. Ближайший интерактивный прототип (MVP)',
+          type: 'ROADMAP',
+          badges: ['MVP'],
+          x: 2810, y: 720, w: 840, h: 320,
+          color: 'emerald',
+          desc: 'Минимальный функционал к демонстрации на планерке.',
+          points: [
+            '1. Квантовая сетка (2–4 кубита) с Drag-and-Drop гейтов (H, X, Y, Z, CX, CZ);',
+            '2. Удаление кликом (корзина) и вытаскиванием (drag-out);',
+            '3. Мгновенный пересчет вектора состояния на JS/WASM в браузере;',
+            '4. Вывод вероятностей и символьное определение базовых состояний;',
+            '5. Интерактивная 3D Сфера Блоха для кубита;',
+            '6. Живая генерация чистого кода Qiskit Python.'
+          ]
+        },
+        {
+          id: 'n_team_headcount',
+          title: '👥 14.2. Команда, роли и Headcount',
+          type: 'ROADMAP',
+          badges: ['ROLES'],
+          x: 2810, y: 1070, w: 840, h: 270,
+          color: 'cyan',
+          desc: 'Распределение ролей и оценка необходимых специалистов.',
+          points: [
+            '1. Frontend / UI Lead (1 чел): Next.js 14, Canvas/SVG, Monaco, Three.js, Split-view',
+            '2. Quantum R&D & Problem Setter (1-2 чел): Банк задач, оракулы, uncomputation, CAS',
+            '3. Backend & Judge DevOps (1 чел): FastAPI, Celery, gVisor, Docker, C++ QSim',
+            '4. Product & Partnerships Lead (1 чел): Гранты (ФСИ «Старт-1»), B2B-треки, турниры.'
+          ]
+        },
+        {
+          id: 'n_next_steps',
+          title: '🚀 14.3. Повестка созвона и следующие шаги',
+          type: 'ROADMAP',
+          badges: ['TASK'],
+          x: 2810, y: 1370, w: 840, h: 260,
+          color: 'emerald',
+          desc: 'Стратегический план действий на созвоне.',
+          points: [
+            'Шаг 1: Демонстрация интерактивного прототипа на планерке',
+            'Шаг 2: Обсуждение 18 R&D вопросов и закрепление зон ответственности',
+            'Шаг 3: Старт Фазы 1 (Песочница + 20 эталонных задач)',
+            'Шаг 4: Подача заявки на грант ФСИ «Старт-1» (4-5 млн ₽) на базе готового ТЗ.'
+          ]
+        }
+      ],
+      edges: [
+        { from: 'root', to: 'n_workspace', color: '#06b6d4', label: 'Рабочая область' },
+        { from: 'root', to: 'n_sandbox_ux', color: '#10b981', label: 'Песочница' },
+        { from: 'root', to: 'n_templates_engine', color: '#f59e0b', label: 'Шаблоны задач' },
+        { from: 'root', to: 'n_judge_arch', color: '#f43f5e', label: 'Auto-Judge' },
+        { from: 'root', to: 'n_mvp_proto', color: '#10b981', label: 'MVP Scope' },
+
+        { from: 'n_catalog', to: 'n_workspace', color: '#06b6d4' },
+        { from: 'n_workspace', to: 'n_profile', color: '#06b6d4' },
+        { from: 'n_sandbox_ux', to: 'n_controls', color: '#10b981' },
+        { from: 'n_sandbox_ux', to: 'n_results_cas', color: '#10b981' },
+        { from: 'n_results_cas', to: 'n_bloch', color: '#10b981' },
+        { from: 'n_format_ast', to: 'n_modes_sync', color: '#10b981' },
+
+        { from: 'n_templates_engine', to: 'n_answer_types', color: '#f59e0b' },
+        { from: 'n_initial_states', to: 'n_dynamic_circuits', color: '#f59e0b' },
+        { from: 'n_benchmark_platforms', to: 'n_six_templates', color: '#f59e0b' },
+        { from: 'n_author_ui', to: 'n_gate_constraints', color: '#f59e0b' },
+
+        { from: 'n_judge_arch', to: 'n_test_generation', color: '#f43f5e' },
+        { from: 'n_sec_l1', to: 'n_sec_l2', color: '#f43f5e' },
+        { from: 'n_sec_l2', to: 'n_sec_l3', color: '#f43f5e' },
+        { from: 'n_sec_l3', to: 'n_smart_constraints', color: '#f43f5e' },
+        { from: 'n_smart_constraints', to: 'n_judge_infra', color: '#f43f5e' },
+
+        { from: 'n_17_pillars', to: 'n_18_questions', color: '#8b5cf6' },
+        { from: 'n_18_questions', to: 'n_mvp_proto', color: '#8b5cf6' },
+        { from: 'n_mvp_proto', to: 'n_team_headcount', color: '#8b5cf6' },
+        { from: 'n_team_headcount', to: 'n_next_steps', color: '#8b5cf6' }
+      ]
+    };
+
+    // RENDERING & INTERACTION LOGIC
+    const viewport = document.getElementById('viewport');
+    const canvasSpace = document.getElementById('canvasSpace');
+    const cardsLayer = document.getElementById('cardsLayer');
+    const groupsLayer = document.getElementById('groupsLayer');
+    const svgConnectors = document.getElementById('svgConnectors');
+    const zoomLevelDisplay = document.getElementById('zoomLevelDisplay');
+    const searchInput = document.getElementById('searchInput');
+
+    let scale = 0.65;
+    let panX = 100;
+    let panY = 120;
+    let isPanning = false;
+    let startX = 0;
+    let startY = 0;
+
+    function renderCanvas() {
+      // 1. Render Group Frames
+      groupsLayer.innerHTML = canvasData.groups.map(g => `
+        <div class="group-frame" style="left: ${g.x}px; top: ${g.y}px; width: ${g.w}px; height: ${g.h}px; border-color: ${g.color}40;">
+          <div class="group-label" style="border-color: ${g.color}60; color: ${g.color};">
+            ${g.label}
+          </div>
+        </div>
+      `).join('');
+
+      // 2. Render Cards
+      cardsLayer.innerHTML = canvasData.nodes.map(n => {
+        const colorMap = {
+          cyan: 'border-cyan-800/80 bg-slate-900/90 text-cyan-400',
+          emerald: 'border-emerald-800/80 bg-slate-900/90 text-emerald-400',
+          amber: 'border-amber-800/80 bg-slate-900/90 text-amber-400',
+          rose: 'border-rose-800/80 bg-slate-900/90 text-rose-400',
+          purple: 'border-purple-800/80 bg-slate-900/90 text-purple-400'
+        };
+
+        const badgeHtml = n.badges.map(b => {
+          if (b === 'MVP') return '<span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-700/60 font-bold">🎯 MVP</span>';
+          if (b === 'RESEARCH') return '<span class="px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-700/60 font-bold">❓ Непонятно</span>';
+          if (b === 'NUANCE') return '<span class="px-1.5 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-700/60">💡 Нюанс</span>';
+          if (b === 'SECURITY') return '<span class="px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-700/60 font-bold">🛡️ Защита</span>';
+          if (b === 'RISK') return '<span class="px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-700/60">⚠️ Риск</span>';
+          if (b === 'ROLES') return '<span class="px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-700/60">👥 Роли</span>';
+          return `<span class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">${b}</span>`;
+        }).join(' ');
+
+        return `
+          <div id="node-${n.id}" class="canvas-card rounded-2xl border p-5 shadow-xl backdrop-blur-md ${colorMap[n.color] || colorMap.cyan}"
+            style="left: ${n.x}px; top: ${n.y}px; width: ${n.w}px; min-height: ${n.h}px;"
+            onclick="openNodeDetails('${n.id}')">
+            
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <h3 class="text-sm font-bold text-slate-100 leading-snug">${n.title}</h3>
+              <div class="flex flex-wrap gap-1 items-center justify-end text-[10px]">
+                ${badgeHtml}
+              </div>
+            </div>
+            
+            <p class="text-xs text-slate-400 mb-3 border-b border-slate-800 pb-2">${n.desc}</p>
+            
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              ${n.points.map(p => `<li class="flex items-start gap-1.5"><span class="text-cyan-400 select-none">•</span><span>${p}</span></li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }).join('');
+
+      // 3. Render SVG Connectors
+      renderConnectors();
+    }
+
+    function renderConnectors() {
+      const nodeMap = {};
+      canvasData.nodes.forEach(n => nodeMap[n.id] = n);
+
+      let svgHtml = '';
+      canvasData.edges.forEach(e => {
+        const from = nodeMap[e.from];
+        const to = nodeMap[e.to];
+        if (!from || !to) return;
+
+        // Calculate center or side points
+        const x1 = from.x + from.w / 2;
+        const y1 = from.y + from.h / 2;
+        const x2 = to.x + to.w / 2;
+        const y2 = to.y + to.h / 2;
+
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const cx1 = x1 + dx * 0.4;
+        const cy1 = y1;
+        const cx2 = x1 + dx * 0.6;
+        const cy2 = y2;
+
+        svgHtml += `
+          <path d="M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}" 
+            stroke="${e.color || '#475569'}" stroke-width="2" fill="none" stroke-dasharray="6,4" opacity="0.45" />
+        `;
+      });
+      svgConnectors.innerHTML = svgHtml;
+    }
+
+    function updateTransform() {
+      canvasSpace.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+      zoomLevelDisplay.textContent = Math.round(scale * 100) + '%';
+    }
+
+    function zoomStep(delta) {
+      const oldScale = scale;
+      scale = Math.min(Math.max(0.2, scale + delta), 2.0);
+      updateTransform();
+    }
+
+    function resetZoomAndCenter() {
+      scale = 0.65;
+      panX = 100;
+      panY = 120;
+      updateTransform();
+    }
+
+    function zoomToFit() {
+      scale = 0.35;
+      panX = 50;
+      panY = 50;
+      updateTransform();
+    }
+
+    // PANNING WITH MOUSE / TRACKPAD
+    viewport.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.canvas-card') || e.target.closest('button') || e.target.closest('input')) return;
+      isPanning = true;
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
+      viewport.classList.add('cursor-grabbing');
+      viewport.classList.remove('cursor-grab');
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      panX = e.clientX - startX;
+      panY = e.clientY - startY;
+      updateTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+      viewport.classList.add('cursor-grab');
+      viewport.classList.remove('cursor-grabbing');
+    });
+
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (e.ctrlKey || e.metaKey) {
+        // Pinch zoom
+        const zoomDelta = -e.deltaY * 0.005;
+        scale = Math.min(Math.max(0.2, scale + zoomDelta), 2.0);
+      } else {
+        // 2-finger Pan
+        panX -= e.deltaX;
+        panY -= e.deltaY;
+      }
+      updateTransform();
+    }, { passive: false });
+
+    // FILTERING
+    function filterByBadge(badge) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('bg-cyan-600', 'text-white'));
+      event.target.classList.add('bg-cyan-600', 'text-white');
+
+      canvasData.nodes.forEach(n => {
+        const el = document.getElementById(`node-${n.id}`);
+        if (!el) return;
+        if (badge === 'ALL' || n.badges.includes(badge)) {
+          el.classList.remove('dimmed');
+        } else {
+          el.classList.add('dimmed');
+        }
+      });
+    }
+
+    // SEARCH
+    searchInput.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) {
+        document.querySelectorAll('.canvas-card').forEach(c => {
+          c.classList.remove('dimmed', 'highlighted');
+        });
+        return;
+      }
+
+      let firstMatch = null;
+
+      canvasData.nodes.forEach(n => {
+        const el = document.getElementById(`node-${n.id}`);
+        if (!el) return;
+        const text = (n.title + ' ' + n.desc + ' ' + n.points.join(' ') + ' ' + n.badges.join(' ')).toLowerCase();
+        if (text.includes(q)) {
+          el.classList.remove('dimmed');
+          el.classList.add('highlighted');
+          if (!firstMatch) firstMatch = n;
+        } else {
+          el.classList.add('dimmed');
+          el.classList.remove('highlighted');
+        }
+      });
+
+      if (firstMatch) {
+        panX = -firstMatch.x * scale + viewport.clientWidth / 2 - (firstMatch.w * scale) / 2;
+        panY = -firstMatch.y * scale + viewport.clientHeight / 2 - (firstMatch.h * scale) / 2;
+        updateTransform();
+      }
+    });
+
+    // SIDE DRAWER
+    function openNodeDetails(id) {
+      const n = canvasData.nodes.find(item => item.id === id);
+      if (!n) return;
+
+      document.getElementById('drawerTitle').textContent = n.title;
+      document.getElementById('drawerBody').innerHTML = `
+        <div class="p-4 rounded-xl bg-slate-800/80 border border-slate-700">
+          <span class="text-[10px] text-cyan-400 uppercase font-bold tracking-wider">Категория: ${n.type}</span>
+          <p class="text-sm font-medium text-slate-200 mt-1">${n.desc}</p>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 mb-2 uppercase tracking-wide">Ключевые пункты и формулировки:</h4>
+          <div class="space-y-2">
+            ${n.points.map(p => `
+              <div class="p-3 rounded-lg bg-slate-800/40 border border-slate-800 flex items-start gap-2">
+                <span class="text-cyan-400">▹</span>
+                <span class="text-slate-300 text-xs">${p}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-purple-950/30 border border-purple-800/50">
+          <h4 class="text-xs font-bold text-purple-300 mb-1 flex items-center gap-1.5">
+            <i class="fa-solid fa-lightbulb"></i> Фокус для обсуждения на созвоне:
+          </h4>
+          <p class="text-[11px] text-purple-200/90 leading-normal">
+            Использовать этот блок для фиксации конкретных вопросов команде: согласны ли с разделением, кто берет задачу в спринт, какие технологические риски видим.
+          </p>
+        </div>
+      `;
+      document.getElementById('sideDrawer').classList.remove('translate-x-full');
+    }
+
+    function toggleSideInfo() {
+      const drawer = document.getElementById('sideDrawer');
+      if (drawer.classList.contains('translate-x-full')) {
+        document.getElementById('drawerTitle').textContent = 'Генеральный монолог & Структура';
+        document.getElementById('drawerBody').innerHTML = `
+          <div class="p-4 rounded-xl bg-cyan-950/40 border border-cyan-800/60">
+            <h4 class="text-xs font-bold text-cyan-300">О проекте «Квантовый LeetCode»</h4>
+            <p class="text-xs text-slate-300 mt-1">
+              Платформа соревновательного и практического квантового программирования. Содержит модульный симулятор с динамическим обновлением, проверяющую систему с защитой от читерства и банк задач на синтез квантовых схем.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase">14 Ключевых Разделов:</h4>
+            <ol class="space-y-2 text-xs text-slate-400 list-decimal pl-4">
+              <li><b class="text-slate-200">Общая платформа:</b> профиль, каталог, UX Split-view.</li>
+              <li><b class="text-slate-200">Квантовый симулятор:</b> песочница, drag-and-drop, корзина, control gates, CAS-распознаватель, 3D Блох.</li>
+              <li><b class="text-slate-200">Шаблонизация задач:</b> тип ответа, фиксированные vs параметризованные цепи.</li>
+              <li><b class="text-slate-200">Начальные состояния:</b> |0...0⟩, произвольные, параметризованные.</li>
+              <li><b class="text-slate-200">Динамические цепи («Серая зона»):</b> измерения, feedback.</li>
+              <li><b class="text-slate-200">Бенчмаркинг & Шаблоны:</b> QCoder, Katas, IBM.</li>
+              <li><b class="text-slate-200">Ограничения базисов:</b> Universal, Restricted, Hardware-native.</li>
+              <li><b class="text-slate-200">Auto-Judge:</b> WASM клиент vs Server gVisor, Statevector vs Shots.</li>
+              <li><b class="text-slate-200">Безопасность (3 уровня):</b> RCE хоста, API Qiskit, Anti-Auto-Synthesis.</li>
+              <li><b class="text-slate-200">Умные ограничения:</b> Позитивные контракты без портянок запретов.</li>
+              <li><b class="text-slate-200">Масштабирование:</b> FastAPI, Celery, C++ QSim ядро.</li>
+              <li><b class="text-slate-200">17 Столпов Архитектуры:</b> Сводная системная карта.</li>
+              <li><b class="text-slate-200">18 R&D Вопросов:</b> Список тем для исследования («Куда копать»).</li>
+              <li><b class="text-slate-200">MVP Прототип & Команда:</b> Скоуп к созвону и 4 роли команды.</li>
+            </ol>
+          </div>
+        `;
+        drawer.classList.remove('translate-x-full');
+      } else {
+        drawer.classList.add('translate-x-full');
+      }
+    }
+
+    function closeSideDrawer() {
+      document.getElementById('sideDrawer').classList.add('translate-x-full');
+    }
+
+    // INIT
+    renderCanvas();
+    updateTransform();
+  </script>
+</body>
+</html>

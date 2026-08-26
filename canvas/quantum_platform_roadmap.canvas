@@ -1,0 +1,583 @@
+{
+  "nodes": [
+    {
+      "id": "root",
+      "type": "text",
+      "text": "# 🌌 КВАНТОВЫЙ LEETCODE\n## Мастер-холст архитектуры, задач и MVP\n---\n* **Цель:** Платформа соревнований, обучения и верификации квантовых алгоритмов\n* **Ключевой фокус:** Синтез схем, оракулы, чистый Uncomputation, алгоритмы\n* **Формат:** Клиентский WASM + Изолированный Server Judge",
+      "x": 1400,
+      "y": -350,
+      "width": 480,
+      "height": 240,
+      "color": "6"
+    },
+    {
+      "id": "g_platform",
+      "type": "group",
+      "label": "1. ОБЩАЯ ПЛАТФОРМА & UX",
+      "x": 0,
+      "y": 0,
+      "width": 850,
+      "height": 680,
+      "color": "5"
+    },
+    {
+      "id": "n_catalog",
+      "type": "text",
+      "text": "### 📋 1.1. Каталог & Открытие задач\n---\n* **Мульти-теги:** Difficulty, Оракулы, State Prep, QEC, Hardware-basis\n* **Режимы:** Solo Practice / Weekly Contest / Daily Streak\n* 💡 *Нюанс:* Индикатор — можно ли решить визуально в GUI или нужен код.",
+      "x": 30,
+      "y": 40,
+      "width": 380,
+      "height": 260,
+      "color": "5"
+    },
+    {
+      "id": "n_workspace",
+      "type": "text",
+      "text": "### 🎯 1.2. Workspace (Split-View)\n---\n* **Лево:** Условие задачи, формулы LaTeX, лимиты гейтов\n* **Верх-Право:** GUI Circuit Composer + Сфера Блоха + Probabilities\n* **Низ-Право:** Monaco Editor (Python/Qiskit)\n* 🎯 *MVP:* Адаптивный split screen с живым запуском.",
+      "x": 440,
+      "y": 40,
+      "width": 380,
+      "height": 260,
+      "color": "4"
+    },
+    {
+      "id": "n_profile",
+      "type": "text",
+      "text": "### 👤 1.3. Профиль & Портфолио\n---\n* **Quantum ELO Rating** по категориям\n* **Proof-of-Skill:** Процентили по Depth/Gate count\n* **Верифицированные бейджи** для HR-воронки (Росатом, Сбер, РКЦ)\n* 📋 *Задача:* Интеграция публичных ссылок на решения.",
+      "x": 30,
+      "y": 340,
+      "width": 380,
+      "height": 280,
+      "color": "5"
+    },
+    {
+      "id": "n_user_journey",
+      "type": "text",
+      "text": "### 🗺️ 1.4. User Journey (Путь пользователя)\n---\n* **Новичок:** Туториалы $\\to$ Визуальная песочница $\\to$ Базовые задачи\n* **Олимпиадник:** Daily Challenge $\\to$ Рейтинговые контесты $\\to$ ELO\n* **Инженер:** Задачи на аппаратный базис $\\to$ Оптимизация глубины",
+      "x": 440,
+      "y": 340,
+      "width": 380,
+      "height": 280,
+      "color": "5"
+    },
+    {
+      "id": "g_sim",
+      "type": "group",
+      "label": "2. КВАНТОВЫЙ СИМУЛЯТОР & ПЕСОЧНИЦА",
+      "x": 0,
+      "y": 720,
+      "width": 850,
+      "height": 1150,
+      "color": "4"
+    },
+    {
+      "id": "n_sandbox_ux",
+      "type": "text",
+      "text": "### 🎯 2.1. Песочница (UX Механики)\n---\n* **Свободный режим:** Эксперименты без задачи\n* 💡 *Референс IBM:* Реактивное динамическое автообновление без кнопки Run!\n* 💡 *Собственный референс UX:*\n  * Палитра справа $\\to$ Drag-and-Drop на шины\n  * **2 способа удаления:** клик $\\to$ корзина ИЛИ вытаскивание за границы (drag-out)\n  * Мгновенный отклик (<16ms).",
+      "x": 30,
+      "y": 760,
+      "width": 380,
+      "height": 340,
+      "color": "4"
+    },
+    {
+      "id": "n_controls",
+      "type": "text",
+      "text": "### 🕹️ 2.2. Control Gates (Управляющие узлы)\n---\n* **1 Control:** CX, CZ, CRx, CRz, CH\n* **Multi-Control:** Toffoli (CCX), MCX, MCZ, k-controlled\n* **Negative Control:** Активация по $|0\\rangle$ (полый круг)\n* ❓ *Исследование:* Эргономика связки (инструмент-стрелка vs составной гейт)\n* 💡 *Нюанс:* Запрет циклических зависимостей в таймслоте.",
+      "x": 440,
+      "y": 760,
+      "width": 380,
+      "height": 340,
+      "color": "3"
+    },
+    {
+      "id": "n_results_cas",
+      "type": "text",
+      "text": "### 🔮 2.3. Распознавание состояний (Symbolic CAS)\n---\n* ⚠️ *Проблема:* Вывод вероятностей в вычислительном базисе плох для $|+\\rangle, |-\\rangle, |\\Phi^+\\rangle$\n* ❓ *R&D Задача:* Алгебраическое сворачивание численных амплитуд в LaTeX-формулу\n  * $(0.707, 0.707) \\to \\frac{|0\\rangle+|1\\rangle}{\\sqrt{2}} = |+\\rangle$\n  * Распознавание Bell, GHZ, W-states, фаз $e^{i\\phi}$.",
+      "x": 30,
+      "y": 1140,
+      "width": 380,
+      "height": 330,
+      "color": "2"
+    },
+    {
+      "id": "n_bloch",
+      "type": "text",
+      "text": "### 🌐 2.4. 3D Сфера Блоха\n---\n* 🎯 *MVP:* Интерактивная 3D сфера (Three.js/Canvas)\n* Вращение мышью, вектор $(\\theta, \\phi)$, проекции\n* 💡 *Нюанс для N кубитов:* Набор сфер через расчет редуцированной матрицы плотности $\\rho_i = \\text{Tr}_{\\bar{i}}(|\\psi\\rangle\\langle\\psi|)$\n* Длина вектора $< 1$ при наличии запутанности.",
+      "x": 440,
+      "y": 1140,
+      "width": 380,
+      "height": 330,
+      "color": "4"
+    },
+    {
+      "id": "n_format_ast",
+      "type": "text",
+      "text": "### ⚙️ 2.5. Внутренний формат (AST & QASM)\n---\n* ❓ *Архитектурная дилемма:* Qiskit vs OpenQASM 3 vs Custom JSON AST\n* **Решение:** Custom JSON AST в браузере (быстрота) + Двусторонний транспайлер в OpenQASM 3 / Qiskit Python\n* 🎯 *MVP:* Кнопка «Circuit $\\to$ Code» (генерация Qiskit скрипта).",
+      "x": 30,
+      "y": 1500,
+      "width": 380,
+      "height": 330,
+      "color": "1"
+    },
+    {
+      "id": "n_modes_sync",
+      "type": "text",
+      "text": "### 🔄 2.6. Контекст & Двусторонняя синхронизация\n---\n* **Модульные режимы:**\n  * *Песочница:* все гейты разблокированы\n  * *Задача:* Whitelist гейтов, счетчик бюджета (4/8)\n* ❓ *Синхронизация Code $\\leftrightarrow$ Circuit:*\n  * Код $\\to$ схема в реальном времени\n  * Перемещение гейта $\\to$ обновление кода в Monaco.",
+      "x": 440,
+      "y": 1500,
+      "width": 380,
+      "height": 330,
+      "color": "3"
+    },
+    {
+      "id": "g_tasks",
+      "type": "group",
+      "label": "3-7. ШАБЛОНИЗАЦИЯ ЗАДАЧ И БАЗИСЫ",
+      "x": 920,
+      "y": 0,
+      "width": 880,
+      "height": 1870,
+      "color": "2"
+    },
+    {
+      "id": "n_templates_engine",
+      "type": "text",
+      "text": "### 📐 3.1. Унифицированный движок шаблонов\n---\n* **Цель:** Авторы задач конфигурируют параметры через манифест, а не пишут докеры с нуля\n* **Параметры шаблона:** Входные данные, контракт функции, лимиты гейтов/глубины, метрика верификации\n* 📋 *Задача:* 6 стандартных шаблонов (T1–T6).",
+      "x": 950,
+      "y": 40,
+      "width": 400,
+      "height": 270,
+      "color": "2"
+    },
+    {
+      "id": "n_answer_types",
+      "type": "text",
+      "text": "### 📤 3.2. Тип ответа & Тип A vs B\n---\n* **Контракт ответа:** `solve(n, ...) -> QuantumCircuit`\n* 💡 *Тип A (Фиксированная схема):* Схема всегда одна. Можно собрать 100% в GUI песочнице.\n* 💡 *Тип B (Параметризованная схема):* Схема строится по $(n, s, f)$. В песочнице дается интерактивный тестовый пример для исследования.",
+      "x": 1380,
+      "y": 40,
+      "width": 390,
+      "height": 270,
+      "color": "2"
+    },
+    {
+      "id": "n_initial_states",
+      "type": "text",
+      "text": "### 🎯 4. Таксономия начальных состояний\n---\n* **4.1. Фиксированное входное состояние:** $|0\\dots0\\rangle$ (State prep: Bell, GHZ, W-state)\n* **4.2. Полностью произвольное состояние:** $|\\psi_{in}\\rangle$ неизвестно заранее (Unitary synthesis, QFT, Phase flip, SWAP)\n* **4.3. Параметризованное семейство:** Вход генерируется из $|\\psi(\\vec{\\theta})\\rangle$.",
+      "x": 950,
+      "y": 340,
+      "width": 400,
+      "height": 280,
+      "color": "3"
+    },
+    {
+      "id": "n_dynamic_circuits",
+      "type": "text",
+      "text": "### ❓ 5. Динамические цепи («Серая зона»)\n---\n* **Специфика:** Mid-circuit measurements (`measure`) + условные гейты (`c_if` / `if_test`)\n* **Кейсы:** Квантовая телепортация, QEC синдромы, Iterative Phase Estimation\n* ⚠️ *Риск:* `Operator(qc)` ломается!\n* ❓ *R&D Решение:* Shots-грейдер на `AerSimulator` + двойные классические шины в GUI.",
+      "x": 1380,
+      "y": 340,
+      "width": 390,
+      "height": 280,
+      "color": "1"
+    },
+    {
+      "id": "n_benchmark_platforms",
+      "type": "text",
+      "text": "### 🌍 6.1. Бенчмарк мировых платформ\n---\n* **QCoder (Япония):** 40+ задач (оракулы, арифметика, uncomputation)\n* **Microsoft Quantum Katas:** Туториалы, суперпозиции, дискриминация\n* **IBM Challenge:** VQE, декомпозиция Тоффоли, QEC\n* 📋 *Статус:* 43 задачи спарсены в `resources/parsed_tasks/`.",
+      "x": 950,
+      "y": 650,
+      "width": 400,
+      "height": 290,
+      "color": "5"
+    },
+    {
+      "id": "n_six_templates",
+      "type": "text",
+      "text": "### 📦 6.2. Каталог 6 базовых шаблонов\n---\n* **T1: State Prep:** Подготовка целевого вектора\n* **T2: Unitary Synthesis:** Построение оператора $U$\n* **T3: Quantum Oracle:** Булевы/фазовые с uncomputation\n* **T4: Quantum Algorithms:** Grover, Simon, BV, QFT\n* **T5: Hardware Mapping:** В базисе реального чипа\n* **T6: Dynamic & QEC:** Измерения и синдромы.",
+      "x": 1380,
+      "y": 650,
+      "width": 390,
+      "height": 290,
+      "color": "4"
+    },
+    {
+      "id": "n_author_ui",
+      "type": "text",
+      "text": "### ✍️ 6.3. Конструктор задач для методистов\n---\n* No-Code / Low-Code панель создания задач\n* Выбор шаблона $\\to$ ввод описания $\\to$ загрузка `solution.py` $\\to$ автогенерация тестовых рандомизаторов\n* Автоматический расчет baseline gate count и depth.",
+      "x": 950,
+      "y": 970,
+      "width": 400,
+      "height": 260,
+      "color": "5"
+    },
+    {
+      "id": "n_gate_constraints",
+      "type": "text",
+      "text": "### 🔒 7. Ограничения на базисы гейтов\n---\n* **7.1. Universal:** $\\{H, S, T, X, Y, Z, CNOT, CZ, R_x, R_y, R_z\\}$\n* **7.2. Restricted Basic:** Только $\\{X, CNOT, Toffoli\\}$ (арифметика) или Clifford $\\{H, S, CNOT\\}$\n* **7.3. Hardware-Native:**\n  * Сверхпроводники: $\\{CZ, R_z, \\sqrt{X}, X\\}$\n  * Ионы: $\\{MS, R_x, R_y, R_z\\}$.",
+      "x": 1380,
+      "y": 970,
+      "width": 390,
+      "height": 260,
+      "color": "3"
+    },
+    {
+      "id": "n_uncomputation_deep",
+      "type": "text",
+      "text": "### 🧼 4.4. Аудит Uncomputation и анцилл\n---\n* 💡 *Критический нюанс:* Грязная анцилла разрушает фазовую когерентность системы: $\\rho_x = \\text{Tr}_{anc}(|\\psi\\rangle\\langle\\psi|)$\n* Теорема Беннетта: прямое вычисление $\\to$ копирование ответа на CNOT $\\to$ обратное развертывание (uncompute)\n* 📋 *Тест:* Проверка состояния анцилл на $|0\\dots0\\rangle$.",
+      "x": 950,
+      "y": 1260,
+      "width": 820,
+      "height": 240,
+      "color": "1"
+    },
+    {
+      "id": "n_task_engine_params",
+      "type": "text",
+      "text": "### 📊 3.3. Параметры шаблона задачи (Таблица)\n---\n* `num_qubits_range`: `[2, 10]`\n* `allowed_gates`: `[\"h\", \"cx\", \"x\"]`\n* `max_depth`: `35`, `max_gate_count`: `50`\n* `verification_mode`: `statevector_fidelity` | `operator_norm` | `shot_distribution`\n* `target_fidelity_threshold`: `0.999`",
+      "x": 950,
+      "y": 1530,
+      "width": 820,
+      "height": 240,
+      "color": "4"
+    },
+    {
+      "id": "g_judge",
+      "type": "group",
+      "label": "8-11. AUTO-JUDGE, БЕЗОПАСНОСТЬ & АНТИЧИТ",
+      "x": 1860,
+      "y": 0,
+      "width": 900,
+      "height": 1870,
+      "color": "1"
+    },
+    {
+      "id": "n_judge_arch",
+      "type": "text",
+      "text": "### ⚖️ 8.1. Клиентский vs Серверный грейдер\n---\n* 🎯 *WASM / Pyodide (Клиент):* $n \\le 6$, открытые примеры, мгновенный фидбек (<50ms), 0 ₽ нагрузки\n* 📋 *Docker + gVisor (Сервер):* $n > 6$, закрытые тесты турниров, динамические схемы\n* 💡 *Fidelity:* $F = |\\langle\\psi_{target}|\\psi_{user}\\rangle|^2 \\ge 1-\\varepsilon$ (инвариантность к глобальной фазе).",
+      "x": 1890,
+      "y": 40,
+      "width": 410,
+      "height": 290,
+      "color": "4"
+    },
+    {
+      "id": "n_test_generation",
+      "type": "text",
+      "text": "### 🧪 8.2. Генерация тестовых наборов & Shots\n---\n* **Автогенерация:** Случайные битовые строки $s$, случайные булевы функции, крайние точки ($n=2, n=10$)\n* **Аналитическая проверка:** Точный расчет Statevector (без шума)\n* **Shots-проверка:** Для dynamic circuits и QEC с проверкой $\\chi^2$-статистики.",
+      "x": 2330,
+      "y": 40,
+      "width": 400,
+      "height": 290,
+      "color": "2"
+    },
+    {
+      "id": "n_sec_l1",
+      "type": "text",
+      "text": "### 🛡️ 9.1. L1 Безопасность: Хост & RCE\n---\n* **Песочница:** gVisor (`runsc`) / Firecracker microVM\n* **Изоляция:** `--net none`, Read-only rootfs, non-root user\n* **Лимиты:** CPU 2 cores, RAM 512 MB, Time 5s\n* **AST Whitelist:** Блокировка `os, sys, subprocess, eval, exec, open, __import__`.",
+      "x": 1890,
+      "y": 360,
+      "width": 410,
+      "height": 290,
+      "color": "1"
+    },
+    {
+      "id": "n_sec_l2",
+      "type": "text",
+      "text": "### 🔒 9.2. L2 Безопасность: Qiskit API Abuse\n---\n* Блокировка интроспекции фреймов (`sys._getframe`)\n* Запрет подмены встроенных бэкендов симулятора\n* Запрет переопределения служебных методов `QuantumCircuit` и доступа к переменным тестового окружения.",
+      "x": 2330,
+      "y": 360,
+      "width": 400,
+      "height": 290,
+      "color": "1"
+    },
+    {
+      "id": "n_sec_l3",
+      "type": "text",
+      "text": "### 🕵️ 9.3. L3 Безопасность: Anti-Auto-Synthesis\n---\n* ⚠️ *Угроза:* Участник отдает матрицу в `qiskit.synthesis` или `decompose()`, и Qiskit решает задачу за него!\n* ❓ *4 Эвристики детекции:*\n  1. **Иррациональные углы:** $\\theta = 1.234567\\dots$ вместо дискретных фаз;\n  2. **Сигнатуры KAK:** Шаблоны декомпозиции Qiskit;\n  3. **AST-бан:** Запрет пакетов `qiskit.synthesis`, `scipy.linalg`;\n  4. **Экспоненциальный масштаб:** Тесты $n=2\\dots10$ (синтез виснет).",
+      "x": 1890,
+      "y": 680,
+      "width": 840,
+      "height": 310,
+      "color": "1"
+    },
+    {
+      "id": "n_smart_constraints",
+      "type": "text",
+      "text": "### 💡 10. UX Умных ограничений (Педагогика)\n---\n* ⚠️ *Проблема портянки:* «Запрещено A, B, C...» путает и подсказывает способ решения\n* 💡 *Концепция «Позитивного контракта»:*\n  * Формулируем только позитивные требования: *«Гейты: $\\{H, X, CNOT\\}$, глубина $\\le 3n$»*\n  * Ошибки лаконичны: `GateBudgetExceeded: 14/12 used`, `RestrictedGateUsed: T`.",
+      "x": 1890,
+      "y": 1020,
+      "width": 840,
+      "height": 260,
+      "color": "3"
+    },
+    {
+      "id": "n_judge_infra",
+      "type": "text",
+      "text": "### 🚀 11. Инфраструктура & Масштабирование\n---\n* **Стек:** FastAPI Gateway $\\to$ Redis Queue $\\to$ Celery Workers in gVisor\n* **Ускорение:** C++ Qulacs / QSim ядро (50 тестов за $<50$ ms)\n* **Масштабирование:** Автоскейлинг воркеров до 500 сабмитов/мин во время турниров\n* **Unit-экономика:** TCO $<5000$ ₽/мес благодаря 95% клиентских вычислений на WASM.",
+      "x": 1890,
+      "y": 1310,
+      "width": 840,
+      "height": 260,
+      "color": "4"
+    },
+    {
+      "id": "g_rd_mvp",
+      "type": "group",
+      "label": "12-14. 18 R&D ТРЕКОВ, MVP ПРОТОТИП И РОЛИ",
+      "x": 2820,
+      "y": 0,
+      "width": 920,
+      "height": 1870,
+      "color": "6"
+    },
+    {
+      "id": "n_17_pillars",
+      "type": "text",
+      "text": "### 🏛️ 12. 17 Столпов Архитектуры Платформы\n---\n1. Web Platform & Profile | 2. Q-Simulator Core | 3. Dynamic Sandbox\n4. GUI Composer | 5. State Formatter (CAS) | 6. 3D Bloch Sphere\n7. Code-Circuit Sync | 8. Task Templates | 9. Benchmark Catalog\n10. Author Studio | 11. Dynamic Circuits | 12. Auto-Judge Engine\n13. Test Generator | 14. L1 Host Security | 15. L2 Qiskit Security\n16. L3 Anti-Auto-Synthesis | 17. Highload Infra & C++ Kernels",
+      "x": 2850,
+      "y": 40,
+      "width": 860,
+      "height": 270,
+      "color": "6"
+    },
+    {
+      "id": "n_18_questions",
+      "type": "text",
+      "text": "### ❓ 13. Сводка 18 Вопросов («Куда копать»)\n---\n* **UI/UX:** IBM Composer vs Quirk vs наш легкий UI\n* **CAS:** Алгоритм сворачивания численных амплитуд в $|+\\rangle, |\\Phi^+\\rangle$\n* **AST:** Qiskit vs OpenQASM 3 vs JSON AST\n* **Dynamic:** Как проверять цепи с `measure` и `c_if`\n* **Античит:** Точные границы и сигнатуры автосинтеза Qiskit\n* **Масштаб:** Оптимизация валидатора до $<50$ ms на C++.",
+      "x": 2850,
+      "y": 340,
+      "width": 860,
+      "height": 290,
+      "color": "2"
+    },
+    {
+      "id": "n_mvp_proto",
+      "type": "text",
+      "text": "### 🎯 14.1. Ближайший интерактивный прототип (MVP)\n---\n* 🎯 **Минимальный скоуп к созвону:**\n  * 1. Квантовая сетка (2–4 кубита) с Drag-and-Drop гейтов ($H, X, Y, Z, CX, CZ$);\n  * 2. Удаление кликом (корзина) и вытаскиванием (drag-out);\n  * 3. Мгновенный пересчет вектора состояния на JS/WASM;\n  * 4. Вывод вероятностей и базовое символьное состояние;\n  * 5. Интерактивная 3D Сфера Блоха;\n  * 6. Живая генерация кода Qiskit Python.",
+      "x": 2850,
+      "y": 660,
+      "width": 860,
+      "height": 330,
+      "color": "4"
+    },
+    {
+      "id": "n_team_headcount",
+      "type": "text",
+      "text": "### 👥 14.2. Команда, роли и Headcount\n---\n* **1. Frontend / UI Lead (1 чел):** Next.js 14, Canvas/SVG, Monaco, Three.js, Split-view\n* **2. Quantum R&D & Problem Setter (1-2 чел):** Банк задач, оракулы, uncomputation, CAS\n* **3. Backend & Judge DevOps (1 чел):** FastAPI, Celery, gVisor, Docker, C++ QSim\n* **4. Product & Partnerships Lead (1 чел):** Гранты (ФСИ «Старт-1»), B2B-треки, турниры.",
+      "x": 2850,
+      "y": 1020,
+      "width": 860,
+      "height": 270,
+      "color": "5"
+    },
+    {
+      "id": "n_next_steps",
+      "type": "text",
+      "text": "### 🚀 14.3. Дорожная карта созвона & Следующие шаги\n---\n* **Шаг 1:** Демонстрация интерактивного прототипа на планерке\n* **Шаг 2:** Согласование 18 R&D треков и распределение по ролям\n* **Шаг 3:** Старт разработки Фазы 1 (Песочница + 20 эталонных задач)\n* **Шаг 4:** Подача заявки на грант ФСИ «Старт-1» (4-5 млн ₽) на базе ТЗ.",
+      "x": 2850,
+      "y": 1320,
+      "width": 860,
+      "height": 250,
+      "color": "4"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_r_p",
+      "fromNode": "root",
+      "fromSide": "left",
+      "toNode": "n_workspace",
+      "toSide": "top",
+      "label": "UX & Рабочая среда",
+      "color": "5"
+    },
+    {
+      "id": "e_r_s",
+      "fromNode": "root",
+      "fromSide": "left",
+      "toNode": "n_sandbox_ux",
+      "toSide": "top",
+      "label": "Симулятор & Песочница",
+      "color": "4"
+    },
+    {
+      "id": "e_r_t",
+      "fromNode": "root",
+      "fromSide": "bottom",
+      "toNode": "n_templates_engine",
+      "toSide": "top",
+      "label": "Шаблоны задач",
+      "color": "2"
+    },
+    {
+      "id": "e_r_j",
+      "fromNode": "root",
+      "fromSide": "right",
+      "toNode": "n_judge_arch",
+      "toSide": "top",
+      "label": "Auto-Judge & Защита",
+      "color": "1"
+    },
+    {
+      "id": "e_r_m",
+      "fromNode": "root",
+      "fromSide": "right",
+      "toNode": "n_mvp_proto",
+      "toSide": "top",
+      "label": "MVP Прототип",
+      "color": "4"
+    },
+    {
+      "id": "e_p1",
+      "fromNode": "n_catalog",
+      "fromSide": "right",
+      "toNode": "n_workspace",
+      "toSide": "left",
+      "label": "Выбор задачи"
+    },
+    {
+      "id": "e_p2",
+      "fromNode": "n_workspace",
+      "fromSide": "bottom",
+      "toNode": "n_profile",
+      "toSide": "top",
+      "label": "Решение -> ELO"
+    },
+    {
+      "id": "e_s1",
+      "fromNode": "n_sandbox_ux",
+      "fromSide": "right",
+      "toNode": "n_controls",
+      "toSide": "left",
+      "label": "Гейты"
+    },
+    {
+      "id": "e_s2",
+      "fromNode": "n_sandbox_ux",
+      "fromSide": "bottom",
+      "toNode": "n_results_cas",
+      "toSide": "top",
+      "label": "Реактивный расчет"
+    },
+    {
+      "id": "e_s3",
+      "fromNode": "n_results_cas",
+      "fromSide": "right",
+      "toNode": "n_bloch",
+      "toSide": "left",
+      "label": "Визуализация"
+    },
+    {
+      "id": "e_s4",
+      "fromNode": "n_format_ast",
+      "fromSide": "right",
+      "toNode": "n_modes_sync",
+      "toSide": "left",
+      "label": "AST <-> Code"
+    },
+    {
+      "id": "e_t1",
+      "fromNode": "n_templates_engine",
+      "fromSide": "right",
+      "toNode": "n_answer_types",
+      "toSide": "left",
+      "label": "Контракт"
+    },
+    {
+      "id": "e_t2",
+      "fromNode": "n_initial_states",
+      "fromSide": "right",
+      "toNode": "n_dynamic_circuits",
+      "toSide": "left",
+      "label": "Классификация"
+    },
+    {
+      "id": "e_t3",
+      "fromNode": "n_benchmark_platforms",
+      "fromSide": "right",
+      "toNode": "n_six_templates",
+      "toSide": "left",
+      "label": "6 шаблонов"
+    },
+    {
+      "id": "e_t4",
+      "fromNode": "n_author_ui",
+      "fromSide": "right",
+      "toNode": "n_gate_constraints",
+      "toSide": "left",
+      "label": "Правила"
+    },
+    {
+      "id": "e_j1",
+      "fromNode": "n_judge_arch",
+      "fromSide": "right",
+      "toNode": "n_test_generation",
+      "toSide": "left",
+      "label": "Тесты"
+    },
+    {
+      "id": "e_j2",
+      "fromNode": "n_sec_l1",
+      "fromSide": "right",
+      "toNode": "n_sec_l2",
+      "toSide": "left",
+      "label": "L1 -> L2"
+    },
+    {
+      "id": "e_j3",
+      "fromNode": "n_sec_l2",
+      "fromSide": "bottom",
+      "toNode": "n_sec_l3",
+      "toSide": "top",
+      "label": "L2 -> L3"
+    },
+    {
+      "id": "e_j4",
+      "fromNode": "n_sec_l3",
+      "fromSide": "bottom",
+      "toNode": "n_smart_constraints",
+      "toSide": "top",
+      "label": "UX контрактов"
+    },
+    {
+      "id": "e_j5",
+      "fromNode": "n_smart_constraints",
+      "fromSide": "bottom",
+      "toNode": "n_judge_infra",
+      "toSide": "top",
+      "label": "Исполнение"
+    },
+    {
+      "id": "e_m1",
+      "fromNode": "n_17_pillars",
+      "fromSide": "bottom",
+      "toNode": "n_18_questions",
+      "toSide": "top",
+      "label": "R&D вопросы"
+    },
+    {
+      "id": "e_m2",
+      "fromNode": "n_18_questions",
+      "fromSide": "bottom",
+      "toNode": "n_mvp_proto",
+      "toSide": "top",
+      "label": "MVP фокус"
+    },
+    {
+      "id": "e_m3",
+      "fromNode": "n_mvp_proto",
+      "fromSide": "bottom",
+      "toNode": "n_team_headcount",
+      "toSide": "top",
+      "label": "Команда"
+    },
+    {
+      "id": "e_m4",
+      "fromNode": "n_team_headcount",
+      "fromSide": "bottom",
+      "toNode": "n_next_steps",
+      "toSide": "top",
+      "label": "План созвона"
+    }
+  ]
+}

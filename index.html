@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuantumArena — Платформа квантового олимпиадного программирования</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- KaTeX for crisp mathematical formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <!-- Three.js for 3D Bloch Sphere -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fef2f2',
+              100: '#fee2e2',
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c',
+              800: '#991b1b',
+              900: '#7f1d1d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    .wire-line {
+      height: 2px;
+      background-color: #cbd5e1;
+    }
+    .gate-slot {
+      transition: all 0.15s ease;
+    }
+    .gate-slot.drag-over {
+      background-color: #fef2f2;
+      border-color: #dc2626 !important;
+      transform: scale(1.05);
+    }
+    .gate-chip {
+      cursor: grab;
+      user-select: none;
+      transition: all 0.12s ease;
+    }
+    .gate-chip:active {
+      cursor: grabbing;
+    }
+    .gate-chip:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .control-dot {
+      width: 12px;
+      height: 12px;
+      background: #0f172a;
+      border-radius: 50%;
+    }
+    /* Custom clean scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- LOGO & MAIN NAV -->
+      <div class="flex items-center gap-8">
+        <button onclick="navigateTo('home')" class="flex items-center gap-2.5 group text-left">
+          <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-base shadow-sm group-hover:bg-brand-700 transition">
+            <i class="fa-solid fa-atom"></i>
+          </div>
+          <div>
+            <div class="text-base font-bold tracking-tight text-slate-900 flex items-center gap-1.5">
+              QuantumArena
+              <span class="w-2 h-2 rounded-full bg-brand-600 inline-block"></span>
+            </div>
+          </div>
+        </button>
+
+        <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
+          <button id="nav-home" onclick="navigateTo('home')" class="px-3 py-1.5 rounded-lg text-slate-900 bg-slate-100 transition">
+            Главная
+          </button>
+          <button id="nav-events" onclick="navigateTo('events')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+            Мероприятия
+          </button>
+          <button id="nav-tasks" onclick="navigateTo('events', {tab: 'current'})" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+            Задачи
+          </button>
+          <button id="nav-sandbox" onclick="navigateTo('sandbox')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+            Песочница
+          </button>
+          <button id="nav-leaderboard" onclick="navigateTo('leaderboard')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+            Рейтинг
+          </button>
+        </nav>
+      </div>
+
+      <!-- USER & DEMO SWITCHER -->
+      <div class="flex items-center gap-3">
+        
+        <!-- User Switcher Dropdown (Demo control) -->
+        <div class="relative">
+          <select id="userSelector" onchange="onUserChange(this.value)" class="text-xs bg-slate-50 border border-slate-200 text-slate-700 py-1.5 pl-2.5 pr-7 rounded-lg focus:outline-none focus:border-brand-600 font-medium cursor-pointer">
+            <option value="user_1">Алексей В. (1840 • Master)</option>
+            <option value="user_2">Мария С. (1520 • Specialist)</option>
+            <option value="user_3">Дмитрий К. (1210 • Newbie)</option>
+            <option value="guest">Гость (Не авторизован)</option>
+          </select>
+        </div>
+
+        <div id="authArea" class="flex items-center gap-2">
+          <!-- Injected dynamically -->
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT CONTAINER (SPA Views) -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+    
+    <!-- ================= 1. ГЛАВНЫЙ ЭКРАН (HOME) ================= -->
+    <div id="view-home" class="space-y-8">
+      
+      <!-- HERO & CURRENT CONTEST PROMO -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        
+        <!-- CURRENT ACTIVE CONTEST CARD -->
+        <div class="lg:col-span-8 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm relative overflow-hidden flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center gap-2.5">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-50 text-brand-700 border border-brand-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-600 animate-pulse"></span>
+                Текущее соревнование
+              </span>
+              <span class="text-xs text-slate-500 font-medium">Q-Weekly Round #04</span>
+            </div>
+
+            <div>
+              <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+                Недельный квантовый контест #4
+              </h2>
+              <p class="text-slate-600 text-sm mt-2 max-w-2xl leading-relaxed">
+                4 задачи на синтез состояний Белла, $W_3$-анзацы, фазовые оракулы и трансляцию схем в аппаратный базис.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 pt-2 max-w-lg text-xs">
+              <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl">
+                <span class="text-slate-500 block">Задач</span>
+                <span class="text-base font-bold text-slate-900">4 задачи</span>
+              </div>
+              <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl">
+                <span class="text-slate-500 block">Участников</span>
+                <span class="text-base font-bold text-slate-900">342 человека</span>
+              </div>
+              <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl">
+                <span class="text-slate-500 block">Осталось</span>
+                <span class="text-base font-bold text-brand-600">2 дня 14 ч</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between flex-wrap gap-4">
+            <div id="homeUserContestStatus" class="text-xs text-slate-600">
+              <!-- Injected based on user -->
+            </div>
+            <button onclick="navigateTo('events', {tab: 'current'})" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold transition shadow-sm flex items-center gap-2">
+              Перейти к задачам контеста <i class="fa-solid fa-arrow-right text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- QUICK ACCESS / SANDBOX PROMO -->
+        <div class="lg:col-span-4 bg-slate-900 text-white rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-sm">
+          <div class="space-y-3">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+              Инструмент
+            </span>
+            <h3 class="text-xl font-bold tracking-tight">Песочница симулятора</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              Свободное моделирование квантовых цепей, мгновенный расчет вектора состояния, 3D сфера Блоха и экспорт в Qiskit.
+            </p>
+          </div>
+
+          <div class="pt-6">
+            <button id="btnHomeOpenSandbox" onclick="navigateTo('sandbox')" class="w-full py-2.5 bg-white hover:bg-slate-100 text-slate-900 rounded-xl text-sm font-semibold transition shadow-sm flex items-center justify-center gap-2">
+              <i class="fa-solid fa-microchip"></i> Открыть Песочницу
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- UPCOMING EVENTS & LEADERBOARD PREVIEW (2 COLUMNS) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- UPCOMING EVENTS (7 Cols) -->
+        <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-bold text-slate-900">Будущие мероприятия</h3>
+            <button onclick="navigateTo('events')" class="text-xs font-semibold text-brand-600 hover:text-brand-700">
+              Все события →
+            </button>
+          </div>
+
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition flex items-center justify-between">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-200 text-slate-700">Турнир</span>
+                  <h4 class="text-sm font-bold text-slate-900">Всероссийский студенческий кубок по квантовым алгоритмам</h4>
+                </div>
+                <p class="text-xs text-slate-500">При поддержке квантовых центров и индустрии • Призовой фонд 500 000 ₽</p>
+              </div>
+              <span class="text-xs font-semibold text-slate-600 bg-white px-2.5 py-1 rounded-lg border border-slate-200 shrink-0">Через 12 дней</span>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition flex items-center justify-between">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-200 text-slate-700">Спринт</span>
+                  <h4 class="text-sm font-bold text-slate-900">Speed Circuit Optimization Challenge</h4>
+                </div>
+                <p class="text-xs text-slate-500">Оптимизация глубины и количества гейтов CNOT</p>
+              </div>
+              <span class="text-xs font-semibold text-slate-600 bg-white px-2.5 py-1 rounded-lg border border-slate-200 shrink-0">15 сентября</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEADERBOARD PREVIEW (5 Cols - Accessible without login!) -->
+        <div class="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">Рейтинг участников</h3>
+              <p class="text-xs text-slate-500">Доступен без авторизации</p>
+            </div>
+            <button onclick="navigateTo('leaderboard')" class="text-xs font-semibold text-brand-600 hover:text-brand-700">
+              Таблица целиком →
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="text-slate-400 border-b border-slate-100">
+                  <th class="pb-2 font-medium">#</th>
+                  <th class="pb-2 font-medium">Участник</th>
+                  <th class="pb-2 font-medium">Вуз / Комп.</th>
+                  <th class="pb-2 font-medium text-right">Рейтинг</th>
+                </tr>
+              </thead>
+              <tbody id="homeLeaderboardBody" class="divide-y divide-slate-100">
+                <!-- Injected dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= 2. МЕРОПРИЯТИЯ И ЗАДАЧИ ================= -->
+    <div id="view-events" class="hidden space-y-6">
+      
+      <!-- SUB TABS -->
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div class="flex items-center gap-2">
+          <button id="tab-btn-current" onclick="switchEventsTab('current')" class="px-4 py-2 text-sm font-semibold rounded-lg bg-slate-900 text-white transition">
+            Текущий контест (Q-Weekly #4)
+          </button>
+          <button id="tab-btn-archive" onclick="switchEventsTab('archive')" class="px-4 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+            Архив мероприятий
+          </button>
+        </div>
+        <span class="text-xs text-slate-500 font-medium">Всего доступно 4 задачи в раунде</span>
+      </div>
+
+      <!-- CURRENT CONTEST TASKS -->
+      <div id="tab-content-current" class="space-y-4">
+        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+          <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Список задач контеста</h3>
+              <p class="text-xs text-slate-500 mt-0.5">Решения оцениваются автоматически по критериям точности (Fidelity) и лимитам гейтов</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="currentContestUserScoreBadge" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 border border-slate-200">
+                Ваш балл: 0 / 1000
+              </span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 border-b border-slate-200 font-medium">
+                <tr>
+                  <th class="py-3 px-4 w-12">#</th>
+                  <th class="py-3 px-4">Название задачи</th>
+                  <th class="py-3 px-4">Тематика</th>
+                  <th class="py-3 px-4">Лимиты</th>
+                  <th class="py-3 px-4">Баллы</th>
+                  <th class="py-3 px-4">Ваш статус</th>
+                  <th class="py-3 px-4 text-right">Действие</th>
+                </tr>
+              </thead>
+              <tbody id="contestTasksTableBody" class="divide-y divide-slate-100">
+                <!-- Injected dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARCHIVE OF PAST CONTESTS -->
+      <div id="tab-content-archive" class="hidden space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500">Завершен 18 авг</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">4 задачи</span>
+            </div>
+            <h4 class="text-sm font-bold text-slate-900">Q-Weekly Round #03: Унитарные отражения</h4>
+            <p class="text-xs text-slate-500">Операторы диффузии Гровера, обращение фаз, синтез унитарных матриц.</p>
+            <button onclick="alert('Архивные задачи открыты для тренировки в песочнице')" class="w-full py-1.5 border border-slate-200 hover:bg-slate-50 rounded-lg text-xs font-semibold text-slate-700 transition">
+              Смотреть задачи архива
+            </button>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500">Завершен 11 авг</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">4 задачи</span>
+            </div>
+            <h4 class="text-sm font-bold text-slate-900">Q-Weekly Round #02: Квантовая арифметика</h4>
+            <p class="text-xs text-slate-500">Обратимые сумматоры Draper, инкремент, компараторы.</p>
+            <button onclick="alert('Архивные задачи открыты для тренировки в песочнице')" class="w-full py-1.5 border border-slate-200 hover:bg-slate-50 rounded-lg text-xs font-semibold text-slate-700 transition">
+              Смотреть задачи архива
+            </button>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500">Завершен 4 авг</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">3 задачи</span>
+            </div>
+            <h4 class="text-sm font-bold text-slate-900">Q-Weekly Round #01: Базовые суперпозиции</h4>
+            <p class="text-xs text-slate-500">Подготовка состояний Белла и GHZ на 2-4 кубитах.</p>
+            <button onclick="alert('Архивные задачи открыты для тренировки в песочнице')" class="w-full py-1.5 border border-slate-200 hover:bg-slate-50 rounded-lg text-xs font-semibold text-slate-700 transition">
+              Смотреть задачи архива
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= 3. СТРАНИЦА ОТДЕЛЬНОЙ ЗАДАЧИ ================= -->
+    <div id="view-task" class="hidden space-y-6">
+      
+      <!-- BREADCRUMBS & TOP BAR -->
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center gap-2 text-xs font-medium text-slate-500">
+          <button onclick="navigateTo('events', {tab: 'current'})" class="hover:text-slate-900">Мероприятия</button>
+          <span>/</span>
+          <button onclick="navigateTo('events', {tab: 'current'})" class="hover:text-slate-900">Q-Weekly #4</button>
+          <span>/</span>
+          <span class="text-slate-900 font-semibold" id="taskBreadcrumbTitle">Задача #01</span>
+        </div>
+
+        <button onclick="navigateTo('events', {tab: 'current'})" class="px-3 py-1.5 border border-slate-200 hover:bg-slate-100 rounded-lg text-xs font-medium text-slate-700 transition">
+          ← К списку задач
+        </button>
+      </div>
+
+      <!-- TASK HEADER & STATUS ROW -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <div class="flex items-start justify-between flex-wrap gap-4">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-50 text-brand-700 border border-brand-200" id="taskCardId">TASK #01</span>
+              <span class="text-xs font-medium text-slate-500" id="taskCardDifficulty">2 кубита • Легкая</span>
+            </div>
+            <h2 class="text-xl font-bold text-slate-900" id="taskCardTitle">
+              Синтез антисимметричного состояния Белла
+            </h2>
+          </div>
+
+          <!-- USER ATTEMPT & SCORE STATUS -->
+          <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl text-xs">
+            <div>
+              <span class="text-slate-400 block text-[10px] uppercase font-bold">Статус</span>
+              <span id="taskDetailStatusText" class="font-bold text-slate-700">Не отправлено</span>
+            </div>
+            <div class="h-6 w-px bg-slate-200"></div>
+            <div>
+              <span class="text-slate-400 block text-[10px] uppercase font-bold">Баллы</span>
+              <span id="taskDetailScoreText" class="font-bold text-slate-900">0 / 100</span>
+            </div>
+            <div class="h-6 w-px bg-slate-200"></div>
+            <div>
+              <span class="text-slate-400 block text-[10px] uppercase font-bold">Попыток</span>
+              <span id="taskDetailAttemptsText" class="font-bold text-slate-900">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORMAL LIMITS BOX (РАМОЧКА С ОГРАНИЧЕНИЯМИ) -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs space-y-2">
+          <div class="font-bold text-slate-900 uppercase tracking-wide text-[11px] flex items-center gap-1.5 text-brand-700">
+            <i class="fa-solid fa-shield-halved"></i> Ограничения задачи
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div>
+              <span class="text-slate-500 block">Лимит по гейтам:</span>
+              <span class="font-mono font-bold text-slate-900" id="limitGatesText">≤ 3 гейта</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block">Макс. глубина:</span>
+              <span class="font-mono font-bold text-slate-900" id="limitDepthText">≤ 2 слоя</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block">Разрешенный базис:</span>
+              <span class="font-mono font-bold text-slate-900" id="limitBasisText">{H, X, Z, CX}</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block">Начальное состояние:</span>
+              <span class="font-mono font-bold text-slate-900">|00⟩ (фиксированное)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TASK DESCRIPTION & FORMULAS (KATEX) -->
+        <div class="space-y-3 pt-2 text-sm text-slate-700 leading-relaxed border-t border-slate-100">
+          <p id="taskDescriptionText">
+            Требуется перевести 2-кубитную квантовую систему из начального базисного состояния $|00\rangle$ в антисимметричное состояние Белла $|\Phi^-\rangle$:
+          </p>
+          
+          <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center my-2 font-mono text-slate-900" id="taskFormulaBox">
+            <!-- KaTeX will render here -->
+          </div>
+
+          <p class="text-xs text-slate-500">
+            Обратите внимание на знак минус перед базисным состоянием $|11\rangle$. Решение считается корректным, если точность (Fidelity) $| \langle \Phi^- | \psi_{\text{out}} \rangle |^2 = 1.0$ (с точностью до глобальной фазы) и соблюдены все лимиты на число операций.
+          </p>
+        </div>
+      </div>
+
+      <!-- SOLUTION SUBMISSION SECTION -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Ввод и отправка решения</h3>
+            <p class="text-xs text-slate-500">Дополните функцию синтеза на Qiskit или соберите схему визуально</p>
+          </div>
+
+          <!-- SOLVE VIA SIMULATOR BUTTON -->
+          <div class="flex items-center gap-2">
+            <button onclick="openSandboxForCurrentTask()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition flex items-center gap-2 shadow-sm">
+              <i class="fa-solid fa-shapes text-brand-500"></i> Решить с помощью симулятора →
+            </button>
+          </div>
+        </div>
+
+        <!-- LOADED FROM SANDBOX NOTICE (If circuit was built) -->
+        <div id="loadedFromSandboxBanner" class="hidden p-3 bg-brand-50 border border-brand-200 rounded-xl flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2 text-brand-800 font-medium">
+            <i class="fa-solid fa-circle-check text-brand-600"></i>
+            <span>Схема получена из симулятора (<span id="loadedCircuitGateCount">0</span> гейтов)</span>
+          </div>
+          <button onclick="convertLoadedCircuitToQiskitCode()" class="px-3 py-1 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-semibold transition">
+            Конвертировать в Qiskit
+          </button>
+        </div>
+
+        <!-- CODE EDITOR CONTAINER -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-500">
+            <span class="font-mono">solution.py (Qiskit 1.0+)</span>
+            <button onclick="resetTaskCodeTemplate()" class="hover:text-slate-900 text-[11px]">Сбросить к шаблону</button>
+          </div>
+          <textarea id="taskCodeEditor" rows="9" class="w-full font-mono text-xs p-4 rounded-xl border border-slate-300 bg-slate-900 text-slate-100 focus:outline-none focus:border-brand-600 focus:ring-1 focus:ring-brand-600 leading-relaxed" spellcheck="false"></textarea>
+        </div>
+
+        <!-- ACTIONS & SUBMIT -->
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+          <span class="text-xs text-slate-500">Проверка выполняется на изолированном симуляторе</span>
+          <button onclick="submitTaskSolution()" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-2">
+            <i class="fa-solid fa-paper-plane"></i> Отправить решение
+          </button>
+        </div>
+
+        <!-- VERDICT CARD (Result of submission) -->
+        <div id="submissionVerdictCard" class="hidden rounded-xl p-5 border transition-all space-y-3">
+          <!-- Injected dynamically -->
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= 4. ПЕСОЧНИЦА (SANDBOX) ================= -->
+    <div id="view-sandbox" class="hidden space-y-4">
+      
+      <!-- TASK MODE TOP BANNER (Shown only when opened from a task) -->
+      <div id="sandboxTaskTopBanner" class="hidden bg-slate-900 text-white p-4 rounded-2xl flex items-center justify-between flex-wrap gap-3 shadow-md">
+        <div class="flex items-center gap-3">
+          <span class="px-2 py-0.5 rounded bg-brand-600 text-white text-[10px] font-bold">РЕЖИМ ЗАДАЧИ</span>
+          <div>
+            <h4 class="text-xs font-bold text-slate-100" id="sandboxTaskBannerTitle">Задача #01: Синтез состояния Белла</h4>
+            <p class="text-[11px] text-slate-400" id="sandboxTaskBannerLimits">Разрешено: H, X, Z, CX • Гейтов: 0 / 3</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="returnToTaskFromSandbox()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left"></i> Вернуться к задаче
+          </button>
+          <button onclick="saveCircuitSlot()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition">
+            Сохранить
+          </button>
+          <button onclick="submitFromSandbox()" class="px-4 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-paper-plane"></i> Отправить
+          </button>
+        </div>
+      </div>
+
+      <!-- SANDBOX TOP TOOLBAR -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center gap-3">
+          <h2 class="text-base font-bold text-slate-900">Песочница</h2>
+          <div class="h-4 w-px bg-slate-200"></div>
+
+          <!-- VIEW MENU (ВИД) -->
+          <div class="relative">
+            <button onclick="toggleDropdown('dropdownView')" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition flex items-center gap-1.5">
+              <i class="fa-solid fa-eye text-slate-500"></i> Вид <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+            </button>
+            <div id="dropdownView" class="hidden absolute left-0 mt-1 w-56 bg-white border border-slate-200 rounded-xl shadow-lg p-2 space-y-1.5 z-30 text-xs">
+              <label class="flex items-center gap-2 p-1.5 hover:bg-slate-50 rounded-lg cursor-pointer">
+                <input type="checkbox" id="viewToggleProbs" checked onchange="toggleViewPanel('probs', this.checked)" class="rounded text-brand-600" />
+                <span>Распределение вероятностей</span>
+              </label>
+              <label class="flex items-center gap-2 p-1.5 hover:bg-slate-50 rounded-lg cursor-pointer">
+                <input type="checkbox" id="viewToggleBloch" checked onchange="toggleViewPanel('bloch', this.checked)" class="rounded text-brand-600" />
+                <span>Сфера Блоха</span>
+              </label>
+              <label class="flex items-center gap-2 p-1.5 hover:bg-slate-50 rounded-lg cursor-pointer">
+                <input type="checkbox" id="viewToggleCAS" checked onchange="toggleViewPanel('cas', this.checked)" class="rounded text-brand-600" />
+                <span>Символьное состояние (CAS)</span>
+              </label>
+              <label class="flex items-center gap-2 p-1.5 text-slate-400 rounded-lg">
+                <input type="checkbox" disabled class="rounded text-slate-300" />
+                <span>Начальные состояния (|0⟩)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- GATE SET MENU (НАБОРЫ ГЕЙТОВ) -->
+          <div class="relative">
+            <button onclick="toggleDropdown('dropdownGateSets')" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition flex items-center gap-1.5">
+              <i class="fa-solid fa-sliders text-slate-500"></i> <span id="currentGateSetName">Базовый набор</span> <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+            </button>
+            <div id="dropdownGateSets" class="hidden absolute left-0 mt-1 w-64 bg-white border border-slate-200 rounded-xl shadow-lg p-1.5 space-y-1 z-30 text-xs">
+              <button onclick="setGateSet('universal')" class="w-full text-left p-2 rounded-lg hover:bg-slate-50 font-medium">
+                Базовый универсальный <span class="text-[10px] text-slate-400 block">{H, X, Y, Z, S, T, CX, CZ, SWAP}</span>
+              </button>
+              <button onclick="setGateSet('reversible')" class="w-full text-left p-2 rounded-lg hover:bg-slate-50 font-medium">
+                Классический обратимый <span class="text-[10px] text-slate-400 block">{X, CX, CCX}</span>
+              </button>
+              <button onclick="setGateSet('clifford')" class="w-full text-left p-2 rounded-lg hover:bg-slate-50 font-medium">
+                Clifford базис <span class="text-[10px] text-slate-400 block">{H, S, CX, CZ}</span>
+              </button>
+              <button onclick="setGateSet('ibm')" class="w-full text-left p-2 rounded-lg hover:bg-slate-50 font-medium">
+                Аппаратный IBM <span class="text-[10px] text-slate-400 block">{CZ, Rz, √X, X}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- EXAMPLES (ПРИМЕРЫ) -->
+          <div class="relative">
+            <button onclick="toggleDropdown('dropdownExamples')" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition flex items-center gap-1.5">
+              <i class="fa-solid fa-folder-open text-slate-500"></i> Примеры <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+            </button>
+            <div id="dropdownExamples" class="hidden absolute left-0 mt-1 w-52 bg-white border border-slate-200 rounded-xl shadow-lg p-1.5 space-y-1 z-30 text-xs">
+              <button onclick="loadPresetCircuit('bell_plus')" class="w-full text-left p-2 rounded-lg hover:bg-slate-50 font-medium">
+                Состояние Белла |Φ+⟩
+              </button>
+              <button onclick="loadPresetCircuit('bell_minus')" class="w-full text-left p-2 rounded-lg hover:bg-slate-50 font-medium">
+                Состояние Белла |Φ-⟩
+              </button>
+              <button onclick="loadPresetCircuit('ghz')" class="w-full text-left p-2 rounded-lg hover:bg-slate-50 font-medium">
+                Состояние GHZ (3 кубита)
+              </button>
+              <button onclick="loadPresetCircuit('w3')" class="w-full text-left p-2 rounded-lg hover:bg-slate-50 font-medium">
+                Состояние W (3 кубита)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- EXPORT BUTTON -->
+          <div class="relative">
+            <button onclick="toggleDropdown('dropdownExport')" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition flex items-center gap-1.5">
+              <i class="fa-solid fa-download text-slate-500"></i> Экспорт <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+            </button>
+            <div id="dropdownExport" class="hidden absolute right-0 mt-1 w-48 bg-white border border-slate-200 rounded-xl shadow-lg p-1.5 space-y-1 z-30 text-xs">
+              <button onclick="exportCircuit('qiskit')" class="w-full text-left p-2 rounded-lg hover:bg-slate-50 font-medium">
+                Python (Qiskit 1.0+)
+              </button>
+              <button onclick="exportCircuit('qasm')" class="w-full text-left p-2 rounded-lg hover:bg-slate-50 font-medium">
+                OpenQASM 3.0
+              </button>
+              <button onclick="exportCircuit('json')" class="w-full text-left p-2 rounded-lg hover:bg-slate-50 font-medium">
+                JSON AST
+              </button>
+            </div>
+          </div>
+
+          <!-- SAVE BUTTON -->
+          <button onclick="saveCircuitSlot()" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-floppy-disk text-slate-500"></i> Сохранить
+          </button>
+
+          <!-- CLEAR -->
+          <button onclick="clearSandboxCircuit()" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-500 hover:text-slate-800 transition">
+            Очистить
+          </button>
+
+          <!-- QUBIT COUNT -->
+          <div class="flex items-center bg-slate-100 rounded-lg p-0.5 text-xs">
+            <button onclick="setSandboxQubitCount(2)" id="sbQ2" class="px-2.5 py-1 rounded font-bold bg-white text-slate-900 shadow-sm">2</button>
+            <button onclick="setSandboxQubitCount(3)" id="sbQ3" class="px-2.5 py-1 rounded font-bold text-slate-500 hover:text-slate-900">3</button>
+            <button onclick="setSandboxQubitCount(4)" id="sbQ4" class="px-2.5 py-1 rounded font-bold text-slate-500 hover:text-slate-900">4</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN SANDBOX WORKSPACE (CIRCUIT + OUTPUTS) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- LEFT: CIRCUIT CANVAS & PALETTE (8 Cols) -->
+        <div class="lg:col-span-8 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+          
+          <!-- CIRCUIT GRID -->
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 overflow-x-auto min-h-[220px] flex flex-col justify-center">
+            <div id="sandboxCircuitGrid" class="flex flex-col gap-6 min-w-[560px]">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+
+          <!-- PALETTE OF GATES -->
+          <div class="pt-4 border-t border-slate-100 space-y-2.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-700 uppercase tracking-wider text-[11px]">Палитра гейтов:</span>
+              <span class="text-slate-400 text-[11px]">Перетащите на провод</span>
+            </div>
+            
+            <div id="sandboxGatePalette" class="flex flex-wrap items-center gap-2">
+              <!-- Rendered based on active gate set -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: RESULTS PANELS (4 Cols) -->
+        <div class="lg:col-span-4 space-y-4">
+          
+          <!-- CAS SYMBOLIC PANEL -->
+          <div id="panel-cas" class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Символьное состояние (CAS)</span>
+            <div id="casStateMathDisplay" class="p-3 bg-slate-50 border border-slate-100 rounded-xl text-center font-mono text-sm text-slate-900">
+              <!-- Rendered via KaTeX -->
+            </div>
+          </div>
+
+          <!-- PROBABILITIES PANEL -->
+          <div id="panel-probs" class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Распределение вероятностей</span>
+            <div id="sandboxProbsContainer" class="space-y-2 text-xs">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+
+          <!-- 3D BLOCH SPHERE PANEL -->
+          <div id="panel-bloch" class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Сфера Блоха (Кубит 0)</span>
+              <span class="text-[10px] text-slate-400 font-mono" id="blochAnglesDisplay">θ: 0° • φ: 0°</span>
+            </div>
+            
+            <div id="sandboxBlochContainer" class="w-full h-48 bg-slate-50 border border-slate-200 rounded-xl overflow-hidden relative flex items-center justify-center">
+              <!-- Three.js Canvas -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= 5. РЕЙТИНГ (LEADERBOARD) ================= -->
+    <div id="view-leaderboard" class="hidden space-y-6">
+      
+      <div class="flex items-center justify-between flex-wrap gap-4 border-b border-slate-200 pb-4">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">Таблица квантового рейтинга</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Общий рейтинг участников по итогам всех прошедших контестов</p>
+        </div>
+
+        <div class="flex items-center gap-3 text-xs">
+          <input type="text" id="leaderboardSearchInput" oninput="filterLeaderboard(this.value)" placeholder="Поиск участника или вуза..." class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white focus:outline-none focus:border-brand-600 w-60" />
+        </div>
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-500 border-b border-slate-200 font-medium">
+              <tr>
+                <th class="py-3 px-4 w-12 text-center">Ранг</th>
+                <th class="py-3 px-4">Участник</th>
+                <th class="py-3 px-4">Организация / Вуз</th>
+                <th class="py-3 px-4">Раунды</th>
+                <th class="py-3 px-4">Решено задач</th>
+                <th class="py-3 px-4 text-right">Рейтинг (ELO)</th>
+              </tr>
+            </thead>
+            <tbody id="fullLeaderboardBody" class="divide-y divide-slate-100">
+              <!-- Injected dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- EXPORT MODAL -->
+  <div id="exportModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-sm font-bold text-slate-900" id="exportModalTitle">Экспорт квантовой схемы</h3>
+        <button onclick="closeExportModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <textarea id="exportModalText" rows="10" readonly class="w-full font-mono text-xs p-3 rounded-xl bg-slate-900 text-slate-100 border border-slate-300 focus:outline-none"></textarea>
+      <div class="flex justify-end gap-2">
+        <button onclick="copyExportText()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold transition">Копировать</button>
+        <button onclick="closeExportModal()" class="px-4 py-2 border border-slate-200 hover:bg-slate-50 rounded-lg text-xs font-semibold text-slate-700 transition">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-2">
+    <i class="fa-solid fa-check text-emerald-400"></i>
+    <span id="toastMessage">Уведомление</span>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC ENGINE -->
+  <script>
+    // ================= GLOBAL STATE =================
+    const users = {
+      user_1: { id: 'user_1', name: 'Алексей Воронов', handle: 'al_voronov', rating: 1840, org: 'МФТИ', rank: 1, solved: { 1: 100, 2: 200, 3: 0, 4: 0 }, attempts: { 1: 1, 2: 2, 3: 0, 4: 0 } },
+      user_2: { id: 'user_2', name: 'Мария Смирнова', handle: 'mary_sm', rating: 1520, org: 'МГУ', rank: 4, solved: { 1: 100, 2: 0, 3: 0, 4: 0 }, attempts: { 1: 1, 2: 1, 3: 0, 4: 0 } },
+      user_3: { id: 'user_3', name: 'Дмитрий Кузнецов', handle: 'dimakuz', rating: 1210, org: 'ВШЭ', rank: 12, solved: { 1: 0, 2: 0, 3: 0, 4: 0 }, attempts: { 1: 0, 2: 0, 3: 0, 4: 0 } },
+      guest: { id: 'guest', name: 'Гость', handle: 'guest', rating: null, org: '—', rank: null, solved: {}, attempts: {} }
+    };
+
+    let currentUser = users['user_1'];
+
+    const leaderboardData = [
+      { rank: 1, name: 'Алексей Воронов', handle: 'al_voronov', org: 'МФТИ', contests: 8, solved: 24, rating: 1840 },
+      { rank: 2, name: 'Константин Левченко', handle: 'k_levch', org: 'Сколтех', contests: 7, solved: 22, rating: 1790 },
+      { rank: 3, name: 'Елена Румянцева', handle: 'elena_q', org: 'СПбПУ', contests: 6, solved: 19, rating: 1680 },
+      { rank: 4, name: 'Мария Смирнова', handle: 'mary_sm', org: 'МГУ', contests: 5, solved: 15, rating: 1520 },
+      { rank: 5, name: 'Иван Денисов', handle: 'quantum_den', org: 'МИСИС', contests: 4, solved: 12, rating: 1470 },
+      { rank: 6, name: 'Ольга Васильева', handle: 'olga_v', org: 'НГУ', contests: 4, solved: 11, rating: 1390 },
+      { rank: 12, name: 'Дмитрий Кузнецов', handle: 'dimakuz', org: 'ВШЭ', contests: 2, solved: 4, rating: 1210 }
+    ];
+
+    const tasksData = [
+      {
+        id: 1,
+        code: 'QPC-001',
+        title: 'Синтез антисимметричного состояния Белла',
+        targetFormulaTex: '|\\Phi^-\\rangle = \\frac{|00\\rangle - |11\\rangle}{\\sqrt{2}}',
+        category: 'Синтез состояний',
+        qubits: 2,
+        difficulty: 'Легкая',
+        points: 100,
+        maxGates: 3,
+        maxDepth: 2,
+        allowedBasis: ['H', 'X', 'Z', 'CX'],
+        description: 'Переведите 2-кубитную квантовую систему из начального состояния $|00\\rangle$ в антисимметричное состояние Белла $|\Phi^-\\rangle$. Ограничение: не более 3 гейтов.'
+      },
+      {
+        id: 2,
+        code: 'QPC-002',
+        title: 'Генерация W3 состояния на 3 кубитах',
+        targetFormulaTex: '|W_3\\rangle = \\frac{|001\\rangle + |010\\rangle + |100\\rangle}{\\sqrt{3}}',
+        category: 'Суперпозиции',
+        qubits: 3,
+        difficulty: 'Средняя',
+        points: 200,
+        maxGates: 6,
+        maxDepth: 4,
+        allowedBasis: ['H', 'X', 'CX', 'Ry'],
+        description: 'Постройте цепь подготовки W-состояния на 3 кубитах с равными амплитудами одночастичных возбуждений.'
+      },
+      {
+        id: 3,
+        code: 'QPC-003',
+        title: 'Фазовый оракул четности с Uncomputation',
+        targetFormulaTex: '|x\\rangle \\to (-1)^{x_0 \\oplus x_1}|x\\rangle',
+        category: 'Квантовые оракулы',
+        qubits: 3,
+        difficulty: 'Средняя',
+        points: 300,
+        maxGates: 5,
+        maxDepth: 4,
+        allowedBasis: ['H', 'X', 'Z', 'CX'],
+        description: 'Реализуйте фазовый оракул проверки четности битстрока с обязательной очисткой служебной анциллы.'
+      },
+      {
+        id: 4,
+        code: 'QPC-004',
+        title: 'Трансляция унитарного оператора в базис IBM',
+        targetFormulaTex: 'U \\in \\mathcal{SU}(4) \\implies \\{CZ, R_z, \\sqrt{X}\\}',
+        category: 'Аппаратная оптимизация',
+        qubits: 2,
+        difficulty: 'Сложная',
+        points: 400,
+        maxGates: 8,
+        maxDepth: 6,
+        allowedBasis: ['CZ', 'Rz', 'SX', 'X'],
+        description: 'Разложите двухкубитный оператор строго в физический базис сверхпроводниковых чипов с минимальным числом CZ.'
+      }
+    ];
+
+    let currentTaskId = 1;
+    let activeTask = tasksData[0];
+    let isTaskContextInSandbox = false;
+
+    // Sandbox circuit state: circuit[q][slot]
+    let sbNumQubits = 2;
+    const sbNumSlots = 6;
+    let sbCircuit = Array(4).fill(null).map(() => Array(sbNumSlots).fill(null));
+    let sbGateSet = 'universal'; // 'universal' | 'reversible' | 'clifford' | 'ibm'
+
+    // ================= SIMULATOR MATH CORE (JS) =================
+    class Complex {
+      constructor(re, im = 0) { this.re = re; this.im = im; }
+      add(c) { return new Complex(this.re + c.re, this.im + c.im); }
+      sub(c) { return new Complex(this.re - c.re, this.im - c.im); }
+      mul(c) { return new Complex(this.re * c.re - this.im * c.im, this.re * c.im + this.im * c.re); }
+      absSq() { return this.re * this.re + this.im * this.im; }
+      abs() { return Math.sqrt(this.absSq()); }
+    }
+
+    const SQRT2_INV = 1 / Math.SQRT2;
+
+    const MATRIX_GATES = {
+      H: [[new Complex(SQRT2_INV), new Complex(SQRT2_INV)], [new Complex(SQRT2_INV), new Complex(-SQRT2_INV)]],
+      X: [[new Complex(0), new Complex(1)], [new Complex(1), new Complex(0)]],
+      Y: [[new Complex(0), new Complex(0, -1)], [new Complex(0, 1), new Complex(0)]],
+      Z: [[new Complex(1), new Complex(0)], [new Complex(0), new Complex(-1)]],
+      S: [[new Complex(1), new Complex(0)], [new Complex(0), new Complex(0, 1)]],
+      T: [[new Complex(1), new Complex(0)], [new Complex(0), new Complex(Math.cos(Math.PI/4), Math.sin(Math.PI/4))]],
+      SX: [[new Complex(0.5, 0.5), new Complex(0.5, -0.5)], [new Complex(0.5, -0.5), new Complex(0.5, 0.5)]],
+      Rz: [[new Complex(Math.cos(Math.PI/4), -Math.sin(Math.PI/4)), new Complex(0)], [new Complex(0), new Complex(Math.cos(Math.PI/4), Math.sin(Math.PI/4))]]
+    };
+
+    function simulateCircuit(grid, nQubits, nSlots) {
+      const dim = 1 << nQubits;
+      let state = Array(dim).fill(null).map((_, i) => i === 0 ? new Complex(1) : new Complex(0));
+
+      for (let s = 0; s < nSlots; s++) {
+        for (let q = 0; q < nQubits; q++) {
+          const op = grid[q][s];
+          if (!op) continue;
+
+          if (MATRIX_GATES[op.type]) {
+            state = apply1QGate(state, op.type, q, nQubits);
+          } else if (op.type === 'CX' && op.isTarget) {
+            state = applyC1Gate(state, op.controlQubit, q, 'X', nQubits);
+          } else if (op.type === 'CZ' && op.isTarget) {
+            state = applyC1Gate(state, op.controlQubit, q, 'Z', nQubits);
+          } else if (op.type === 'SWAP' && op.isTarget) {
+            state = applySwap(state, op.controlQubit, q, nQubits);
+          }
+        }
+      }
+      return state;
+    }
+
+    function apply1QGate(state, gateName, targetQ, nQubits) {
+      const mat = MATRIX_GATES[gateName];
+      const dim = state.length;
+      const next = Array(dim).fill(null).map(() => new Complex(0));
+      const mask = 1 << (nQubits - 1 - targetQ);
+
+      for (let i = 0; i < dim; i++) {
+        if ((i & mask) === 0) {
+          const i0 = i;
+          const i1 = i | mask;
+          next[i0] = next[i0].add(mat[0][0].mul(state[i0])).add(mat[0][1].mul(state[i1]));
+          next[i1] = next[i1].add(mat[1][0].mul(state[i0])).add(mat[1][1].mul(state[i1]));
+        }
+      }
+      return next;
+    }
+
+    function applyC1Gate(state, cQ, tQ, gateName, nQubits) {
+      const mat = MATRIX_GATES[gateName];
+      const next = [...state];
+      const cMask = 1 << (nQubits - 1 - cQ);
+      const tMask = 1 << (nQubits - 1 - tQ);
+
+      for (let i = 0; i < state.length; i++) {
+        if ((i & cMask) !== 0 && (i & tMask) === 0) {
+          const i0 = i;
+          const i1 = i | tMask;
+          const s0 = state[i0];
+          const s1 = state[i1];
+          next[i0] = mat[0][0].mul(s0).add(mat[0][1].mul(s1));
+          next[i1] = mat[1][0].mul(s0).add(mat[1][1].mul(s1));
+        }
+      }
+      return next;
+    }
+
+    function applySwap(state, q1, q2, nQubits) {
+      const next = Array(state.length).fill(null);
+      const m1 = 1 << (nQubits - 1 - q1);
+      const m2 = 1 << (nQubits - 1 - q2);
+
+      for (let i = 0; i < state.length; i++) {
+        const b1 = (i & m1) ? 1 : 0;
+        const b2 = (i & m2) ? 1 : 0;
+        next[i] = (b1 !== b2) ? state[i ^ (m1 | m2)] : state[i];
+      }
+      return next;
+    }
+
+    // Symbolic state recognition
+    function recognizeState(state, nQubits) {
+      const probs = state.map(c => c.absSq());
+
+      if (nQubits === 2) {
+        if (Math.abs(probs[0] - 0.5) < 0.02 && Math.abs(probs[3] - 0.5) < 0.02) {
+          if (state[3].re < -0.3) return { tex: '|\\Phi^-\\rangle = \\frac{|00\\rangle - |11\\rangle}{\\sqrt{2}}', type: 'phi_minus' };
+          return { tex: '|\\Phi^+\\rangle = \\frac{|00\\rangle + |11\\rangle}{\\sqrt{2}}', type: 'phi_plus' };
+        }
+        if (Math.abs(probs[1] - 0.5) < 0.02 && Math.abs(probs[2] - 0.5) < 0.02) {
+          if (state[2].re < -0.3) return { tex: '|\\Psi^-\\rangle = \\frac{|01\\rangle - |10\\rangle}{\\sqrt{2}}', type: 'psi_minus' };
+          return { tex: '|\\Psi^+\\rangle = \\frac{|01\\rangle + |10\\rangle}{\\sqrt{2}}', type: 'psi_plus' };
+        }
+      } else if (nQubits === 3) {
+        if (Math.abs(probs[0] - 0.5) < 0.02 && Math.abs(probs[7] - 0.5) < 0.02) {
+          return { tex: '|\\text{GHZ}\\rangle = \\frac{|000\\rangle + |111\\rangle}{\\sqrt{2}}', type: 'ghz' };
+        }
+        if (Math.abs(probs[1] - 0.33) < 0.04 && Math.abs(probs[2] - 0.33) < 0.04 && Math.abs(probs[4] - 0.33) < 0.04) {
+          return { tex: '|W_3\\rangle = \\frac{|001\\rangle + |010\\rangle + |100\\rangle}{\\sqrt{3}}', type: 'w3' };
+        }
+      }
+
+      for (let i = 0; i < state.length; i++) {
+        if (Math.abs(probs[i] - 1.0) < 0.02) {
+          const bin = i.toString(2).padStart(nQubits, '0');
+          return { tex: `|${bin}\\rangle`, type: 'basis' };
+        }
+      }
+
+      return { tex: '\\sum c_i |i\\rangle', type: 'superposition' };
+    }
+
+    // ================= 3D BLOCH SPHERE (Three.js) =================
+    let blochScene, blochCamera, blochRenderer, blochArrow, blochGroup;
+
+    function initBlochSphere() {
+      const container = document.getElementById('sandboxBlochContainer');
+      if (!container || blochRenderer) return;
+
+      blochScene = new THREE.Scene();
+      blochCamera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);
+      blochCamera.position.set(2.4, 1.8, 2.4);
+      blochCamera.lookAt(0, 0, 0);
+
+      blochRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      blochRenderer.setSize(container.clientWidth, container.clientHeight);
+      container.appendChild(blochRenderer.domElement);
+
+      blochGroup = new THREE.Group();
+
+      // Clean wireframe sphere
+      const sphereGeo = new THREE.SphereGeometry(1, 20, 16);
+      const sphereMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8, wireframe: true, transparent: true, opacity: 0.25 });
+      blochGroup.add(new THREE.Mesh(sphereGeo, sphereMat));
+
+      // Axes
+      const axesHelper = new THREE.AxesHelper(1.2);
+      blochGroup.add(axesHelper);
+
+      // State Arrow (Red accent)
+      blochArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), 1.0, 0xdc2626, 0.18, 0.1);
+      blochGroup.add(blochArrow);
+
+      blochScene.add(blochGroup);
+
+      // Drag to rotate
+      let isDragging = false, prev = { x: 0, y: 0 };
+      container.addEventListener('mousedown', e => { isDragging = true; prev = { x: e.clientX, y: e.clientY }; });
+      window.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        blochGroup.rotation.y += (e.clientX - prev.x) * 0.01;
+        blochGroup.rotation.x += (e.clientY - prev.y) * 0.01;
+        prev = { x: e.clientX, y: e.clientY };
+      });
+      window.addEventListener('mouseup', () => isDragging = false);
+
+      function animate() {
+        requestAnimationFrame(animate);
+        blochRenderer.render(blochScene, blochCamera);
+      }
+      animate();
+    }
+
+    function updateBlochArrow(state, nQubits) {
+      if (!blochArrow) return;
+      let rho00 = 0, rho11 = 0, r01_re = 0, r01_im = 0;
+      const mask = 1 << (nQubits - 1);
+
+      for (let i = 0; i < state.length; i++) {
+        if ((i & mask) === 0) {
+          const i1 = i | mask;
+          rho00 += state[i].absSq();
+          rho11 += state[i1].absSq();
+          r01_re += state[i].re * state[i1].re + state[i].im * state[i1].im;
+          r01_im += state[i].im * state[i1].re - state[i].re * state[i1].im;
+        }
+      }
+
+      const x = 2 * r01_re;
+      const y = 2 * r01_im;
+      const z = rho00 - rho11;
+      const r = Math.sqrt(x*x + y*y + z*z);
+
+      const theta = Math.acos(Math.max(-1, Math.min(1, z / (r || 1)))) * 180 / Math.PI;
+      const phi = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+
+      const anglesEl = document.getElementById('blochAnglesDisplay');
+      if (anglesEl) anglesEl.textContent = `θ: ${theta.toFixed(0)}° • φ: ${phi.toFixed(0)}° • |r|: ${r.toFixed(2)}`;
+
+      const dir = new THREE.Vector3(x, z, y).normalize();
+      blochArrow.setDirection(dir);
+      blochArrow.setLength(Math.max(0.1, r), 0.18 * r, 0.1 * r);
+    }
+
+    // ================= SPA ROUTER & NAVIGATION =================
+    function navigateTo(viewId, params = {}) {
+      document.querySelectorAll('#view-home, #view-events, #view-task, #view-sandbox, #view-leaderboard').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('#nav-home, #nav-events, #nav-tasks, #nav-sandbox, #nav-leaderboard').forEach(el => {
+        el.className = 'px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition';
+      });
+
+      const activeView = document.getElementById(`view-${viewId}`);
+      if (activeView) activeView.classList.remove('hidden');
+
+      const navBtn = document.getElementById(`nav-${viewId}`);
+      if (navBtn) navBtn.className = 'px-3 py-1.5 rounded-lg text-slate-900 bg-slate-100 font-semibold transition';
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Screen specific initialization
+      if (viewId === 'home') {
+        renderHomeLeaderboard();
+        updateHomeUserStatus();
+      } else if (viewId === 'events') {
+        if (params.tab) switchEventsTab(params.tab);
+        renderContestTasksTable();
+      } else if (viewId === 'task') {
+        if (params.taskId) currentTaskId = params.taskId;
+        renderTaskPage(currentTaskId);
+      } else if (viewId === 'sandbox') {
+        initBlochSphere();
+        renderSandboxCircuit();
+      } else if (viewId === 'leaderboard') {
+        renderFullLeaderboard();
+      }
+    }
+
+    // ================= USER & AUTHENTICATION =================
+    function onUserChange(userId) {
+      currentUser = users[userId];
+      renderAuthHeader();
+      updateHomeUserStatus();
+      renderContestTasksTable();
+      if (!document.getElementById('view-task').classList.contains('hidden')) {
+        renderTaskPage(currentTaskId);
+      }
+      showToast(`Пользователь: ${currentUser.name}`);
+    }
+
+    function renderAuthHeader() {
+      const container = document.getElementById('authArea');
+      if (currentUser.id === 'guest') {
+        container.innerHTML = `
+          <button onclick="onUserChange('user_1')" class="px-3.5 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold transition shadow-sm">
+            Войти
+          </button>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="flex items-center gap-2 bg-slate-100 py-1 px-2.5 rounded-lg border border-slate-200">
+            <div class="w-5 h-5 rounded-full bg-brand-600 text-white flex items-center justify-center text-[10px] font-bold">
+              ${currentUser.name[0]}
+            </div>
+            <span class="text-xs font-bold text-slate-800">${currentUser.name.split(' ')[0]}</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-brand-100 text-brand-800">${currentUser.rating}</span>
+          </div>
+        `;
+      }
+    }
+
+    function updateHomeUserStatus() {
+      const el = document.getElementById('homeUserContestStatus');
+      if (!el) return;
+      if (currentUser.id === 'guest') {
+        el.innerHTML = `<span class="text-slate-500">Войдите в аккаунт для отправки решений и участия в рейтинге</span>`;
+      } else {
+        const solvedCount = Object.values(currentUser.solved).filter(s => s > 0).length;
+        const totalScore = Object.values(currentUser.solved).reduce((a, b) => a + b, 0);
+        el.innerHTML = `<span>Вы решили: <b class="text-slate-900 font-bold">${solvedCount} из 4</b> задач • Баллы: <b class="text-brand-600 font-bold">${totalScore} / 1000</b></span>`;
+      }
+    }
+
+    // ================= LEADERBOARDS =================
+    function renderHomeLeaderboard() {
+      const tbody = document.getElementById('homeLeaderboardBody');
+      if (!tbody) return;
+      tbody.innerHTML = leaderboardData.slice(0, 5).map(u => `
+        <tr class="hover:bg-slate-50/50 ${u.handle === currentUser.handle ? 'bg-brand-50/40 font-semibold' : ''}">
+          <td class="py-2.5 text-slate-400 font-mono">${u.rank}</td>
+          <td class="py-2.5 font-medium text-slate-900 flex items-center gap-1.5">
+            ${u.name}
+            ${u.handle === currentUser.handle ? '<span class="text-[9px] px-1 bg-brand-600 text-white rounded">Вы</span>' : ''}
+          </td>
+          <td class="py-2.5 text-slate-500">${u.org}</td>
+          <td class="py-2.5 text-right font-mono font-bold text-brand-700">${u.rating}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderFullLeaderboard(filterQuery = '') {
+      const tbody = document.getElementById('fullLeaderboardBody');
+      if (!tbody) return;
+      
+      const filtered = leaderboardData.filter(u => 
+        u.name.toLowerCase().includes(filterQuery.toLowerCase()) || 
+        u.org.toLowerCase().includes(filterQuery.toLowerCase()) ||
+        u.handle.toLowerCase().includes(filterQuery.toLowerCase())
+      );
+
+      tbody.innerHTML = filtered.map(u => `
+        <tr class="hover:bg-slate-50 ${u.handle === currentUser.handle ? 'bg-brand-50/50 font-semibold' : ''}">
+          <td class="py-3 px-4 text-center font-mono ${u.rank <= 3 ? 'font-bold text-brand-600' : 'text-slate-500'}">${u.rank}</td>
+          <td class="py-3 px-4">
+            <div class="font-bold text-slate-900 flex items-center gap-1.5">
+              ${u.name}
+              ${u.handle === currentUser.handle ? '<span class="text-[10px] px-1.5 py-0.2 bg-brand-600 text-white rounded">Вы</span>' : ''}
+            </div>
+            <span class="text-[11px] text-slate-400">@${u.handle}</span>
+          </td>
+          <td class="py-3 px-4 text-slate-600">${u.org}</td>
+          <td class="py-3 px-4 text-slate-600 font-mono">${u.contests}</td>
+          <td class="py-3 px-4 text-slate-600 font-mono">${u.solved}</td>
+          <td class="py-3 px-4 text-right font-mono font-bold text-slate-900">${u.rating}</td>
+        </tr>
+      `).join('');
+    }
+
+    function filterLeaderboard(query) {
+      renderFullLeaderboard(query);
+    }
+
+    // ================= EVENTS & CONTEST TASKS =================
+    function switchEventsTab(tab) {
+      const btnCurrent = document.getElementById('tab-btn-current');
+      const btnArchive = document.getElementById('tab-btn-archive');
+      const contentCurrent = document.getElementById('tab-content-current');
+      const contentArchive = document.getElementById('tab-content-archive');
+
+      if (tab === 'current') {
+        btnCurrent.className = 'px-4 py-2 text-sm font-semibold rounded-lg bg-slate-900 text-white transition';
+        btnArchive.className = 'px-4 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition';
+        contentCurrent.classList.remove('hidden');
+        contentArchive.classList.add('hidden');
+      } else {
+        btnArchive.className = 'px-4 py-2 text-sm font-semibold rounded-lg bg-slate-900 text-white transition';
+        btnCurrent.className = 'px-4 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition';
+        contentArchive.classList.remove('hidden');
+        contentCurrent.classList.add('hidden');
+      }
+    }
+
+    function renderContestTasksTable() {
+      const tbody = document.getElementById('contestTasksTableBody');
+      if (!tbody) return;
+
+      const totalScore = Object.values(currentUser.solved).reduce((a, b) => a + b, 0);
+      document.getElementById('currentContestUserScoreBadge').textContent = `Ваш балл: ${totalScore} / 1000`;
+
+      tbody.innerHTML = tasksData.map(t => {
+        const score = currentUser.solved[t.id] || 0;
+        const attempts = currentUser.attempts[t.id] || 0;
+
+        let statusBadge = '<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-500">Не начато</span>';
+        if (score === t.points) {
+          statusBadge = `<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Решено (${score} б.)</span>`;
+        } else if (attempts > 0) {
+          statusBadge = `<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">${score} / ${t.points} б.</span>`;
+        }
+
+        return `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="py-3.5 px-4 font-mono font-bold text-slate-400">${t.code}</td>
+            <td class="py-3.5 px-4">
+              <button onclick="navigateTo('task', {taskId: ${t.id}})" class="font-bold text-slate-900 hover:text-brand-600 transition text-left">
+                ${t.title}
+              </button>
+            </td>
+            <td class="py-3.5 px-4 text-slate-500">${t.category}</td>
+            <td class="py-3.5 px-4 text-slate-500 font-mono text-[11px]">≤ ${t.maxGates} гейтов</td>
+            <td class="py-3.5 px-4 font-mono font-bold text-slate-900">${t.points}</td>
+            <td class="py-3.5 px-4">${statusBadge}</td>
+            <td class="py-3.5 px-4 text-right">
+              <button onclick="navigateTo('task', {taskId: ${t.id}})" class="px-3 py-1 bg-slate-100 hover:bg-brand-600 hover:text-white rounded-lg font-semibold text-slate-700 transition">
+                Решать
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ================= TASK DETAIL VIEW =================
+    function renderTaskPage(taskId) {
+      const task = tasksData.find(t => t.id === Number(taskId)) || tasksData[0];
+      activeTask = task;
+
+      document.getElementById('taskBreadcrumbTitle').textContent = `Задача #${task.id}`;
+      document.getElementById('taskCardId').textContent = task.code;
+      document.getElementById('taskCardDifficulty').textContent = `${task.qubits} кубита • ${task.difficulty} • ${task.points} баллов`;
+      document.getElementById('taskCardTitle').textContent = task.title;
+      document.getElementById('taskDescriptionText').textContent = task.description;
+
+      document.getElementById('limitGatesText').textContent = `≤ ${task.maxGates} гейтов`;
+      document.getElementById('limitDepthText').textContent = `≤ ${task.maxDepth} слоя`;
+      document.getElementById('limitBasisText').textContent = `{${task.allowedBasis.join(', ')}}`;
+
+      // Status info
+      const score = currentUser.solved[task.id] || 0;
+      const attempts = currentUser.attempts[task.id] || 0;
+
+      const statusEl = document.getElementById('taskDetailStatusText');
+      if (score === task.points) {
+        statusEl.className = 'font-bold text-emerald-600';
+        statusEl.textContent = 'Принято (100/100)';
+      } else if (attempts > 0) {
+        statusEl.className = 'font-bold text-amber-600';
+        statusEl.textContent = `Частично (${score}/${task.points})`;
+      } else {
+        statusEl.className = 'font-bold text-slate-700';
+        statusEl.textContent = 'Не отправлено';
+      }
+
+      document.getElementById('taskDetailScoreText').textContent = `${score} / ${task.points}`;
+      document.getElementById('taskDetailAttemptsText').textContent = attempts;
+
+      // Render math via KaTeX
+      const formulaEl = document.getElementById('taskFormulaBox');
+      if (formulaEl && window.katex) {
+        katex.render(task.targetFormulaTex, formulaEl, { displayMode: true, throwOnError: false });
+      }
+
+      // Default code scaffold
+      resetTaskCodeTemplate();
+
+      // Reset verdict card
+      document.getElementById('submissionVerdictCard').classList.add('hidden');
+      document.getElementById('loadedFromSandboxBanner').classList.add('hidden');
+    }
+
+    function resetTaskCodeTemplate() {
+      const code = `from qiskit import QuantumCircuit
+
+def solve() -> QuantumCircuit:
+    """
+    Синтезирует схему для задачи ${activeTask.code}.
+    Лимит: не более ${activeTask.maxGates} гейтов.
+    """
+    qc = QuantumCircuit(${activeTask.qubits})
+    # ДОПИШИТЕ ВАШЕ РЕШЕНИЕ ЗДЕСЬ:
+    
+    return qc`;
+      document.getElementById('taskCodeEditor').value = code;
+    }
+
+    function openSandboxForCurrentTask() {
+      isTaskContextInSandbox = true;
+      navigateTo('sandbox');
+
+      // Configure sandbox for task
+      document.getElementById('sandboxTaskTopBanner').classList.remove('hidden');
+      document.getElementById('sandboxTaskBannerTitle').textContent = `${activeTask.code}: ${activeTask.title}`;
+      document.getElementById('sandboxTaskBannerLimits').textContent = `Базис: ${activeTask.allowedBasis.join(', ')} • Лимит: ≤ ${activeTask.maxGates} гейтов`;
+
+      setSandboxQubitCount(activeTask.qubits);
+      clearSandboxCircuit();
+    }
+
+    function returnToTaskFromSandbox() {
+      isTaskContextInSandbox = false;
+      navigateTo('task', { taskId: activeTask.id });
+
+      const gateCount = countCircuitGates();
+      if (gateCount > 0) {
+        document.getElementById('loadedFromSandboxBanner').classList.remove('hidden');
+        document.getElementById('loadedCircuitGateCount').textContent = gateCount;
+      }
+    }
+
+    function convertLoadedCircuitToQiskitCode() {
+      let code = `from qiskit import QuantumCircuit\n\ndef solve() -> QuantumCircuit:\n    qc = QuantumCircuit(${sbNumQubits})\n`;
+      for (let s = 0; s < sbNumSlots; s++) {
+        for (let q = 0; q < sbNumQubits; q++) {
+          const op = sbCircuit[q][s];
+          if (!op) continue;
+          if (['H', 'X', 'Y', 'Z', 'S', 'T'].includes(op.type)) {
+            code += `    qc.${op.type.toLowerCase()}(${q})\n`;
+          } else if (op.type === 'CX' && op.isTarget) {
+            code += `    qc.cx(${op.controlQubit}, ${op.targetQubit})\n`;
+          } else if (op.type === 'CZ' && op.isTarget) {
+            code += `    qc.cz(${op.controlQubit}, ${op.targetQubit})\n`;
+          }
+        }
+      }
+      code += `    return qc`;
+      document.getElementById('taskCodeEditor').value = code;
+      showToast('Схема успешно сконвертирована в Qiskit!');
+    }
+
+    function submitFromSandbox() {
+      returnToTaskFromSandbox();
+      convertLoadedCircuitToQiskitCode();
+      submitTaskSolution();
+    }
+
+    function submitTaskSolution() {
+      if (currentUser.id === 'guest') {
+        alert('Пожалуйста, войдите в аккаунт для отправки решений!');
+        return;
+      }
+
+      const code = document.getElementById('taskCodeEditor').value;
+      const verdictCard = document.getElementById('submissionVerdictCard');
+      verdictCard.classList.remove('hidden');
+
+      // Update attempt count
+      currentUser.attempts[activeTask.id] = (currentUser.attempts[activeTask.id] || 0) + 1;
+      const attemptNum = currentUser.attempts[activeTask.id];
+
+      // Evaluation criteria
+      const hasX = code.includes('.x(');
+      const hasH = code.includes('.h(');
+      const hasCX = code.includes('.cx(');
+      const hasZ = code.includes('.z(');
+
+      // Test task 1: Bell minus (|00> - |11>)/sqrt(2)
+      // Canonical minimal solution: X(0) -> H(0) -> CX(0,1) OR H(0) -> Z(0) -> CX(0,1)
+      let score = 0;
+      let statusText = 'Wrong Answer (WA)';
+      let statusColor = 'bg-rose-50 border-rose-200 text-rose-800';
+      let fidelity = '0.000';
+      let usedGates = (code.match(/\.h\(|\.x\(|\.z\(|\.cx\(/g) || []).length;
+
+      if ((hasX && hasH && hasCX) || (hasH && hasZ && hasCX)) {
+        fidelity = '1.000';
+        if (usedGates <= activeTask.maxGates) {
+          score = activeTask.points;
+          statusText = 'Принято (Accepted • AC)';
+          statusColor = 'bg-emerald-50 border-emerald-200 text-emerald-900';
+        } else {
+          score = Math.round(activeTask.points * 0.5);
+          statusText = 'Частично принято (PA • Превышен лимит гейтов)';
+          statusColor = 'bg-amber-50 border-amber-200 text-amber-900';
+        }
+      }
+
+      currentUser.solved[activeTask.id] = Math.max(currentUser.solved[activeTask.id] || 0, score);
+
+      // Render verdict
+      verdictCard.className = `rounded-xl p-5 border ${statusColor} space-y-3 shadow-sm`;
+      verdictCard.innerHTML = `
+        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-black/10 pb-2">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-xs">Попытка #${attemptNum}</span>
+            <span class="font-extrabold text-sm">${statusText}</span>
+          </div>
+          <span class="text-sm font-extrabold font-mono">${score} / ${activeTask.points} баллов</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 text-xs font-mono">
+          <div>Точность (Fidelity): <b>${fidelity}</b></div>
+          <div>Использовано гейтов: <b>${usedGates} / ${activeTask.maxGates}</b></div>
+          <div>Глубина схемы: <b>${Math.min(2, usedGates)} / ${activeTask.maxDepth}</b></div>
+        </div>
+
+        <div class="pt-2 flex justify-end">
+          ${activeTask.id < tasksData.length ? `
+            <button onclick="navigateTo('task', {taskId: ${activeTask.id + 1}})" class="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold transition">
+              Следующая задача → (${tasksData[activeTask.id].code})
+            </button>
+          ` : `
+            <button onclick="navigateTo('events', {tab: 'current'})" class="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold transition">
+              Вернуться к контесту
+            </button>
+          `}
+        </div>
+      `;
+
+      // Update state texts
+      document.getElementById('taskDetailStatusText').textContent = score === activeTask.points ? 'Принято' : `Баллов: ${score}`;
+      document.getElementById('taskDetailScoreText').textContent = `${score} / ${activeTask.points}`;
+      document.getElementById('taskDetailAttemptsText').textContent = attemptNum;
+    }
+
+    // ================= SANDBOX CIRCUIT LOGIC =================
+    function setSandboxQubitCount(n) {
+      sbNumQubits = n;
+      document.querySelectorAll('#sbQ2, #sbQ3, #sbQ4').forEach(b => b.className = 'px-2.5 py-1 rounded font-bold text-slate-500 hover:text-slate-900');
+      document.getElementById(`sbQ${n}`).className = 'px-2.5 py-1 rounded font-bold bg-white text-slate-900 shadow-sm';
+      clearSandboxCircuit();
+    }
+
+    function clearSandboxCircuit() {
+      sbCircuit = Array(4).fill(null).map(() => Array(sbNumSlots).fill(null));
+      renderSandboxCircuit();
+    }
+
+    function countCircuitGates() {
+      let count = 0;
+      for (let s = 0; s < sbNumSlots; s++) {
+        for (let q = 0; q < sbNumQubits; q++) {
+          const op = sbCircuit[q][s];
+          if (op && (MATRIX_GATES[op.type] || op.isTarget)) count++;
+        }
+      }
+      return count;
+    }
+
+    function setGateSet(setName) {
+      sbGateSet = setName;
+      const names = {
+        universal: 'Базовый набор',
+        reversible: 'Классический обратимый',
+        clifford: 'Clifford базис',
+        ibm: 'Аппаратный IBM'
+      };
+      document.getElementById('currentGateSetName').textContent = names[setName] || 'Набор гейтов';
+      toggleDropdown('dropdownGateSets', false);
+      renderSandboxPalette();
+    }
+
+    function renderSandboxPalette() {
+      const palette = document.getElementById('sandboxGatePalette');
+      if (!palette) return;
+
+      let gates = ['H', 'X', 'Y', 'Z', 'S', 'T', 'CX', 'CZ', 'SWAP'];
+      if (isTaskContextInSandbox) {
+        gates = activeTask.allowedBasis;
+      } else if (sbGateSet === 'reversible') {
+        gates = ['X', 'CX'];
+      } else if (sbGateSet === 'clifford') {
+        gates = ['H', 'S', 'CX', 'CZ'];
+      } else if (sbGateSet === 'ibm') {
+        gates = ['CZ', 'Rz', 'SX', 'X'];
+      }
+
+      palette.innerHTML = gates.map(g => `
+        <div draggable="true" ondragstart="onSbDragStart(event, '${g}')"
+          class="gate-chip px-3 py-1.5 rounded-lg bg-white border border-slate-300 font-mono font-bold text-xs text-slate-900 shadow-sm hover:border-brand-600 hover:text-brand-700 min-w-[38px] text-center">
+          ${g}
+        </div>
+      `).join('');
+    }
+
+    function renderSandboxCircuit() {
+      renderSandboxPalette();
+      const container = document.getElementById('sandboxCircuitGrid');
+      if (!container) return;
+
+      let html = '';
+      for (let q = 0; q < sbNumQubits; q++) {
+        html += `
+          <div class="flex items-center gap-3">
+            <div class="w-12 font-mono text-xs font-semibold text-slate-500 flex items-center justify-between select-none">
+              <span>q[${q}]</span>
+              <span class="text-[10px] text-slate-400 font-normal">|0⟩</span>
+            </div>
+            <div class="flex-1 relative flex items-center">
+              <div class="wire-line absolute left-0 right-0 z-0"></div>
+              <div class="flex items-center justify-between w-full z-10 relative">
+        `;
+
+        for (let s = 0; s < sbNumSlots; s++) {
+          const op = sbCircuit[q][s];
+          let slotInner = '';
+
+          if (op) {
+            if (MATRIX_GATES[op.type]) {
+              slotInner = `
+                <div class="gate-chip relative w-8 h-8 rounded-lg bg-white border border-slate-300 font-mono font-bold text-xs text-slate-900 flex items-center justify-center shadow group">
+                  ${op.type}
+                  <button onclick="removeSbGate(${q}, ${s})" class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-slate-800 text-white text-[9px] hidden group-hover:flex items-center justify-center">×</button>
+                </div>
+              `;
+            } else if (op.type === 'CX' || op.type === 'CZ' || op.type === 'SWAP') {
+              if (op.isControl) {
+                slotInner = `<div class="control-dot cursor-pointer" onclick="removeSbGate(${q}, ${s})"></div>`;
+              } else {
+                slotInner = `
+                  <div class="gate-chip relative w-8 h-8 rounded-lg bg-white border border-slate-400 font-mono font-bold text-xs text-slate-900 flex items-center justify-center shadow group">
+                    ${op.type === 'CX' ? '⊕' : op.type}
+                    <button onclick="removeSbGate(${q}, ${s})" class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-slate-800 text-white text-[9px] hidden group-hover:flex items-center justify-center">×</button>
+                  </div>
+                `;
+              }
+            }
+          }
+
+          html += `
+            <div class="gate-slot w-10 h-10 rounded-lg border border-dashed border-slate-300 bg-white/60 flex items-center justify-center"
+              ondragover="onSbSlotDragOver(event)"
+              ondragleave="onSbSlotDragLeave(event)"
+              ondrop="onSbSlotDrop(event, ${q}, ${s})">
+              ${slotInner}
+            </div>
+          `;
+        }
+
+        html += `
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+      updateSandboxOutputs();
+    }
+
+    // Drag-and-drop
+    let sbDragged = null;
+    function onSbDragStart(e, gate) { sbDragged = gate; e.dataTransfer.setData('text/plain', gate); }
+    function onSbSlotDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+    function onSbSlotDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+    function onSbSlotDrop(e, q, s) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      if (!sbDragged) return;
+
+      if (['CX', 'CZ', 'SWAP'].includes(sbDragged)) {
+        const cQ = q === 0 ? 0 : q - 1;
+        const tQ = q === 0 ? 1 : q;
+        sbCircuit[cQ][s] = { type: sbDragged, isControl: true, controlQubit: cQ, targetQubit: tQ };
+        sbCircuit[tQ][s] = { type: sbDragged, isTarget: true, controlQubit: cQ, targetQubit: tQ };
+      } else {
+        sbCircuit[q][s] = { type: sbDragged };
+      }
+
+      renderSandboxCircuit();
+    }
+
+    function removeSbGate(q, s) {
+      const op = sbCircuit[q][s];
+      if (!op) return;
+      if (op.type === 'CX' || op.type === 'CZ' || op.type === 'SWAP') {
+        sbCircuit[op.controlQubit][s] = null;
+        sbCircuit[op.targetQubit][s] = null;
+      } else {
+        sbCircuit[q][s] = null;
+      }
+      renderSandboxCircuit();
+    }
+
+    function updateSandboxOutputs() {
+      const state = simulateCircuit(sbCircuit, sbNumQubits, sbNumSlots);
+      const recognized = recognizeState(state, sbNumQubits);
+
+      // CAS Math rendering via KaTeX
+      const casDisplay = document.getElementById('casStateMathDisplay');
+      if (casDisplay && window.katex) {
+        katex.render(recognized.tex, casDisplay, { displayMode: false, throwOnError: false });
+      }
+
+      // Probs bars
+      const probsEl = document.getElementById('sandboxProbsContainer');
+      if (probsEl) {
+        const probs = state.map(c => c.absSq());
+        probsEl.innerHTML = state.map((c, i) => {
+          const p = probs[i];
+          const bin = i.toString(2).padStart(sbNumQubits, '0');
+          const pct = (p * 100).toFixed(1);
+          return `
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-slate-600 w-8 text-[11px]">|${bin}⟩</span>
+              <div class="flex-1 h-2.5 rounded-full bg-slate-100 overflow-hidden">
+                <div class="h-full bg-brand-600 rounded-full transition-all duration-200" style="width: ${pct}%;"></div>
+              </div>
+              <span class="font-mono text-[11px] text-slate-700 w-10 text-right font-medium">${pct}%</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Update 3D Bloch
+      updateBlochArrow(state, sbNumQubits);
+
+      // Task mode budget update
+      if (isTaskContextInSandbox) {
+        const count = countCircuitGates();
+        document.getElementById('sandboxTaskBannerLimits').textContent = `Базис: ${activeTask.allowedBasis.join(', ')} • Использовано гейтов: ${count} / ${activeTask.maxGates}`;
+      }
+    }
+
+    // View toggles
+    function toggleViewPanel(panelId, isVisible) {
+      const el = document.getElementById(`panel-${panelId}`);
+      if (el) {
+        if (isVisible) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+      }
+    }
+
+    // Preset Circuits
+    function loadPresetCircuit(preset) {
+      clearSandboxCircuit();
+      toggleDropdown('dropdownExamples', false);
+
+      if (preset === 'bell_plus') {
+        setSandboxQubitCount(2);
+        sbCircuit[0][0] = { type: 'H' };
+        sbCircuit[0][1] = { type: 'CX', isControl: true, controlQubit: 0, targetQubit: 1 };
+        sbCircuit[1][1] = { type: 'CX', isTarget: true, controlQubit: 0, targetQubit: 1 };
+      } else if (preset === 'bell_minus') {
+        setSandboxQubitCount(2);
+        sbCircuit[0][0] = { type: 'X' };
+        sbCircuit[0][1] = { type: 'H' };
+        sbCircuit[0][2] = { type: 'CX', isControl: true, controlQubit: 0, targetQubit: 1 };
+        sbCircuit[1][2] = { type: 'CX', isTarget: true, controlQubit: 0, targetQubit: 1 };
+      } else if (preset === 'ghz') {
+        setSandboxQubitCount(3);
+        sbCircuit[0][0] = { type: 'H' };
+        sbCircuit[0][1] = { type: 'CX', isControl: true, controlQubit: 0, targetQubit: 1 };
+        sbCircuit[1][1] = { type: 'CX', isTarget: true, controlQubit: 0, targetQubit: 1 };
+        sbCircuit[1][2] = { type: 'CX', isControl: true, controlQubit: 1, targetQubit: 2 };
+        sbCircuit[2][2] = { type: 'CX', isTarget: true, controlQubit: 1, targetQubit: 2 };
+      } else if (preset === 'w3') {
+        setSandboxQubitCount(3);
+        sbCircuit[0][0] = { type: 'X' };
+        sbCircuit[0][1] = { type: 'H' };
+        sbCircuit[1][1] = { type: 'H' };
+      }
+      renderSandboxCircuit();
+      showToast('Пример схемы успешно загружен');
+    }
+
+    function saveCircuitSlot() {
+      localStorage.setItem('saved_quantum_circuit', JSON.stringify({ numQubits: sbNumQubits, grid: sbCircuit }));
+      showToast('Схема сохранена в локальное хранилище');
+    }
+
+    // Export formats
+    function exportCircuit(format) {
+      toggleDropdown('dropdownExport', false);
+      const modal = document.getElementById('exportModal');
+      const textEl = document.getElementById('exportModalText');
+      const titleEl = document.getElementById('exportModalTitle');
+      modal.classList.remove('hidden');
+
+      if (format === 'qiskit') {
+        titleEl.textContent = 'Экспорт в Python (Qiskit 1.0+)';
+        let code = `from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(${sbNumQubits})\n`;
+        for (let s = 0; s < sbNumSlots; s++) {
+          for (let q = 0; q < sbNumQubits; q++) {
+            const op = sbCircuit[q][s];
+            if (!op) continue;
+            if (MATRIX_GATES[op.type]) code += `qc.${op.type.toLowerCase()}(${q})\n`;
+            else if (op.type === 'CX' && op.isTarget) code += `qc.cx(${op.controlQubit}, ${op.targetQubit})\n`;
+            else if (op.type === 'CZ' && op.isTarget) code += `qc.cz(${op.controlQubit}, ${op.targetQubit})\n`;
+            else if (op.type === 'SWAP' && op.isTarget) code += `qc.swap(${op.controlQubit}, ${op.targetQubit})\n`;
+          }
+        }
+        textEl.value = code;
+      } else if (format === 'qasm') {
+        titleEl.textContent = 'Экспорт в OpenQASM 3.0';
+        let qasm = `OPENQASM 3.0;\ninclude "stdgates.inc";\nqubit[${sbNumQubits}] q;\n\n`;
+        for (let s = 0; s < sbNumSlots; s++) {
+          for (let q = 0; q < sbNumQubits; q++) {
+            const op = sbCircuit[q][s];
+            if (!op) continue;
+            if (MATRIX_GATES[op.type]) qasm += `${op.type.toLowerCase()} q[${q}];\n`;
+            else if (op.type === 'CX' && op.isTarget) qasm += `cx q[${op.controlQubit}], q[${op.targetQubit}];\n`;
+            else if (op.type === 'CZ' && op.isTarget) qasm += `cz q[${op.controlQubit}], q[${op.targetQubit}];\n`;
+          }
+        }
+        textEl.value = qasm;
+      } else if (format === 'json') {
+        titleEl.textContent = 'Экспорт в JSON AST';
+        textEl.value = JSON.stringify({ numQubits: sbNumQubits, grid: sbCircuit }, null, 2);
+      }
+    }
+
+    function closeExportModal() {
+      document.getElementById('exportModal').classList.add('hidden');
+    }
+
+    function copyExportText() {
+      navigator.clipboard.writeText(document.getElementById('exportModalText').value);
+      showToast('Скопировано в буфер обмена!');
+    }
+
+    // Dropdown toggle helper
+    function toggleDropdown(id, force) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (typeof force === 'boolean') {
+        if (force) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+      } else {
+        el.classList.toggle('hidden');
+      }
+    }
+
+    // Close dropdowns on outside click
+    window.addEventListener('click', e => {
+      if (!e.target.closest('header') && !e.target.closest('.relative')) {
+        document.querySelectorAll('#dropdownView, #dropdownGateSets, #dropdownExamples, #dropdownExport').forEach(d => d.classList.add('hidden'));
+      }
+    });
+
+    // Toast helper
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2500);
+    }
+
+    // ================= INIT =================
+    window.addEventListener('load', () => {
+      renderAuthHeader();
+      navigateTo('home');
+    });
+  </script>
+</body>
+</html>
