@@ -213,11 +213,11 @@
     {
       "id": "n_gate_constraints",
       "type": "text",
-      "text": "### 🔒 7. Ограничения на базисы гейтов\n---\n* **7.1. Universal:** $\\{H, S, T, X, Y, Z, CNOT, CZ, R_x, R_y, R_z\\}$\n* **7.2. Restricted Basic:** Только $\\{X, CNOT, Toffoli\\}$ (арифметика) или Clifford $\\{H, S, CNOT\\}$\n* **7.3. Hardware-Native:**\n  * Сверхпроводники: $\\{CZ, R_z, \\sqrt{X}, X\\}$\n  * Ионы: $\\{MS, R_x, R_y, R_z\\}$.",
+      "text": "### 🔒 7. Базисы и Топология кубитов\n---\n* **7.1. Universal:** $\\{H, S, T, X, Y, Z, CX, CZ, R_x, R_y, R_z\\}$\n* **7.2. Restricted Basic:** Только $\\{X, CX, CCX\\}$ или Clifford $\\{H, S, CX\\}$\n* **7.3. Hardware Native:** Сверхпроводники $\\{CZ, R_z, \\sqrt{X}, X\\}$, Ионы $\\{MS, R_x, R_y\\}$\n* 💡 **7.4. Топология кубитов (Coupling Map):**\n  * Запрет 2-кубитных гейтов между несоседними узлами $(q_i, q_j) \\notin E$\n  * Линейные цепи ($q_0-q_1-q_2$), сетки, Heavy-Hex чипы\n  * Требуется алгоритмическая $SWAP$-маршрутизация.",
       "x": 1380,
       "y": 970,
       "width": 390,
-      "height": 260,
+      "height": 270,
       "color": "3"
     },
     {
@@ -233,7 +233,7 @@
     {
       "id": "n_task_engine_params",
       "type": "text",
-      "text": "### 📊 3.3. Параметры шаблона задачи (Таблица)\n---\n* `num_qubits_range`: `[2, 10]`\n* `allowed_gates`: `[\"h\", \"cx\", \"x\"]`\n* `max_depth`: `35`, `max_gate_count`: `50`\n* `verification_mode`: `statevector_fidelity` | `operator_norm` | `shot_distribution`\n* `target_fidelity_threshold`: `0.999`",
+      "text": "### 📊 3.3. Параметры шаблона задачи (Таблица)\n---\n* `num_qubits_range`: `[2, 10]`\n* `allowed_gates`: `[\"h\", \"cx\", \"x\"]`\n* `coupling_map`: `[[0, 1], [1, 2]]` *(Линейная топология)*\n* `max_depth`: `35`, `max_gate_count`: `50`\n* `verification_mode`: `statevector_fidelity` | `operator_norm` | `shot_distribution`\n* `target_fidelity_threshold`: `0.999`",
       "x": 950,
       "y": 1530,
       "width": 820,
@@ -253,7 +253,7 @@
     {
       "id": "n_judge_arch",
       "type": "text",
-      "text": "### ⚖️ 8.1. Клиентский vs Серверный грейдер\n---\n* 🎯 *WASM / Pyodide (Клиент):* $n \\le 6$, открытые примеры, мгновенный фидбек (<50ms), 0 ₽ нагрузки\n* 📋 *Docker + gVisor (Сервер):* $n > 6$, закрытые тесты турниров, динамические схемы\n* 💡 *Fidelity:* $F = |\\langle\\psi_{target}|\\psi_{user}\\rangle|^2 \\ge 1-\\varepsilon$ (инвариантность к глобальной фазе).",
+      "text": "### ⚖️ 8.1. Клиентский vs Серверный грейдер\n---\n* 🎯 *WASM / Pyodide (Клиент):* $n \\le 6$, открытые примеры, моментальный фидбек (<50ms)\n* 📋 *Docker + gVisor (Сервер):* $n > 6$, закрытые тесты турниров\n* 💡 *Fidelity & CouplingMap Validator:*\n  * $F = |\\langle\\psi_{target}|\\psi_{user}\\rangle|^2 \\ge 1-\\varepsilon$\n  * Валидация ребер графа связности $(q_i, q_j) \\in E$.",
       "x": 1890,
       "y": 40,
       "width": 410,

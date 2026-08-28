@@ -447,7 +447,7 @@
           <div class="font-bold text-slate-900 uppercase tracking-wide text-[11px] flex items-center gap-1.5 text-brand-700">
             <i class="fa-solid fa-shield-halved"></i> Ограничения задачи
           </div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
             <div>
               <span class="text-slate-500 block">Лимит по гейтам:</span>
               <span class="font-mono font-bold text-slate-900" id="limitGatesText">≤ 3 гейта</span>
@@ -461,10 +461,15 @@
               <span class="font-mono font-bold text-slate-900" id="limitBasisText">{H, X, Z, CX}</span>
             </div>
             <div>
-              <span class="text-slate-500 block">Начальное состояние:</span>
+              <span class="text-slate-500 block">Топология связности:</span>
+              <span class="font-mono font-bold text-slate-900" id="limitTopologyText">q₀ — q₁ (Linear)</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block">Входное состояние:</span>
               <span class="font-mono font-bold text-slate-900">|00⟩ (фиксированное)</span>
             </div>
           </div>
+
         </div>
 
         <!-- TASK DESCRIPTION & FORMULAS (KATEX) -->
