@@ -1673,25 +1673,6 @@ SLIDES_DATA = [
         "type": "matrix",
         "formula": r"\mathcal{T} = \{ \text{T1: Prep},\; \text{T2: Logic},\; \text{T3: Oracles},\; \text{T4: Algorithms},\; \text{T5: Hardware},\; \text{T6: Dynamic} \}"
     },
-    # SLIDE 27: PLATFORM ARCHITECTURE
-    {
-        "id": 27,
-        "category": "ИНЖЕНЕРНАЯ АРХИТЕКТУРА",
-        "badge": "PIPELINE",
-        "title": "Архитектура платформы: От GUI Composer до Автосудьи",
-        "type": "pipeline",
-        "formula": r"\text{User Drag\&Drop} \longrightarrow \text{Rust WASM (5ms)} \longrightarrow \text{gVisor Docker Aer} \longrightarrow \text{Leaderboard}",
-        "svg_func": svg_platform_pipeline
-    },
-    # SLIDE 28: ROADMAP
-    {
-        "id": 28,
-        "category": "ПЛАН РАЗВИТИЯ",
-        "badge": "ROADMAP",
-        "title": "Дорожная карта реализации QuantumArena",
-        "type": "roadmap",
-        "formula": r"\text{Q4 2026: Prototype} \longrightarrow \text{Q1 2027: MVP \& Grant} \longrightarrow \text{Q2 2027: 1st Olympiad}"
-    }
 ]
 
 # ----------------------------------------------------------------------
@@ -1722,7 +1703,7 @@ def render_slide_content(s):
         {diff_badge}
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд {sid:02d} / 28
+        Слайд {sid:02d} / {len(SLIDES_DATA):02d}
       </div>
     </div>
     """
@@ -1997,26 +1978,45 @@ def generate_index_html(output_path):
       z-index: 10;
     }}
     /* Print mode */
+    @page {{
+      size: 16in 9in;
+      margin: 0;
+    }}
     @media print {{
-      body {{
+      html, body {{
+        width: 16in !important;
+        height: 9in !important;
+        margin: 0 !important;
+        padding: 0 !important;
         overflow: visible !important;
-        background: transparent !important;
+        background: #ffffff !important;
       }}
       .slide-deck {{
         display: block !important;
+        width: 16in !important;
         height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }}
       .slide {{
         position: relative !important;
         opacity: 1 !important;
+        display: flex !important;
         page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
         transform: none !important;
-        width: 100% !important;
-        height: 100vh !important;
-        max-width: none !important;
-        max-height: none !important;
+        width: 16in !important;
+        height: 9in !important;
+        max-width: 16in !important;
+        max-height: 9in !important;
         border-radius: 0 !important;
         box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0.3in 0.6in !important;
+        box-sizing: border-box !important;
+        background: #ffffff !important;
       }}
       #controls, #drawer, #progress-bar {{
         display: none !important;
@@ -2040,7 +2040,7 @@ def generate_index_html(output_path):
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
     </button>
     <div class="font-mono text-xs font-bold tracking-widest px-2" id="slide-indicator">
-      01 / 28
+      01 / {len(SLIDES_DATA):02d}
     </div>
     <button onclick="nextSlide()" class="p-1.5 hover:bg-slate-800 rounded-full transition" title="Следующий (→ / Пробел)">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
@@ -2059,7 +2059,7 @@ def generate_index_html(output_path):
   <div id="drawer" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex flex-col p-8">
     <div class="flex items-center justify-between pb-6 border-b border-slate-800 text-white">
       <div>
-        <h2 class="text-2xl font-black">Обзор всех 28 слайдов презентации</h2>
+        <h2 class="text-2xl font-black">Обзор всех {len(SLIDES_DATA)} слайдов презентации</h2>
         <p class="text-xs text-slate-400 font-mono">Кликните по карточке для перехода к слайду</p>
       </div>
       <button onclick="toggleDrawer()" class="p-2 hover:bg-slate-800 rounded-full text-slate-400 hover:text-white transition">
@@ -2237,9 +2237,25 @@ def generate_slides_md(output_path):
         f.write("\n".join(md_lines))
     print(f"Generated {output_path}")
 
+def export_pdf(html_path, pdf_path):
+    import subprocess
+    chrome = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    cmd = [
+        chrome,
+        '--headless=new',
+        '--disable-gpu',
+        '--no-pdf-header-footer',
+        f'--print-to-pdf={pdf_path}',
+        f'file://{html_path}'
+    ]
+    subprocess.run(cmd, check=True)
+    print(f"Exported PDF to {pdf_path}")
+
 if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.abspath(__file__))
     html_out = os.path.join(base_dir, "index.html")
     md_out = os.path.join(base_dir, "slides.md")
+    pdf_out = os.path.join(base_dir, "QuantumArena_Taxonomy.pdf")
     generate_index_html(html_out)
     generate_slides_md(md_out)
+    export_pdf(html_out, pdf_out)

@@ -52,26 +52,45 @@
       z-index: 10;
     }
     /* Print mode */
+    @page {
+      size: 16in 9in;
+      margin: 0;
+    }
     @media print {
-      body {
+      html, body {
+        width: 16in !important;
+        height: 9in !important;
+        margin: 0 !important;
+        padding: 0 !important;
         overflow: visible !important;
-        background: transparent !important;
+        background: #ffffff !important;
       }
       .slide-deck {
         display: block !important;
+        width: 16in !important;
         height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
       .slide {
         position: relative !important;
         opacity: 1 !important;
+        display: flex !important;
         page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
         transform: none !important;
-        width: 100% !important;
-        height: 100vh !important;
-        max-width: none !important;
-        max-height: none !important;
+        width: 16in !important;
+        height: 9in !important;
+        max-width: 16in !important;
+        max-height: 9in !important;
         border-radius: 0 !important;
         box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0.3in 0.6in !important;
+        box-sizing: border-box !important;
+        background: #ffffff !important;
       }
       #controls, #drawer, #progress-bar {
         display: none !important;
@@ -99,7 +118,7 @@
         
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 01 / 28
+        Слайд 01 / 26
       </div>
     </div>
     
@@ -157,7 +176,7 @@
         
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 02 / 28
+        Слайд 02 / 26
       </div>
     </div>
     
@@ -283,7 +302,7 @@
         
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 03 / 28
+        Слайд 03 / 26
       </div>
     </div>
     
@@ -358,7 +377,7 @@
         
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 04 / 28
+        Слайд 04 / 26
       </div>
     </div>
     
@@ -418,7 +437,7 @@
         
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 05 / 28
+        Слайд 05 / 26
       </div>
     </div>
     
@@ -492,7 +511,7 @@
         
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 06 / 28
+        Слайд 06 / 26
       </div>
     </div>
     
@@ -572,7 +591,7 @@
         
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 07 / 28
+        Слайд 07 / 26
       </div>
     </div>
     
@@ -632,7 +651,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-emerald-100 text-emerald-800">Easy</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 08 / 28
+        Слайд 08 / 26
       </div>
     </div>
     
@@ -712,7 +731,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-emerald-100 text-emerald-800">Easy</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 09 / 28
+        Слайд 09 / 26
       </div>
     </div>
     
@@ -811,7 +830,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-amber-100 text-amber-800">Medium</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 10 / 28
+        Слайд 10 / 26
       </div>
     </div>
     
@@ -908,7 +927,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-amber-100 text-amber-800">Medium</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 11 / 28
+        Слайд 11 / 26
       </div>
     </div>
     
@@ -1003,7 +1022,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-emerald-100 text-emerald-800">Easy</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 12 / 28
+        Слайд 12 / 26
       </div>
     </div>
     
@@ -1089,7 +1108,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-amber-100 text-amber-800">Medium</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 13 / 28
+        Слайд 13 / 26
       </div>
     </div>
     
@@ -1178,7 +1197,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-rose-100 text-rose-800">Hard</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 14 / 28
+        Слайд 14 / 26
       </div>
     </div>
     
@@ -1269,7 +1288,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-emerald-100 text-emerald-800">Easy</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 15 / 28
+        Слайд 15 / 26
       </div>
     </div>
     
@@ -1354,7 +1373,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-amber-100 text-amber-800">Medium</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 16 / 28
+        Слайд 16 / 26
       </div>
     </div>
     
@@ -1445,7 +1464,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-amber-100 text-amber-800">Medium</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 17 / 28
+        Слайд 17 / 26
       </div>
     </div>
     
@@ -1539,7 +1558,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-amber-100 text-amber-800">Medium</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 18 / 28
+        Слайд 18 / 26
       </div>
     </div>
     
@@ -1641,7 +1660,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-rose-100 text-rose-800">Hard</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 19 / 28
+        Слайд 19 / 26
       </div>
     </div>
     
@@ -1747,7 +1766,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-rose-100 text-rose-800">Hard</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 20 / 28
+        Слайд 20 / 26
       </div>
     </div>
     
@@ -1850,7 +1869,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-rose-100 text-rose-800">Hard</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 21 / 28
+        Слайд 21 / 26
       </div>
     </div>
     
@@ -1958,7 +1977,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-amber-100 text-amber-800">Medium</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 22 / 28
+        Слайд 22 / 26
       </div>
     </div>
     
@@ -2076,7 +2095,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-rose-100 text-rose-800">Hard</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 23 / 28
+        Слайд 23 / 26
       </div>
     </div>
     
@@ -2192,7 +2211,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-amber-100 text-amber-800">Medium</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 24 / 28
+        Слайд 24 / 26
       </div>
     </div>
     
@@ -2301,7 +2320,7 @@
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-rose-100 text-rose-800">Hard</span>
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 25 / 28
+        Слайд 25 / 26
       </div>
     </div>
     
@@ -2402,7 +2421,7 @@
         
       </div>
       <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 26 / 28
+        Слайд 26 / 26
       </div>
     </div>
     
@@ -2484,138 +2503,6 @@
     
         </section>
         
-        <section class="slide " id="slide-27" data-slide-index="26">
-          
-    <div class="slide-content h-full flex flex-col justify-between p-6 w-full max-w-7xl mx-auto">
-      
-    <div class="flex items-center justify-between border-b border-slate-100 pb-2 px-1">
-      <div class="flex items-center gap-2">
-        <span class="text-xs font-black text-rose-700 tracking-wider uppercase">ИНЖЕНЕРНАЯ АРХИТЕКТУРА</span>
-        <span class="text-slate-300">•</span>
-        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-slate-100 text-slate-700">PIPELINE</span>
-        
-      </div>
-      <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 27 / 28
-      </div>
-    </div>
-    
-      
-    <div class="space-y-1 text-center py-1">
-      <h2 class="text-2xl font-black text-slate-900 tracking-tight">Архитектура платформы: От GUI Composer до Автосудьи</h2>
-      <div class="font-mono text-sm text-slate-700 bg-slate-50 py-1 px-4 rounded-lg inline-block border border-slate-200">
-        $$\text{User Drag\&Drop} \longrightarrow \text{Rust WASM (5ms)} \longrightarrow \text{gVisor Docker Aer} \longrightarrow \text{Leaderboard}$$
-      </div>
-    </div>
-    
-      
-        <div class="flex-1 flex items-center justify-center p-2 bg-white border border-slate-200 rounded-2xl shadow-inner overflow-hidden my-auto">
-          
-    <svg viewBox="0 0 960 360" class="w-full h-full max-h-[480px]" xmlns="http://www.w3.org/2000/svg">
-      <!-- 4 Stages in Flow -->
-      <!-- STAGE 1: CLIENT WEB COMPOSER -->
-      <rect x="30" y="100" width="200" height="150" rx="14" fill="#ffffff" stroke="#6366f1" stroke-width="2.5"/>
-      <rect x="30" y="100" width="200" height="35" rx="14" fill="#6366f1"/>
-      <text x="130" y="124" font-family="system-ui, sans-serif" font-size="12" font-weight="900" fill="#ffffff" text-anchor="middle">1. КЛИЕНТ (COMPOSER)</text>
-      <text x="130" y="165" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#1e293b" text-anchor="middle">Drag & Drop сетка</text>
-      <text x="130" y="188" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#64748b" text-anchor="middle">3D Сфера Блоха</text>
-      <text x="130" y="210" font-family="monospace" font-size="11" font-weight="700" fill="#6366f1" text-anchor="middle">JSON / OpenQASM 3</text>
-
-      <!-- ARROW 1 -> 2 -->
-      <path d="M 230 175 L 270 175" fill="none" stroke="#6366f1" stroke-width="3"/>
-      <polygon points="270,170 280,175 270,180" fill="#6366f1"/>
-
-      <!-- STAGE 2: IN-BROWSER WASM JUDGE -->
-      <rect x="280" y="100" width="200" height="150" rx="14" fill="#ffffff" stroke="#059669" stroke-width="2.5"/>
-      <rect x="280" y="100" width="200" height="35" rx="14" fill="#059669"/>
-      <text x="380" y="124" font-family="system-ui, sans-serif" font-size="12" font-weight="900" fill="#ffffff" text-anchor="middle">2. WASM СИМУЛЯТОР</text>
-      <text x="380" y="165" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#1e293b" text-anchor="middle">Rust Statevector</text>
-      <text x="380" y="188" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#64748b" text-anchor="middle">Мгновенный отклик 5ms</text>
-      <text x="380" y="210" font-family="monospace" font-size="11" font-weight="700" fill="#059669" text-anchor="middle">Fidelity Auto-Check</text>
-
-      <!-- ARROW 2 -> 3 -->
-      <path d="M 480 175 L 520 175" fill="none" stroke="#059669" stroke-width="3"/>
-      <polygon points="520,170 530,175 520,180" fill="#059669"/>
-
-      <!-- STAGE 3: ISOLATED DOCKER / gVisor -->
-      <rect x="530" y="100" width="200" height="150" rx="14" fill="#ffffff" stroke="#d97706" stroke-width="2.5"/>
-      <rect x="530" y="100" width="200" height="35" rx="14" fill="#d97706"/>
-      <text x="630" y="124" font-family="system-ui, sans-serif" font-size="12" font-weight="900" fill="#ffffff" text-anchor="middle">3. SERVER AUTO-JUDGE</text>
-      <text x="630" y="165" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#1e293b" text-anchor="middle">gVisor Песочница</text>
-      <text x="630" y="188" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#64748b" text-anchor="middle">Qiskit Aer + Shots χ²</text>
-      <text x="630" y="210" font-family="monospace" font-size="11" font-weight="700" fill="#d97706" text-anchor="middle">Anti-Cheat Audit</text>
-
-      <!-- ARROW 3 -> 4 -->
-      <path d="M 730 175 L 770 175" fill="none" stroke="#d97706" stroke-width="3"/>
-      <polygon points="770,170 780,175 770,180" fill="#d97706"/>
-
-      <!-- STAGE 4: LEADERBOARD & RATINGS -->
-      <rect x="780" y="100" width="160" height="150" rx="14" fill="#ffffff" stroke="#dc2626" stroke-width="2.5"/>
-      <rect x="780" y="100" width="160" height="35" rx="14" fill="#dc2626"/>
-      <text x="860" y="124" font-family="system-ui, sans-serif" font-size="12" font-weight="900" fill="#ffffff" text-anchor="middle">4. LEADERBOARD</text>
-      <text x="860" y="165" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#1e293b" text-anchor="middle">Accepted (AC)</text>
-      <text x="860" y="188" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#64748b" text-anchor="middle">Рейтинг Elo / Codeforces</text>
-      <text x="860" y="210" font-family="monospace" font-size="11" font-weight="700" fill="#dc2626" text-anchor="middle">Score: 100/100</text>
-    </svg>
-    
-        </div>
-        
-    </div>
-    
-        </section>
-        
-        <section class="slide " id="slide-28" data-slide-index="27">
-          
-    <div class="slide-content h-full flex flex-col justify-between p-6 w-full max-w-7xl mx-auto">
-      
-    <div class="flex items-center justify-between border-b border-slate-100 pb-2 px-1">
-      <div class="flex items-center gap-2">
-        <span class="text-xs font-black text-rose-700 tracking-wider uppercase">ПЛАН РАЗВИТИЯ</span>
-        <span class="text-slate-300">•</span>
-        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono bg-slate-100 text-slate-700">ROADMAP</span>
-        
-      </div>
-      <div class="font-mono text-xs text-slate-400 font-bold">
-        Слайд 28 / 28
-      </div>
-    </div>
-    
-      
-    <div class="space-y-1 text-center py-1">
-      <h2 class="text-2xl font-black text-slate-900 tracking-tight">Дорожная карта реализации QuantumArena</h2>
-      <div class="font-mono text-sm text-slate-700 bg-slate-50 py-1 px-4 rounded-lg inline-block border border-slate-200">
-        $$\text{Q4 2026: Prototype} \longrightarrow \text{Q1 2027: MVP \& Grant} \longrightarrow \text{Q2 2027: 1st Olympiad}$$
-      </div>
-    </div>
-    
-      
-        <div class="my-auto grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl mx-auto w-full">
-          <div class="bg-white border-2 border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
-            <div class="text-xs font-mono font-bold text-indigo-600 uppercase">Q4 2026 • Фаза 1</div>
-            <h3 class="text-base font-black text-slate-900">Прототип & Спецификация</h3>
-            <p class="text-xs text-slate-600">Web Composer, банк первых 20 задач, валидация гипотез.</p>
-          </div>
-          <div class="bg-white border-2 border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
-            <div class="text-xs font-mono font-bold text-emerald-600 uppercase">Q1 2027 • Фаза 2</div>
-            <h3 class="text-base font-black text-slate-900">WASM Ядро & Автосудья</h3>
-            <p class="text-xs text-slate-600">Rust симулятор в браузере, песочница gVisor, грант ФСИ «Старт-1».</p>
-          </div>
-          <div class="bg-white border-2 border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
-            <div class="text-xs font-mono font-bold text-amber-600 uppercase">Q2 2027 • Фаза 3</div>
-            <h3 class="text-base font-black text-slate-900">Пилот в Вузах</h3>
-            <p class="text-xs text-slate-600">Тестирование на студентах МФТИ, МГУ, ВШЭ; 50+ задач в базе.</p>
-          </div>
-          <div class="bg-white border-2 border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
-            <div class="text-xs font-mono font-bold text-rose-600 uppercase">Q3 2027 • Фаза 4</div>
-            <h3 class="text-base font-black text-slate-900">1-й Чемпионат</h3>
-            <p class="text-xs text-slate-600">Всероссийский контест по квантовому программированию.</p>
-          </div>
-        </div>
-        
-    </div>
-    
-        </section>
-        
   </div>
 
   <!-- Bottom Navigation & Controls Bar -->
@@ -2624,7 +2511,7 @@
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
     </button>
     <div class="font-mono text-xs font-bold tracking-widest px-2" id="slide-indicator">
-      01 / 28
+      01 / 26
     </div>
     <button onclick="nextSlide()" class="p-1.5 hover:bg-slate-800 rounded-full transition" title="Следующий (→ / Пробел)">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
@@ -2643,7 +2530,7 @@
   <div id="drawer" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex flex-col p-8">
     <div class="flex items-center justify-between pb-6 border-b border-slate-800 text-white">
       <div>
-        <h2 class="text-2xl font-black">Обзор всех 28 слайдов презентации</h2>
+        <h2 class="text-2xl font-black">Обзор всех 26 слайдов презентации</h2>
         <p class="text-xs text-slate-400 font-mono">Кликните по карточке для перехода к слайду</p>
       </div>
       <button onclick="toggleDrawer()" class="p-2 hover:bg-slate-800 rounded-full text-slate-400 hover:text-white transition">
@@ -2858,22 +2745,6 @@
             <span class="font-bold text-rose-600">ИТОГИ КЛАССИФИКАЦИИ</span>
           </div>
           <div class="text-xs font-black text-slate-900 truncate">Сводная матрица архетипов задач QuantumArena</div>
-        </div>
-        
-        <div onclick="goToSlide(26)" class="p-3 bg-white border border-slate-200 hover:border-rose-500 hover:shadow-md transition rounded-xl cursor-pointer text-left space-y-1">
-          <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
-            <span>Слайд 27</span>
-            <span class="font-bold text-rose-600">ИНЖЕНЕРНАЯ АРХИТЕКТУРА</span>
-          </div>
-          <div class="text-xs font-black text-slate-900 truncate">Архитектура платформы: От GUI Composer до Автосудьи</div>
-        </div>
-        
-        <div onclick="goToSlide(27)" class="p-3 bg-white border border-slate-200 hover:border-rose-500 hover:shadow-md transition rounded-xl cursor-pointer text-left space-y-1">
-          <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
-            <span>Слайд 28</span>
-            <span class="font-bold text-rose-600">ПЛАН РАЗВИТИЯ</span>
-          </div>
-          <div class="text-xs font-black text-slate-900 truncate">Дорожная карта реализации QuantumArena</div>
         </div>
         
     </div>

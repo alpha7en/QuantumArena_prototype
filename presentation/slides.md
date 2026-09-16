@@ -304,23 +304,3 @@ $$
 $$
 
 ---
-
-<!-- Slide 27 -->
-### ИНЖЕНЕРНАЯ АРХИТЕКТУРА • PIPELINE
-# Архитектура платформы: От GUI Composer до Автосудьи
-
-$$
-\text{User Drag\&Drop} \longrightarrow \text{Rust WASM (5ms)} \longrightarrow \text{gVisor Docker Aer} \longrightarrow \text{Leaderboard}
-$$
-
----
-
-<!-- Slide 28 -->
-### ПЛАН РАЗВИТИЯ • ROADMAP
-# Дорожная карта реализации QuantumArena
-
-$$
-\text{Q4 2026: Prototype} \longrightarrow \text{Q1 2027: MVP \& Grant} \longrightarrow \text{Q2 2027: 1st Olympiad}
-$$
-
----
