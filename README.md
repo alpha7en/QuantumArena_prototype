@@ -8,6 +8,8 @@
 Разработан интерактивный веб-прототип платформы. Прототип демонстрирует общую архитектуру сайта, UX решения задач, визуальную песочницу и конвертацию схемы в Qiskit (пока без серверного бэкенда проверки).
 
 * 🌐 **Онлайн-демо:** [https://alpha7en.github.io/QuantumArena_prototype/](https://alpha7en.github.io/QuantumArena_prototype/) *(или локально [`index.html`](index.html))*
+* 📊 **Интерактивная презентация таксономии и задач (28 слайдов):** [`presentation/index.html`](presentation/index.html) *(Markdown: [`presentation/slides.md`](presentation/slides.md))*
+
 
 ---
 
