@@ -3,7 +3,8 @@
 .hero-text { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
 .hero-demo { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 16px; padding: 28px; }
 .hero-demo .board { margin: 0 -12px; }
-.hero-arc { position: absolute; width: 360px; height: 360px; border-radius: 50%; right: -120px; top: -200px; border: 3px solid var(--accent); box-shadow: 0 0 30px rgba(204, 0, 0, .55), inset 0 0 30px rgba(204, 0, 0, .25); pointer-events: none; }
+.hero-arc { position: absolute; width: 320px; height: 320px; border-radius: 50%; right: -175px; top: -215px; border: 3px solid var(--accent); box-shadow: 0 0 26px rgba(204, 0, 0, .5); pointer-events: none; z-index: 0; }
+.hero-demo > :not(.hero-arc) { position: relative; z-index: 1; }
 .state-strip { display: flex; gap: 14px; align-items: center; background: var(--bg-inset); border-radius: 12px; padding: 14px 16px; font: 400 17px/24px var(--font-mono); }
 .state-strip .k { font: 400 12px/16px var(--font-mono); color: var(--text-muted); }
 .steps3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -138,7 +139,7 @@ a.prow:hover { background: var(--bg-hover); }
 @media (max-width: 1000px) { .learn3 { grid-template-columns: 1fr; } }
 
 @media (max-width: 640px) {
-  .hero-arc { width: 240px; height: 240px; right: -100px; top: -150px; }
+  .hero-arc { width: 220px; height: 220px; right: -120px; top: -150px; }
   .page { gap: 24px; padding-bottom: 64px; }
   .hero { gap: 28px; } .cd-n b { font-size: 34px; line-height: 38px; }
   .rbar-in { padding: 14px var(--page-pad); } .big-clock { font-size: 28px; }
