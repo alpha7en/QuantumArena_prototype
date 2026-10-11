@@ -28,7 +28,7 @@ export default async function home() {
   const view = html`
   <div class="page home">
     <section class="hero-wrap">
-      <div class="hero-bg" aria-hidden="true"><i class="stripes"></i><i class="sphere"></i></div>
+      <div class="hero-bg" aria-hidden="true"><i class="stripes"></i><i class="sphere"></i><i class="bg-node sphere-node"></i></div>
       <div class="hero">
       <div class="hero-text">
         ${raw(kicker('квантовый задачник'))}
@@ -47,6 +47,8 @@ export default async function home() {
       </div>
       </div>
     </section>
+
+    <div class="sec-wires" aria-hidden="true"></div>
 
     <section class="stats-strip" aria-label="коротко о платформе">
       ${raw(statCell('в банке', `${TASKS.length}`, `${ruPlural(TASKS.length, 'задача', 'задачи', 'задач')}`, `${Object.keys(ARCHETYPES).length} типов · 3 уровня сложности`, vizBars(counts)))}
@@ -74,7 +76,7 @@ export default async function home() {
     <section class="col" style="gap:24px">
       ${raw(sectionHead('сейчас на арене', '<a class="btn btn-outline sm" href="#/rating">весь рейтинг' + icon('arrow-r') + '</a>'))}
       <div class="now-grid">
-        <div class="card next-round">
+        <div class="card next-round deco deco-trace" style="--ds:320px">
           <div class="row">${raw(kicker('ближайший раунд'))}<span class="spacer"></span>${raw(statusHtml('draft', 'регистрация открыта'))}</div>
           <h3 class="t-h2" style="margin-top:12px;font-size:28px;line-height:36px">quantum weekly ${sc.next}</h3>
           <div class="t-mono muted">${dateShort(start)} · ${timeHM(start)} мск · 90 минут · 4 задачи</div>
@@ -86,7 +88,7 @@ export default async function home() {
           </ul>
           <button class="btn ${registered ? 'btn-secondary' : 'btn-primary'}" id="reg-btn" style="align-self:flex-start;margin-top:auto">${registered ? html`${raw(icon('check'))}вы записаны` : 'зарегистрироваться'}</button>
         </div>
-        <div class="card">
+        <div class="card deco deco-interf no-node" style="--ds:520px;--dx:-120px;--dy:-90px;--do:.07;overflow:hidden">
           <div class="col" style="gap:4px"><h3 class="t-h2">вузы сезона</h3><div class="t-mono-s muted">осень 2026 · сумма рейтинга топ-10 студентов · демо-данные</div></div>
           ${raw(podiumHtml(top, { kind: 'uni' }))}
         </div>
@@ -96,7 +98,7 @@ export default async function home() {
 
   let stop = null;
   return {
-    title: 'Квантовые задачи', nav: null, html: view,
+    title: 'Квантовые задачи', nav: null, bg: 'haze', html: view,
     mount(root) {
       const b = new Board(root.querySelector('#hero-board'), { density: 'mini', circuit: bell, cols: 3, fixedCols: true, readOnly: true, wireInit: ['0', '0'], state: st, showDisks: true });
       root.querySelectorAll('[data-mini]').forEach((el) => {

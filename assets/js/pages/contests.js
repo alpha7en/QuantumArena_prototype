@@ -43,7 +43,7 @@ export default async function contests() {
     </div>
     <section class="col" style="gap:16px">
       ${raw(sectionHead('лидеры сезона', '<a class="btn btn-outline sm" href="#/rating/season">рейтинг сезона' + icon('arrow-r', 'sm') + '</a>'))}
-      <div class="card leaders">
+      <div class="card leaders deco deco-interf no-node" style="--ds:560px;--dx:-160px;--dy:-200px;--do:.07">
         ${raw(podiumHtml(season))}
         <div class="col" style="gap:10px;justify-content:center"><div class="t-kicker">|ваше место в сезоне⟩</div>
           ${currentUser() && rating != null ? html`<div class="row" style="justify-content:space-between;padding:12px 0;border-top:1px solid var(--line-subtle);border-bottom:1px solid var(--line-subtle)"><span class="mono muted">${fmtInt(place)}</span><span class="grow" style="margin-left:16px"><b>${currentUser().name} · вы</b><div class="muted t-small">${uniById(currentUser().uni).name} · ${d.rating >= 1400 ? 'специалист' : 'ученик'}</div></span><span class="t-number-s">${fmtInt(rating)}</span></div>` : html`<div class="secondary t-small">${isGuest() ? 'Войдите, чтобы увидеть своё место.' : 'Сыграйте раунд, и здесь появится ваше место.'}</div>`}

@@ -218,3 +218,13 @@ a.prow:hover { background: var(--bg-hover); }
 }
 
 .res-task { flex-wrap: wrap; } .res-task .grow { flex: 1 1 180px; } .rate { flex-wrap: wrap; row-gap: 4px; }
+
+/* вход: рисунок и красный узел зависят от экрана (набор — в bg.css) */
+.auth-hero[data-k="register"]::before { -webkit-mask-image: url(../img/bg/orbits.svg); mask-image: url(../img/bg/orbits.svg); right: -18%; top: -30%; width: 96%; opacity: .16; }
+.auth-hero[data-k="recover"]::before { -webkit-mask-image: url(../img/bg/rings.svg); mask-image: url(../img/bg/rings.svg); right: -34%; top: -40%; width: 110%; opacity: .16; }
+.auth-hero::after { content: ''; position: absolute; z-index: 0; right: 16%; top: 22%; width: 9px; height: 9px; border-radius: 50%; background: var(--bg-node); box-shadow: 0 0 18px 2px var(--bg-glow); pointer-events: none; }
+/* пустое состояние: единственный неон на странице, под иконкой */
+.empty .ring { position: relative; border-color: var(--bg-node); box-shadow: 0 0 22px var(--bg-glow), inset 0 0 14px var(--bg-glow); color: var(--text-primary); }
+.hero-bg { --sw: min(900px, 66vw); }
+.hero-bg .sphere-node { position: absolute; width: 10px; height: 10px; left: calc(109% - var(--sw) / 2 - var(--sw) * .446 - 5px); top: calc(50% - var(--sw) * .1625 - 5px); }
+@media (max-width: 1100px) { .hero-bg .sphere-node { display: none; } }
