@@ -14,6 +14,7 @@
 
 ```bash
 npm test                         # эталоны и судья должны проходить
+node scripts/stamp.mjs           # новая версия ресурсов: иначе браузеры до 10 минут показывают старый сайт
 node scripts/gen_catalog.mjs     # обновить docs/TASK_CATALOG.md, если менялись задачи
 git add -A && git commit -m "..." && git push origin main
 ```
@@ -27,6 +28,10 @@ ES-модули не работают по `file://`, поэтому нужен 
 ```bash
 python3 -m http.server 8080      # затем открыть http://localhost:8080
 ```
+
+## Почему нужен stamp
+
+GitHub Pages отдаёт файлы с `Cache-Control: max-age=600`: после публикации браузер может до 10 минут использовать старые модули и стили. `scripts/stamp.mjs` считает хэш содержимого `assets/js` и `assets/css` и пишет в `index.html` import map (`./assets/js/x.js` → `./assets/js/x.js?v=хэш`) и `?v=` у CSS и `app.js`. Новый хэш — новые адреса — браузер грузит свежие файлы. Скрипт идемпотентен, запускайте его перед каждым коммитом, который меняет `assets/`. `index.html` по-прежнему может кэшироваться до 10 минут; при сомнениях — `Ctrl/⌘ + Shift + R`.
 
 ## Проверка перед публикацией
 

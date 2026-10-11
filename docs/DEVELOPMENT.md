@@ -6,6 +6,7 @@
 npm test                      # все тесты: симулятор, интерпретатор, судья, эталоны задач
 python3 -m http.server 8080   # сайт на http://localhost:8080
 node scripts/gen_catalog.mjs  # пересобрать docs/TASK_CATALOG.md
+node scripts/stamp.mjs        # версия ресурсов в index.html (перед публикацией)
 ```
 
 ## Карта кода
