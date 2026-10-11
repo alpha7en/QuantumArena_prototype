@@ -1,0 +1,95 @@
+/* Токены дизайна — из Figma-файла QuantumLeetCode (коллекции qlc/dark и qlc/light). */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-base: #0b0c0e;
+  --bg-panel: #141517;
+  --bg-raised: #222325;
+  --bg-raised-hover: #2c2e31;
+  --bg-inset: #060608;
+  --bg-hover: #1c1d1f;
+  --line-subtle: #28292b;
+  --line-strong: #46484b;
+  --line-control: #6a6c6f;
+  --text-primary: #ffffff;
+  --text-secondary: #cbced3;
+  --text-muted: #a2a5aa;
+  --text-on-accent: #ffffff;
+  --accent: #cc0000;
+  --accent-hover: #e00a0a;
+  --accent-pressed: #a10000;
+  --accent-deep: #a10000;
+  --accent-text: #ff4b4b;
+  --accent-soft: #222325;
+  --accent-line: #6f1916;
+  --accent-indicator: #ff4b4b;
+  --ok: #5bd69a;
+  --ok-soft: #222325;
+  --warn: #f2b84b;
+  --warn-soft: #222325;
+  --glass-fill: rgba(255, 255, 255, 0.04);
+  --glass-stroke: rgba(255, 255, 255, 0.10);
+  --data-1: #ffffff;
+  --data-2: #bbbec3;
+  --data-3: #737478;
+  --data-4: #313336;
+  --focus-ring: #ff4b4b;
+  --scrim: rgba(0, 0, 0, 0.7);
+  --shadow-pop: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg-base: #f2f4f6;
+  --bg-panel: #ffffff;
+  --bg-raised: #e8eaee;
+  --bg-raised-hover: #dee0e5;
+  --bg-inset: #f8f9fb;
+  --bg-hover: #eff1f5;
+  --line-subtle: #dadce1;
+  --line-strong: #bec1c8;
+  --line-control: #84888f;
+  --text-primary: #0c0d10;
+  --text-secondary: #3f424a;
+  --text-muted: #5b5f67;
+  --text-on-accent: #ffffff;
+  --accent: #cc0000;
+  --accent-hover: #e00a0a;
+  --accent-pressed: #a10000;
+  --accent-deep: #a10000;
+  --accent-text: #b80000;
+  --accent-soft: #e8eaee;
+  --accent-line: #e8acaa;
+  --accent-indicator: #cc0000;
+  --ok: #066d41;
+  --ok-soft: #e8eaee;
+  --warn: #7e4f04;
+  --warn-soft: #e8eaee;
+  --glass-fill: rgba(255, 255, 255, 0.7);
+  --glass-stroke: rgba(10, 10, 12, 0.08);
+  --data-1: #0c0d10;
+  --data-2: #494d55;
+  --data-3: #888c94;
+  --data-4: #e1e3e8;
+  --focus-ring: #cc0000;
+  --scrim: rgba(10, 10, 12, 0.4);
+  --shadow-pop: 0 12px 40px rgba(20, 20, 30, 0.16);
+}
+
+:root {
+  --font-display: 'Unbounded', 'Onest', system-ui, sans-serif;
+  --font-body: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --r-sm: 9px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --header-h: 64px;
+  --page-pad: 64px;
+  --page-max: 1440px;
+}
+
+@media (max-width: 1280px) { :root { --page-pad: 40px; } }
+@media (max-width: 1024px) { :root { --page-pad: 32px; } }
+@media (max-width: 640px) { :root { --page-pad: 16px; } }
