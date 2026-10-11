@@ -64,7 +64,7 @@ export async function register({ first, last, email, pass, uni }) {
   const id = 'u' + Date.now().toString(36);
   const salt = Math.random().toString(36).slice(2);
   const base = (first[0] + '.' + last).toLowerCase().replace(/[^a-zа-яё0-9.]/gi, '');
-  const acc = { id, email: mail, first: first.trim(), last: last.trim(), name: `${first.trim()} ${last.trim()}`, login: base, uni, salt, pass: await hash(pass, salt), createdAt: Date.now(), avatar: null, showInUniRating: true, uniChangedAt: Date.now() };
+  const acc = { id, email: mail, first: first.trim(), last: last.trim(), name: `${first.trim()} ${last.trim()}`, login: base, uni, salt, pass: await hash(pass, salt), createdAt: Date.now(), avatar: null, showInUniRating: true, uniChangedAt: 0 };
   // уникальный логин
   let k = 1; const orig = acc.login; while (s.accounts.some((a) => a.login === acc.login)) acc.login = orig + k++;
   s.accounts.push(acc);

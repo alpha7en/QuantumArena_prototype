@@ -185,3 +185,8 @@ code.inline, .md code { font: 400 0.92em var(--font-mono); background: var(--bg-
 footer.site-footer { border-top: 1px solid var(--line-subtle); margin-top: auto; }
 footer.site-footer .in { max-width: var(--page-max); margin: 0 auto; padding: 20px var(--page-pad); display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: center; font-size: 13px; color: var(--text-muted); }
 footer.site-footer a:hover { color: var(--text-primary); }
+
+@media (max-width: 640px) {
+  .demo-banner { font-size: 10px; line-height: 14px; padding: 4px 10px; } .demo-banner .hide-sm { display: none; }
+  .toasts { right: 16px; top: 72px; }
+}

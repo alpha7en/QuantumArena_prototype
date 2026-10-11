@@ -98,7 +98,7 @@ export function liveTable(n, elapsedMin, progress, { uni = null } = {}) {
   });
   snap.sort((a, b) => b.score - a.score || a.time - b.time);
   const me = scoreProgress(progress);
-  let better = 0; for (const r of snap) { if (r.score > me.score || (r.score === me.score && r.time < me.time)) better++; else break; }
+  let better = 0; for (const r of snap) { if (r.score > me.score || (r.score === me.score && r.time <= me.time)) better++; else break; }
   const list = uni ? snap.filter((r) => r.person.uni === uni) : snap;
   return { rows: list, place: better + 1, of: snap.length + 1, me };
 }

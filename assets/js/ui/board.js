@@ -9,6 +9,7 @@ const DENSITY = {
   task: { colW: 100, rowH: 96, tile: 44, top: 44, label: 112, disk: 190, cellShow: true },
   sandbox: { colW: 76, rowH: 72, tile: 44, top: 44, label: 112, disk: 150, cellShow: false },
   mini: { colW: 84, rowH: 80, tile: 40, top: 36, label: 76, disk: 150, cellShow: false },
+  preview: { colW: 52, rowH: 44, tile: 32, top: 26, label: 62, disk: 128, cellShow: false },
 };
 
 export const PI_TEXT = (th) => angleToStr(th).replace(/\*/g, '·').replace(/pi/g, 'π');
@@ -68,7 +69,8 @@ export class Board {
       parts.push(`<line class="wire" x1="${g.wireStart + 30}" x2="${g.wireEnd}" y1="${g.y(r)}" y2="${g.y(r)}"/>`);
       const init = this.o.wireInit ? this.o.wireInit[r] : '0';
       const ket = init === '0' || init === '1' ? `|${init}⟩` : `|${init}⟩`;
-      parts.push(`<text class="qlabel" x="${d.label - 56}" y="${g.y(r) + 5}" text-anchor="end">${esc(this.qLabel(r))}</text><text class="qket" x="${d.label - 48}" y="${g.y(r) + 5}">${esc(ket)}</text>`);
+      const nx = Math.round(d.label * 0.5);
+      parts.push(`<text class="qlabel" x="${nx}" y="${g.y(r) + 5}" text-anchor="end">${esc(this.qLabel(r))}</text><text class="qket" x="${nx + 8}" y="${g.y(r) + 5}">${esc(ket)}</text>`);
     }
     // пустые клетки
     if (d.cellShow || this.drag) {
@@ -270,6 +272,7 @@ export class Board {
   }
 
   place(tile, col, row) {
+    if (tile.g === 'ORACLE') return this.placeOracle(tile, col);
     if (!this.cellFreeFor(col, row, tile)) return false;
     const op = { g: tile.g, t: [row], c: [], p: tile.g in { P: 1, RX: 1, RY: 1, RZ: 1 } ? [tile.defaultAngle ?? Math.PI / 2] : [], col };
     if (tile.g === 'M' || tile.g === 'RESET') { /* одиночный */ }
@@ -292,6 +295,16 @@ export class Board {
     this.selected = op.id;
     this.o.onSelect && this.o.onSelect(op);
     this.commit('place');
+    return true;
+  }
+  placeOracle(tile, col) {
+    const k = tile.arity, t = Array.from({ length: k }, (_, i) => i);
+    if (k > this.n) return false;
+    let c = col;
+    if (!this.spanFree(c, 0, k - 1)) { c = this.nextFreeCol(col, 0, k - 1); if (c == null) return false; }
+    const op = { g: 'ORACLE', t, c: [], p: [], col: c, id: newId() };
+    this.circuit.ops.push(op); this.sortOps(); this.selected = op.id;
+    this.o.onSelect && this.o.onSelect(op); this.commit('oracle');
     return true;
   }
   cellFreeFor(col, row) { return true; }

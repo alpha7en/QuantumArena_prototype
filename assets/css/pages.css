@@ -136,3 +136,11 @@ a.prow:hover { background: var(--bg-hover); }
 .path { display: flex; flex-direction: column; border: 1px solid var(--line-subtle); border-radius: 16px; overflow: hidden; background: var(--bg-panel); }
 .path li + li { border-top: 1px solid var(--line-subtle); } .path a { display: flex; align-items: center; gap: 16px; padding: 14px 20px; } .path a:hover { background: var(--bg-hover); }
 @media (max-width: 1000px) { .learn3 { grid-template-columns: 1fr; } }
+
+@media (max-width: 640px) {
+  .hero-arc { width: 240px; height: 240px; right: -100px; top: -150px; }
+  .page { gap: 24px; padding-bottom: 64px; }
+  .hero { gap: 28px; } .cd-n b { font-size: 34px; line-height: 38px; }
+  .rbar-in { padding: 14px var(--page-pad); } .big-clock { font-size: 28px; }
+  .podium { gap: 6px; } .pod-num { font-size: 40px; line-height: 44px; } .pod-1 .pod-num { font-size: 52px; line-height: 56px; }
+}

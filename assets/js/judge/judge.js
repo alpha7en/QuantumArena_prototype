@@ -155,7 +155,7 @@ export function liveState(task, circuit, param) {
 export function verdictText(res) {
   switch (res.verdict) {
     case 'ok': return 'принято';
-    case 'wa': return `неверный ответ · тест ${res.fail.index + 1}`;
+    case 'wa': return `неверный ответ · тест ${res.fail.index + 1}${res.fail.param !== undefined ? ` · n = ${res.fail.param}` : ''}`;
     case 'limit': {
       const k = res.limit.issues[0].kind;
       return { gates: 'лимит гейтов', depth: 'превышена глубина', basis: 'гейт вне базиса', coupling: 'нарушена связность', qubits: 'число кубитов', oracle: 'вызовы оракула', twoQubit: 'двухкубитные гейты' }[k] || 'превышен лимит';

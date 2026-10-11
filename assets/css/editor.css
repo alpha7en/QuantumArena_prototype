@@ -142,3 +142,44 @@
 .sb-name { background: transparent; border: 0; outline: 0; font: 600 15px/20px var(--font-body); color: var(--text-primary); width: 190px; border-radius: 6px; padding: 4px 6px; margin-left: -6px; }
 .sb-name:hover, .sb-name:focus { background: var(--bg-hover); }
 #sbsub { flex-wrap: wrap; height: auto; min-height: 56px; padding-top: 8px; padding-bottom: 8px; }
+
+/* Редактор занимает всю высоту окна, прокручиваются только внутренние области */
+@media (min-width: 1025px) and (min-height: 640px) {
+  body[data-layout="editor"] { height: 100vh; overflow: hidden; }
+  body[data-layout="editor"] #app { min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+  body[data-layout="editor"] #app > div, body[data-layout="editor"] .editor-shell { min-height: 0; height: 100%; }
+  .editor-main, .sb-main { min-height: 0; }
+  .editor-center { overflow: hidden; }
+  .canvas { overflow: auto; min-height: 0; }
+  .bottom { max-height: 42%; overflow: auto; min-height: 190px; }
+}
+
+/* Узкие экраны: условие задачи — выезжающая панель (BP·1024 в макете) */
+#cond-btn, .cond-close { display: none; }
+@media (max-width: 1024px) {
+  #cond-btn { display: inline-flex; }
+  .editor-main { grid-template-columns: minmax(0, 1fr); }
+  .editor-left { display: none; border-bottom: 0; }
+  .editor-shell.cond-open .editor-left { display: flex; position: fixed; z-index: 85; left: 0; top: 0; bottom: 0; width: min(400px, 100%); max-height: none; box-shadow: var(--shadow-pop); border-right: 1px solid var(--line-strong); }
+  .editor-shell.cond-open .cond-close { display: inline-flex; align-self: flex-start; }
+  .editor-shell.cond-open::after { content: ''; position: fixed; inset: 0; background: var(--scrim); z-index: 80; }
+  .bottom { max-height: none; }
+}
+@media (max-width: 640px) {
+  .toolbar { padding: 0 12px; gap: 8px; }
+  .canvas { padding: 12px 8px 8px; align-items: flex-start; }
+  .bottom { padding: 0 14px 20px; }
+  .verdict { padding: 18px; } .verdict .seal { width: 88px; height: 88px; font-size: 16px; }
+  .step-line { width: 20px; }
+}
+.editor-sub .back { white-space: nowrap; }
+@media (max-width: 640px) {
+  .editor-sub { padding: 0 12px; gap: 8px; } .editor-sub .muted.t-mono-s { display: none; }
+  .hintbar { flex-wrap: wrap; } .hintbar .grow { min-width: 200px; }
+  .editor-shell .state-big { font-size: 20px; line-height: 28px; }
+}
+
+/* Доска сжимается по высоте, если кубитов много (пропорции сохраняются) */
+@media (min-width: 1025px) {
+  .canvas .boardsvg { width: auto; height: auto; max-width: 100%; max-height: max(240px, calc(100vh - 500px)); }
+}

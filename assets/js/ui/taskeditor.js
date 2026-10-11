@@ -58,7 +58,7 @@ export function mountTaskEditor(root, task, ctx = {}) {
   const tiles = () => {
     const out = [];
     for (const name of (lim().basis || [])) { const t = parseTile(name); if (t) out.push(t); }
-    if (task.oracleArity) out.push({ name: 'O', g: 'ORACLE', nc: 0 });
+    if (task.oracleArity) out.push({ name: 'O', g: 'ORACLE', nc: 0, arity: task.oracleArity });
     return out;
   };
   const phi = task.limits && !codeOnly ? '' : '';
@@ -82,11 +82,12 @@ export function mountTaskEditor(root, task, ctx = {}) {
       ${round ? roundCtx.s : `<a class="back" href="#/tasks">${icon('arrow-l')}все задачи</a><span class="muted t-mono-s">· задача ${task.num} из ${TASKS.length}</span>`}
       <span class="spacer"></span>
       ${round ? `<span class="status live"><span class="dot"></span><span data-round-clock class="mono num"></span></span>` : ''}
-      <button class="btn btn-outline xs" data-act="cond" id="cond-btn" hidden>${icon('doc', 'sm')}условие</button>
+      <button class="btn btn-outline xs" data-act="cond" id="cond-btn">${icon('doc', 'sm')}условие</button>
       ${round ? '' : `<a class="icon-btn outlined" ${idx > 0 ? `href="#/tasks/${TASKS[idx - 1].num}"` : 'aria-disabled="true"'} aria-label="предыдущая">${icon('chev-l')}</a><a class="icon-btn outlined" ${idx < TASKS.length - 1 ? `href="#/tasks/${TASKS[idx + 1].num}"` : 'aria-disabled="true"'} aria-label="следующая">${icon('chev-r')}</a>`}
     </div>
     <div class="editor-main">
       <aside class="editor-left" id="ed-left">
+        <button class="btn btn-outline xs cond-close" data-act="cond-close">${icon('x', 'sm')}закрыть условие</button>
         <div>
           <div class="row" style="justify-content:space-between"><div class="row" style="gap:10px"><span class="mono muted" style="font-size:13px">№ ${task.num}</span>${diffHtml(task.level)}</div><span class="muted t-mono-s">${esc(task.topic)}</span></div>
           <h1 style="font:700 28px/34px var(--font-body);letter-spacing:-0.5px;margin-top:14px">${esc(task.title)}</h1>
@@ -204,7 +205,7 @@ export function mountTaskEditor(root, task, ctx = {}) {
       if (S.canvasMode !== 'code' || !codeEd) {
         board = null; S.canvasMode = 'code';
         $canvas.style.justifyContent = 'flex-start';
-        $canvas.innerHTML = `<div id="pv" style="max-width:100%"></div><div id="codewrap" style="width:100%;flex:1;display:flex;flex-direction:column;min-height:260px;border:1px solid var(--line-subtle);border-radius:12px;overflow:auto"></div><div id="fb" style="width:100%;display:flex;justify-content:center;margin-top:12px"></div>`;
+        $canvas.innerHTML = `<div id="pv" style="max-width:100%;flex:none;max-height:300px;overflow:auto"></div><div id="codewrap" style="width:100%;flex:1;min-height:260px;border:1px solid var(--line-subtle);border-radius:12px;overflow:auto"></div><div id="fb" style="width:100%;display:flex;justify-content:center;margin-top:12px"></div>`;
         codeEd = new CodeEditor($canvas.querySelector('#codewrap'), { value: S.code, onChange: (v) => { pushUndoCode(); S.code = v; persist(); S.dismissedVerdict = false; debounceRefresh(); } });
       }
       codeEd.setError(S.codeError);
@@ -212,7 +213,7 @@ export function mountTaskEditor(root, task, ctx = {}) {
       const pv = $canvas.querySelector('#pv');
       if (codeOnly && S.built && !S.codeError) {
         pv.style.marginBottom = '10px';
-        new Board(pv, { density: 'mini', circuit: S.built.clone().autoColumns(), cols: Math.min(Math.max(3, S.built.columnCount()), 12), fixedCols: true, readOnly: true, state: S.live, showDisks: S.built.n <= 8, wireInit: null });
+        new Board(pv, { density: 'preview', circuit: S.built.clone().autoColumns(), cols: Math.min(Math.max(3, S.built.columnCount()), 14), fixedCols: true, readOnly: true, state: S.live, showDisks: S.built.n <= 8, wireInit: null });
       } else { pv.innerHTML = ''; pv.style.marginBottom = ''; }
     }
   }
@@ -317,7 +318,7 @@ export function mountTaskEditor(root, task, ctx = {}) {
     }
     return `<div class="verdict" style="flex-direction:column;gap:14px;text-align:center;align-items:center">${head}${stepsHtml(steps)}${body}${S.penaltyNote ? `<div class="muted t-small">${esc(S.penaltyNote)}</div>` : ''}</div>`;
   }
-  const shortTitle = (t) => t.toLowerCase().replace(/\(.*\)/, '').trim().slice(0, 28);
+  const shortTitle = (t) => { const m = /\(([^)]+)\)/.exec(t); const base = (m ? m[1] : t.replace(/\|.*$/, '')).trim().toLowerCase(); return base.length > 26 ? base.slice(0, 24).trim() + '…' : base; };
   const shortKet = (s) => (s.length > 40 ? s.slice(0, 38) + '…' : s);
   const sealLabel = () => (task.io.out.startsWith('(|00⟩ + |11⟩)') ? '|Φ+⟩' : `№ ${task.num}`);
   function wrongHint(res) {
@@ -510,6 +511,8 @@ export function mountTaskEditor(root, task, ctx = {}) {
       return;
     }
     switch (t.dataset.act) {
+      case 'cond': $('.editor-shell').classList.toggle('cond-open'); break;
+      case 'cond-close': $('.editor-shell').classList.remove('cond-open'); break;
       case 'submit': submit(); break;
       case 'measure': doMeasure(); break;
       case 'undo': undo(); break;
@@ -542,7 +545,7 @@ export function mountTaskEditor(root, task, ctx = {}) {
       if (moved) {
         btn._dragged = true; setTimeout(() => { btn._dragged = false; }, 0);
         const cell = cellUnder(ev); board.hoverCol = null;
-        if (cell) { if (tile.g === 'ORACLE') placeOracle(cell.c); else board.place(tile, cell.c, cell.r); } else board.render();
+        if (cell) board.place(tile, cell.c, cell.r); else board.render();
       }
     };
     addEventListener('pointermove', move); addEventListener('pointerup', up);
@@ -552,11 +555,6 @@ export function mountTaskEditor(root, task, ctx = {}) {
     const r = svg.getBoundingClientRect();
     if (ev.clientX < r.left || ev.clientX > r.right || ev.clientY < r.top || ev.clientY > r.bottom) return null;
     return board.cellAt(board.point(ev));
-  }
-  function placeOracle(col) {
-    const k = task.oracleArity, t = Array.from({ length: k }, (_, i) => i);
-    if (!board.spanFree(col, 0, k - 1)) { const c = board.nextFreeCol(col, 0, k - 1); if (c == null) return; col = c; }
-    board.circuit.ops.push({ g: 'ORACLE', t, c: [], p: [], col, id: Math.random() * 1e9 | 0 }); board.sortOps(); board.commit('oracle');
   }
   // клик по пустой клетке при выбранной «кисти» работает внутри Board (через o.armed), поэтому обновляем после установки
   const origPlace = null;

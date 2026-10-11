@@ -87,7 +87,7 @@ export function scoreProgress(progress) {
 export function placeInRound(n, progress) {
   const { rows, N } = cohort(n), me = scoreProgress(progress);
   let better = 0;
-  for (const r of rows) { if (r.score > me.score || (r.score === me.score && r.time < me.time)) better++; else break; }
+  for (const r of rows) { if (r.score > me.score || (r.score === me.score && r.time <= me.time)) better++; else break; }
   return { place: better + 1, of: N + 1, ...me };
 }
 

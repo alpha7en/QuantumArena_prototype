@@ -41,7 +41,7 @@ export function on(root, type, selector, handler) {
 }
 
 export const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
-export const fmtInt = (n) => new Intl.NumberFormat('ru-RU').format(Math.round(n)).replace(/ /g, ' ');
+export const fmtInt = (n) => { const r = Math.round(n), a = String(Math.abs(r)).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0'); return r < 0 ? '−' + a : a; };
 export const fmtDec = (n, d = 1) => n.toFixed(d).replace('.', ',');
 export const pad2 = (n) => String(n).padStart(2, '0');
 

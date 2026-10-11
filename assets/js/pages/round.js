@@ -70,7 +70,7 @@ function upcomingView(n) {
         if (isGuest()) return needAuth();
         const on_ = !isRegistered(n); setRegistered(n, on_);
         navigate(`/contests/${n}`, { replace: true });
-        if (on_) toast({ title: `Вы записаны на раунд ${n}`, text: 'Напомним перед стартом. Отменить — той же кнопкой.', kind: 'ok' });
+        if (on_) toast({ title: `Вы записаны на раунд ${n}`, text: 'Отменить можно той же кнопкой. В демо раунд запускается вручную.', kind: 'ok' });
       });
       const ics = root.querySelector('#ics'); if (ics) ics.addEventListener('click', () => icsFor(n));
       root.querySelector('#launch').addEventListener('click', async () => {
