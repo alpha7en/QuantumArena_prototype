@@ -1,7 +1,7 @@
 // Редактор задачи: условие, схема/код, состояние, отправка на проверку. Используется в банке и в раундах.
 import { esc, html, raw, on, fmtInt, timeHM, pad2 } from './dom.js';
 import { icon } from './icons.js';
-import { diffHtml, statusHtml } from './parts.js';
+import { diffHtml, statusHtml, topicIcon } from './parts.js';
 import { Board, PI_TEXT } from './board.js';
 import { CodeEditor } from './codeeditor.js';
 import { toast, modal, confirmModal } from './overlay.js';
@@ -10,7 +10,7 @@ import { runOps, sample, rng, marginal, State, fidelity, hasNonUnitary, blochOf 
 import { formatState, ket, pct } from '../quantum/format.js';
 import { circuitToCode, buildFromCode } from '../lang/qiskitlite.js';
 import { Interp, parse as pyParse } from '../lang/pyinterp.js';
-import { TASKS, taskByNum, parseTile, limitsFor, LEVELS } from '../data/tasks.js';
+import { TASKS, taskByNum, parseTile, limitsFor, LEVELS, ARCHETYPES } from '../data/tasks.js';
 import { judge, liveState, suiteOf, verdictText, TOL } from '../judge/judge.js';
 import { data, mutate, isGuest, notify, touchActivity, bumpStreak, streakNow, dayKey } from '../store.js';
 import { navigate } from '../router.js';
@@ -89,8 +89,9 @@ export function mountTaskEditor(root, task, ctx = {}) {
       <aside class="editor-left" id="ed-left">
         <button class="btn btn-outline xs cond-close" data-act="cond-close">${icon('x', 'sm')}закрыть условие</button>
         <div>
-          <div class="row" style="justify-content:space-between"><div class="row" style="gap:10px"><span class="mono muted" style="font-size:13px">№ ${task.num}</span>${diffHtml(task.level)}</div><span class="muted t-mono-s">${esc(task.topic)}</span></div>
-          <h1 style="font:700 28px/34px var(--font-body);letter-spacing:-0.5px;margin-top:14px">${esc(task.title)}</h1>
+          <div class="row" style="justify-content:space-between"><div class="row" style="gap:10px"><span class="mono muted" style="font-size:13px">№ ${task.num}</span>${diffHtml(task.level)}</div><span class="muted t-mono-s topic-cell">${topicIcon(task.topic)}${esc(task.topic)}</span></div>
+          <div class="row" style="gap:8px;margin-top:12px;flex-wrap:wrap"><span class="pill">${esc(task.archetype)} · ${esc(ARCHETYPES[task.archetype])}</span>${task.codeOnly ? '<span class="pill">только код</span>' : ''}${task.oracleArity ? '<span class="pill">оракул</span>' : ''}${task.noise ? '<span class="pill">шум</span>' : ''}</div>
+          <h1 style="font:700 28px/34px var(--font-body);letter-spacing:-0.5px;margin-top:16px">${esc(task.title)}</h1>
         </div>
         <div class="io-box"><div class="io-row"><span class="k">вход</span><span>${esc(task.io.in)}</span></div><div class="io-row"><span class="k">цель</span><span>${esc(task.io.out)}</span></div></div>
         <div class="col" style="gap:10px;color:var(--text-secondary);font-size:15px;line-height:22px">${task.statement.map((p) => `<p>${inline(p)}</p>`).join('')}</div>

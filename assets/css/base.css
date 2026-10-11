@@ -16,11 +16,13 @@ img, svg { display: block; }
 [hidden] { display: none !important; }
 
 /* Типографика (text styles из Figma) */
-.t-display { font: 600 52px/60px var(--font-display); letter-spacing: -2px; }
+.t-display { font: 600 clamp(32px, 4.2vw, 52px)/1.14 var(--font-display); letter-spacing: -0.04em; overflow-wrap: anywhere; }
+.t-display.md { font-size: clamp(28px, 3.6vw, 44px); }
+.t-display.sm { font-size: clamp(26px, 3vw, 36px); line-height: 1.2; }
 .t-h1 { font: 600 36px/44px var(--font-display); letter-spacing: -1px; }
 .t-h2 { font: 600 22px/30px var(--font-display); letter-spacing: -0.5px; }
 .t-h3 { font: 500 17px/24px var(--font-display); }
-.t-number-xl { font: 700 64px/68px var(--font-display); letter-spacing: -3px; }
+.t-number-xl { font: 700 clamp(40px, 4.6vw, 64px)/1.08 var(--font-display); letter-spacing: -0.045em; }
 .t-number { font: 600 30px/36px var(--font-display); letter-spacing: -1px; }
 .t-number-s { font: 600 20px/26px var(--font-display); letter-spacing: -0.5px; }
 .t-lead { font: 400 18px/28px var(--font-body); color: var(--text-secondary); }
@@ -56,11 +58,9 @@ img, svg { display: block; }
 .hr { height: 1px; background: var(--line-subtle); border: 0; margin: 0; }
 
 @media (max-width: 1024px) {
-  .t-display { font-size: 40px; line-height: 46px; letter-spacing: -1.5px; }
   .page { padding-top: 40px; }
 }
 @media (max-width: 640px) {
-  .t-display { font-size: 30px; line-height: 36px; letter-spacing: -1px; }
   .t-h1 { font-size: 28px; line-height: 34px; }
   .t-number-xl { font-size: 48px; line-height: 52px; }
 }
@@ -71,3 +71,10 @@ img, svg { display: block; }
   @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 }
 @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; } }
+
+/* Защита от горизонтального переполнения */
+#app { overflow-x: clip; }
+.page > *, .card, .col, .grow, .field, .two-col > *, .two-cards > *, .leaders > *, .events > *, .steps3 > *, .res-grid > * { min-width: 0; }
+.card, .notice, .page-head { overflow-wrap: break-word; }
+
+.t-number-xl, .t-number, .t-number-s, .stat-n, .cd-n b, .cd-inline, .podium .pod-score { white-space: nowrap; word-spacing: .16em; }

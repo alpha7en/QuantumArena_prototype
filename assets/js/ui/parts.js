@@ -4,6 +4,9 @@ import { icon } from './icons.js';
 import { LEVELS } from '../data/tasks.js';
 import { initials } from '../data/people.js';
 
+export const TOPIC_ICON = { запутанность: 'entangle', арифметика: 'bars', измерения: 'measure', поиск: 'search', фаза: 'wave', QFT: 'wave', телепортация: 'cloud', шум: 'noise', 'коррекция ошибок': 'shield', разложение: 'gate', оракулы: 'key', состояния: 'ket', связность: 'cnot', алгоритмы: 'atom' };
+export const topicIcon = (t, cls = 'sm') => icon(TOPIC_ICON[t] || 'qubit', cls);
+
 export const kicker = (t) => `<div class="t-kicker">|${esc(t)}⟩</div>`;
 
 export const diffHtml = (level) => `<span class="diff"><span class="bars"><i class="${level >= 1 ? 'on' : ''}"></i><i class="${level >= 2 ? 'on' : ''}"></i><i class="${level >= 3 ? 'on' : ''}"></i></span>${LEVELS[level]}</span>`;

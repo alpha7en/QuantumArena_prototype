@@ -36,8 +36,8 @@ export default async function contests() {
         <h2 class="t-h2" style="font-size:26px">quantum weekly ${sc.next}</h2>
         <div class="t-mono secondary">${dateShort(start)} · ${timeHM(start)} · 90 мин · 4 задачи</div>
         <div class="row muted t-small">${raw(icon('people', 'sm'))}записались ${fmtInt(registeredCount(sc.next))}</div>
-        <div class="row" style="justify-content:space-between;margin-top:6px"><span class="row muted t-small" style="gap:8px">${raw(icon('clock', 'sm'))}до старта</span>${raw(countdownInline(start.getTime()))}</div>
-        <div class="row" style="gap:10px;margin-top:4px"><a class="btn ${isRegistered(sc.next) ? 'btn-secondary' : 'btn-secondary'} sm" href="#/contests/${sc.next}">${isRegistered(sc.next) ? html`${raw(icon('check', 'sm'))}вы записаны` : html`зарегистрироваться${raw(icon('arrow-r', 'sm'))}`}</a><a class="btn btn-outline sm" href="#/contests/${sc.next}">${raw(icon('doc', 'sm'))}правила</a></div>
+        <div class="row wrap" style="justify-content:space-between;margin-top:6px"><span class="row muted t-small" style="gap:8px">${raw(icon('clock', 'sm'))}до старта</span>${raw(countdownInline(start.getTime()))}</div>
+        <div class="row wrap" style="gap:10px;margin-top:4px"><a class="btn ${isRegistered(sc.next) ? 'btn-secondary' : 'btn-secondary'} sm" href="#/contests/${sc.next}">${isRegistered(sc.next) ? html`${raw(icon('check', 'sm'))}вы записаны` : html`зарегистрироваться${raw(icon('arrow-r', 'sm'))}`}</a><a class="btn btn-outline sm" href="#/contests/${sc.next}">${raw(icon('doc', 'sm'))}правила</a></div>
       </div>
       ${raw(ratingCardHtml(d, place, POOL_SIZE + 1))}
     </div>
@@ -58,8 +58,8 @@ export default async function contests() {
       ${raw(sectionHead('мероприятия', '<span class="muted t-small">кроме еженедельных раундов · идеи форматов, в демо недоступны</span>'))}
       <div class="events">
         ${[['кубок sparq |arena⟩', 'турнир', 'Идея формата: отборочные раунды и финал, личный зачёт и зачёт по вузам. Условия пока не определены.', 'trophy'],
-          ['спринт: меньше CNOT', 'спринт', 'Задача с открытым оптимумом: чем меньше гейтов и глубина, тем выше результат. Отдельная таблица рекордов.', 'trophy'],
-          ['раунды по темам', 'архив', 'Прошедшие раунды, собранные по темам: запутанность, оракулы, коррекция ошибок.', 'trophy']].map(([t, k, text, ic]) => html`<div class="card col" style="gap:10px"><div class="row t-kicker">${raw(icon(ic, 'sm'))}<span>|${k}⟩</span></div><h3 class="t-h3">${t}</h3><p class="secondary t-small">${text}</p><div class="row muted t-small">${raw(icon('calendar', 'sm'))}в планах · без дат</div><button class="btn btn-outline sm" data-soon style="align-self:flex-start">подробнее${raw(icon('arrow-r', 'sm'))}</button></div>`)}
+          ['спринт: меньше CNOT', 'спринт', 'Задача с открытым оптимумом: чем меньше гейтов и глубина, тем выше результат. Отдельная таблица рекордов.', 'energy'],
+          ['раунды по темам', 'архив', 'Прошедшие раунды, собранные по темам: запутанность, оракулы, коррекция ошибок.', 'book']].map(([t, k, text, ic]) => html`<div class="card col" style="gap:10px"><div class="row t-kicker">${raw(icon(ic, 'sm'))}<span>|${k}⟩</span></div><h3 class="t-h3">${t}</h3><p class="secondary t-small">${text}</p><div class="row muted t-small">${raw(icon('calendar', 'sm'))}в планах · без дат</div><button class="btn btn-outline sm" data-soon style="align-self:flex-start">подробнее${raw(icon('arrow-r', 'sm'))}</button></div>`)}
       </div>
     </section>
   </div>`;

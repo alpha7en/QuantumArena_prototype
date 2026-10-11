@@ -1,6 +1,6 @@
 import { html, raw, esc, on, ruPlural } from '../ui/dom.js';
 import { icon } from '../ui/icons.js';
-import { kicker, diffHtml } from '../ui/parts.js';
+import { kicker, diffHtml, topicIcon } from '../ui/parts.js';
 import { TASKS, TOPICS, LEVELS } from '../data/tasks.js';
 import { acceptance } from '../data/rounds.js';
 import { data, isGuest, currentUser, mutate, streakNow } from '../store.js';
@@ -72,7 +72,7 @@ export default async function tasks(ctx) {
         rows.innerHTML = list.map((t) => {
           const st = state(t), acc = acceptance(t);
           const mark = st === 'done' ? `<span class="tmark done">${icon('check', 'sm')}</span>` : st === 'wip' ? '<span class="tmark wip"></span>' : '<span class="tmark"></span>';
-          return `<a class="trow" href="#/tasks/${t.num}"><span class="tmark-wrap">${mark}</span><span class="ttitle"><span class="mono muted tnum">${t.num}.</span>${esc(t.title)}${t.codeOnly ? ' <span class="tag">код</span>' : ''}</span><span class="t-mono-s muted tcol-topic">${esc(t.topic)}</span><span class="tcol-diff">${diffHtml(t.level)}</span><span class="tcol-rate rate"><span class="mono" style="font-size:13px">${String(acc.toFixed(1)).replace('.', ',')} %</span><span class="progress"><i style="width:${acc}%"></i></span></span></a>`;
+          return `<a class="trow" href="#/tasks/${t.num}"><span class="tmark-wrap">${mark}</span><span class="ttitle"><span class="mono muted tnum">${t.num}.</span>${esc(t.title)}${t.codeOnly ? ' <span class="tag">код</span>' : ''}</span><span class="t-mono-s muted tcol-topic topic-cell">${topicIcon(t.topic)}${esc(t.topic)}</span><span class="tcol-diff">${diffHtml(t.level)}</span><span class="tcol-rate rate"><span class="mono" style="font-size:13px">${String(acc.toFixed(1)).replace('.', ',')} %</span><span class="progress"><i style="width:${acc}%"></i></span></span></a>`;
         }).join('');
       };
       root.querySelector('#q').addEventListener('input', (e) => { f.q = e.target.value; apply(); });

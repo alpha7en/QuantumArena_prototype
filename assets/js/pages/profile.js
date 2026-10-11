@@ -68,16 +68,16 @@ export default async function profile(ctx) {
   const view = html`<div class="page">
     <div class="row wrap" style="gap:28px;align-items:center">
       ${raw(avatar(P.name, 'xxl', P.avatar))}
-      <div class="col grow" style="gap:12px"><div class="row" style="gap:12px;align-items:center"><h1 class="t-display" style="font-size:52px">${P.name}</h1>${P.demo ? html`<span class="demo-chip">демо</span>` : ''}</div>
+      <div class="col grow" style="gap:12px"><div class="row" style="gap:12px;align-items:center"><h1 class="t-display md">${P.name}</h1>${P.demo ? html`<span class="demo-chip">демо</span>` : ''}</div>
         <div class="row wrap" style="gap:14px"><a class="chip" href="#/rating/universities/${P.uni}">${uniById(P.uni).name}</a><span class="t-mono muted">@${P.login} · ${ratingTitle(P.rating)} · с ${since}</span></div></div>
       <div class="row" style="gap:10px"><button class="btn btn-outline sm" id="share">${raw(icon('ext', 'sm'))}поделиться</button>${own ? html`<a class="btn btn-secondary sm" href="#/settings">${raw(icon('sliders', 'sm'))}настройки</a>` : ''}</div>
     </div>
     ${P.other ? html`<div class="notice">${raw(icon('info'))}<div class="secondary t-small">Профиль смоделирован для демо: это не реальный человек.</div></div>` : ''}
     <div class="stat4">
-      <div class="card col" style="gap:6px"><div class="t-mono-s muted">рейтинг</div><div class="t-number-xl" style="font-size:44px;line-height:48px">${P.rating == null ? '—' : fmtInt(P.rating)}</div><div class="t-mono-s ${P.last > 0 ? 'ok' : ''}">${P.rating == null ? 'появится после первого раунда' : `${ratingTitle(P.rating)}${P.last != null ? ` · ${P.last >= 0 ? '+' : '−'}${Math.abs(P.last)} за последний раунд` : ''}`}</div></div>
-      <div class="card col" style="gap:6px"><div class="t-mono-s muted">место</div><div class="t-number-xl" style="font-size:44px;line-height:48px">${place == null ? '—' : fmtInt(place)}</div><div class="t-mono-s">${place == null ? 'нужен рейтинг' : `из ${fmtInt(POOL_SIZE + (own ? 1 : 0))} · топ ${fmtDec(place / POOL_SIZE * 100, 1)} %`}</div></div>
-      <div class="card col" style="gap:6px"><div class="t-mono-s muted">решено задач</div><div class="t-number-xl" style="font-size:44px;line-height:48px">${P.accepted}</div><div class="t-mono-s">из ${TASKS.length}${P.attempts ? ` · ${fmtDec(P.accepted / Math.max(P.attempts, 1) * 100, 1)} % отправок приняты` : ''}</div></div>
-      <div class="card col" style="gap:6px"><div class="t-mono-s muted">дней подряд</div><div class="t-number-xl" style="font-size:44px;line-height:48px">${P.streak}</div><div class="t-mono-s">рекорд — ${P.best}</div></div>
+      <div class="card col" style="gap:6px"><div class="t-mono-s muted">рейтинг</div><div class="t-number-xl">${P.rating == null ? '—' : fmtInt(P.rating)}</div><div class="t-mono-s ${P.last > 0 ? 'ok' : ''}">${P.rating == null ? 'появится после первого раунда' : `${ratingTitle(P.rating)}${P.last != null ? ` · ${P.last >= 0 ? '+' : '−'}${Math.abs(P.last)} за последний раунд` : ''}`}</div></div>
+      <div class="card col" style="gap:6px"><div class="t-mono-s muted">место</div><div class="t-number-xl">${place == null ? '—' : fmtInt(place)}</div><div class="t-mono-s">${place == null ? 'нужен рейтинг' : `из ${fmtInt(POOL_SIZE + (own ? 1 : 0))} · топ ${fmtDec(place / POOL_SIZE * 100, 1)} %`}</div></div>
+      <div class="card col" style="gap:6px"><div class="t-mono-s muted">решено задач</div><div class="t-number-xl">${P.accepted}</div><div class="t-mono-s">из ${TASKS.length}${P.attempts ? ` · ${fmtDec(P.accepted / Math.max(P.attempts, 1) * 100, 1)} % отправок приняты` : ''}</div></div>
+      <div class="card col" style="gap:6px"><div class="t-mono-s muted">дней подряд</div><div class="t-number-xl">${P.streak}</div><div class="t-mono-s">рекорд — ${P.best}</div></div>
     </div>
     <div class="two-col" style="grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)">
       <div class="card col" style="gap:12px"><div class="row" style="justify-content:space-between"><h3 class="t-h3">рейтинг по раундам</h3><div class="segmented sm" id="range"><button data-r="3m" aria-pressed="false">3 мес</button><button data-r="year" aria-pressed="true">год</button><button data-r="all" aria-pressed="false">всё</button></div></div><div id="chart"></div></div>

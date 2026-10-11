@@ -40,11 +40,11 @@ export function headerHtml(nav) {
 
 export function footerHtml() {
   return `<div class="in">
-    <span>sparq |arena⟩ · демо-версия платформы</span>
-    <span>Участники, рейтинг и результаты раундов смоделированы. Ваши данные хранятся только в этом браузере.</span>
-    <span class="spacer"></span>
-    <a href="https://github.com/alpha7en/QuantumArena_prototype/tree/main/docs" target="_blank" rel="noopener">документация</a>
-    <a href="#/learn">обучение</a>
+    <div class="brand"><a class="logo" href="#/" aria-label="на главную">${logoMark()}<span class="word">sparq</span><span class="arena">|arena⟩</span></a>
+      <p>Платформа квантовых задач с тестирующей системой. Проект сообщества SPARQ. Сейчас — демо-версия: сервера нет, схемы и проверка работают в вашем браузере.</p></div>
+    <div class="col"><h4>платформа</h4><a href="#/tasks">задачи</a><a href="#/contests">контесты</a><a href="#/rating">рейтинг</a><a href="#/sandbox">песочница</a><a href="#/learn">обучение</a></div>
+    <div class="col"><h4>о проекте</h4><a href="https://github.com/alpha7en/QuantumArena_prototype/tree/main/docs" target="_blank" rel="noopener">документация</a><a href="https://github.com/alpha7en/QuantumArena_prototype/blob/main/docs/JUDGE.md" target="_blank" rel="noopener">как проверяются решения</a><a href="https://github.com/alpha7en/QuantumArena_prototype/blob/main/docs/DEMO_DATA.md" target="_blank" rel="noopener">что в демо смоделировано</a></div>
+    <div class="legal">Участники, рейтинг и результаты раундов смоделированы. Данные аккаунта хранятся только в этом браузере.</div>
   </div>`;
 }
 
