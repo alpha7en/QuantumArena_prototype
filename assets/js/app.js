@@ -1,6 +1,7 @@
 // Точка входа: маршруты, шапка, подвал.
 import { load, applyTheme, onChange, getState, save } from './store.js';
 import { route, setRenderer, start } from './router.js';
+import { enhance } from './ui/motion.js';
 import { headerHtml, footerHtml, bindChrome } from './ui/chrome.js';
 import { closePopovers } from './ui/overlay.js';
 import { icon } from './ui/icons.js';
@@ -53,7 +54,7 @@ onChange(renderHeader);
 setRenderer((view, ctx) => {
   closePopovers();
   navKey = view.nav ?? null;
-  document.title = view.title ? `${view.title} · sparq |arena⟩` : 'sparq |arena⟩ — квантовые задачи';
+  document.title = view.title ? `${view.title} · sparq arena` : 'sparq arena — квантовые задачи';
   document.body.dataset.layout = view.layout || 'page';
   document.documentElement.dataset.bg = view.layout === 'editor' ? 'none' : (view.bg || BG_BY_NAV[view.nav] || 'none');
   $app.innerHTML = '';
@@ -63,6 +64,7 @@ setRenderer((view, ctx) => {
   renderHeader();
   scrollTo(0, 0);
   if (view.mount) view.mount($app, ctx);
+  if (view.layout !== 'editor') enhance($app);
 });
 
 renderBanner();

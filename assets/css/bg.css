@@ -1,8 +1,6 @@
-/* Фоны сайта. Набор взят из Figma (SPARQ.2 framework → «arena · web-фоны»): кольца, орбиты, интерференция,
-   провода, линейка, точки, дорожка, дымка. Линии — цвет текста с малой прозрачностью, красный — только узел.
-   Неон (.neon) — самый сильный приём: не больше одного на экран и не под текстом. */
-:root { --bg-line: var(--text-primary); --bg-node: #ff2a2a; --bg-glow: rgba(255, 42, 42, .5); --bg-haze: rgba(176, 0, 0, .34); --bg-trace: #ff3b3b; }
-:root[data-theme="light"] { --bg-node: #cc0000; --bg-glow: rgba(204, 0, 0, .28); --bg-haze: rgba(204, 0, 0, .09); --bg-trace: #cc0000; }
+/* Фоны сайта. Набор взят из Figma (SPARQ.2 framework → «arena · web-фоны»). Они нужны только локально:
+   в пустом углу страницы, у края блока, у подвала. Линии — цвет текста с малой прозрачностью. */
+:root { --bg-line: var(--text-primary); }
 
 /* ---------- общий фон страницы: только там, где он нужен (сейчас рейтинг) ---------- */
 /* центр рисунка за краем экрана, чтобы взгляд не падал на пустую точку */
@@ -22,31 +20,8 @@ html[data-bg="edge"] .ambient { display: block; }
 :root[data-theme="light"] .corner { opacity: .14; }
 @media (max-width: 760px) { .corner { display: none; } }
 
-/* ---------- красный узел с свечением ---------- */
-.bg-node, .deco::after { background: var(--bg-node); border-radius: 50%; box-shadow: 0 0 18px 2px var(--bg-glow); }
-
-/* ---------- декор внутри блока (.deco) ---------- */
-.deco { position: relative; isolation: isolate; overflow: hidden; }
-.deco::before, .deco::after { content: ''; position: absolute; z-index: -1; pointer-events: none; }
-.deco::before { width: var(--ds, 420px); aspect-ratio: 1; right: var(--dx, -140px); top: var(--dy, -140px); background: var(--bg-line); opacity: var(--do, .1); -webkit-mask: var(--art) center / contain no-repeat; mask: var(--art) center / contain no-repeat; }
-.deco::after { width: 9px; height: 9px; right: var(--nx, 40px); top: var(--ny, 40px); }
-.deco-rings { --art: url(../img/bg/rings.svg); }
-.deco-orbits { --art: url(../img/bg/orbits.svg); }
-.deco-interf { --art: url(../img/bg/interference.svg); }
-.deco-trace::before { aspect-ratio: 4 / 3; width: var(--ds, 300px); right: 0; top: auto; bottom: 0; background: var(--bg-trace); opacity: var(--do, .4); -webkit-mask: url(../img/bg/trace.svg) right bottom / contain no-repeat; mask: url(../img/bg/trace.svg) right bottom / contain no-repeat; }
-.deco-trace::after { right: calc(var(--ds, 300px) * .03 - 4.5px); top: auto; bottom: calc(var(--ds, 300px) * .7 - 4.5px); }
-.deco.no-node::after { display: none; }
-
 /* ---------- полосы ---------- */
 /* линейка вдоль верхней кромки подвала */
 footer.site-footer { position: relative; }
 footer.site-footer::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 18px; pointer-events: none; opacity: .5;
   background: linear-gradient(90deg, var(--line-strong) 1px, transparent 1px) 0 0 / 10px 8px repeat-x, linear-gradient(90deg, var(--line-control) 1px, transparent 1px) 0 0 / 60px 16px repeat-x; }
-/* провода — разделитель секций */
-.sec-wires { height: 56px; margin: 0 calc(-1 * var(--page-pad)); background: var(--bg-line); opacity: .16; -webkit-mask: url(../img/bg/wires.svg) 0 center / 240px 56px repeat-x; mask: url(../img/bg/wires.svg) 0 center / 240px 56px repeat-x; -webkit-mask-image: url(../img/bg/wires.svg), linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); -webkit-mask-composite: source-in; mask-composite: intersect; pointer-events: none; }
-
-/* ---------- неон: дуга с свечением ---------- */
-.neon { position: relative; width: var(--s, 200px); aspect-ratio: 1; pointer-events: none; }
-.neon::before { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--bg-node); box-shadow: 0 0 28px var(--bg-glow), inset 0 0 28px var(--bg-glow); -webkit-mask: linear-gradient(#000 50%, transparent 50%); mask: linear-gradient(#000 50%, transparent 50%); }
-.neon::after { content: ''; position: absolute; inset: -22%; border-radius: 50%; background: radial-gradient(closest-side, var(--bg-haze), transparent); z-index: -1; }
-@media (max-width: 640px) { .deco-trace::before, .deco-trace::after { display: none; } }

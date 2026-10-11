@@ -116,7 +116,10 @@ a.card, button.card { transition: border-color .15s, background-color .15s, tran
 .logo { display: inline-flex; align-items: center; gap: 10px; height: 26px; }
 .logo .mark { width: 24px; height: 26px; color: var(--text-primary); }
 .logo .word { font: 500 17px/24px var(--font-display); letter-spacing: -0.2px; }
-.logo .arena { font: 400 14px/20px var(--font-mono); color: var(--text-muted); }
+.logo .arena { display: inline-flex; align-items: center; gap: 5px; font: 400 14px/20px var(--font-mono); color: var(--text-muted); }
+/* скобки кета нарисованы: вертикальная черта и угловая скобка */
+.logo .kb { width: 1.5px; height: 15px; background: currentColor; opacity: .7; border-radius: 1px; }
+.logo .ka { width: 8px; height: 8px; border-top: 1.5px solid currentColor; border-right: 1.5px solid currentColor; transform: rotate(45deg) translate(-1px, 1px); opacity: .7; margin-left: -1px; }
 .navmenu { display: flex; gap: 28px; height: 100%; }
 .navlink { display: inline-flex; align-items: center; height: 100%; padding: 0 2px; font: 500 14px/20px var(--font-body); color: var(--text-muted); position: relative; }
 .navlink::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: transparent; }

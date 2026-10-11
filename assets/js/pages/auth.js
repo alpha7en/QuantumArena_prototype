@@ -14,7 +14,7 @@ const hero = (kind) => {
     login: ['вход', 'с возвращением', 'Продолжайте с того места, где остановились: черновики и решения сохранены в этом браузере.'],
     recover: ['восстановление', 'забыли пароль?', 'В демо письма не отправляются, поэтому новый пароль можно задать прямо здесь.'],
   }[kind];
-  return html`<div class="auth-hero card xl"><div class="auth-hero-text"><div class="t-kicker">|${t[0]}⟩</div><h2 class="t-display md" style="max-width:520px">${t[1]}</h2><p class="t-lead" style="max-width:480px">${t[2]}</p></div></div>`;
+  return html`<div class="auth-hero card xl"><div class="auth-hero-text"><div class="t-kicker">${t[0]}</div><h2 class="t-display md" style="max-width:520px">${t[1]}</h2><p class="t-lead" style="max-width:480px">${t[2]}</p></div></div>`;
 };
 
 const field = (id, label, input, hint = '', cls = '') => html`<div class="field ${cls}" id="f-${id}"><label for="${id}">${label}</label>${raw(input)}<div class="hint" id="h-${id}">${hint}</div></div>`;

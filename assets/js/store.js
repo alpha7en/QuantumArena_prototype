@@ -134,6 +134,11 @@ export function applyTheme(t = themeSetting()) {
   const eff = t === 'system' ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : t;
   document.documentElement.dataset.theme = eff;
 }
-export function setTheme(t) { getState().ui.theme = t; save(); applyTheme(t); }
+export function setTheme(t) {
+  const root = document.documentElement;
+  root.classList.add('theming'); // плавная смена цветов на время переключения
+  getState().ui.theme = t; save(); applyTheme(t);
+  setTimeout(() => root.classList.remove('theming'), 380);
+}
 
 export const uniName = (id) => (uniById(id) || { name: 'Другой вуз' }).name;

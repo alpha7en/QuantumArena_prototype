@@ -31,7 +31,10 @@ img, svg { display: block; }
 .t-small-strong { font: 500 14px/20px var(--font-body); }
 .t-mono { font: 400 14px/20px var(--font-mono); }
 .t-mono-s { font: 400 12px/16px var(--font-mono); }
-.t-kicker { font: 500 12px/16px var(--font-mono); letter-spacing: 0.08em; color: var(--text-muted); }
+.t-kicker { display: inline-flex; align-items: center; gap: 10px; font: 500 12px/16px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+/* короткая красная метка перед рубрикой; в строках со значком её нет */
+.t-kicker::before { content: ''; width: 14px; height: 1px; background: var(--accent-indicator); flex: none; }
+.t-kicker.row::before, .row > .t-kicker::before { display: none; }
 .muted { color: var(--text-muted); }
 .secondary { color: var(--text-secondary); }
 .ok { color: var(--ok); } .warn { color: var(--warn); } .bad { color: var(--accent-text); }
@@ -65,9 +68,8 @@ img, svg { display: block; }
   .t-number-xl { font-size: 48px; line-height: 52px; }
 }
 
-/* Плавные появления страниц — без движения при reduced-motion */
+/* Ключевые кадры для слоёв; движение страниц и блоков — в motion.css */
 @media (prefers-reduced-motion: no-preference) {
-  .page, .editor-shell { animation: fadein .25s ease-out both; }
   @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 }
 @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; } }

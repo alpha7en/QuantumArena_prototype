@@ -48,8 +48,6 @@ export default async function home() {
       </div>
     </section>
 
-    <div class="sec-wires" aria-hidden="true"></div>
-
     <section class="stats-strip" aria-label="коротко о платформе">
       ${raw(statCell('в банке', `${TASKS.length}`, `${ruPlural(TASKS.length, 'задача', 'задачи', 'задач')}`, `${Object.keys(ARCHETYPES).length} типов · 3 уровня сложности`, vizBars(counts)))}
       ${raw(statCell('проверка', '3', 'шага', 'лимиты, входы, шум', vizSteps()))}
@@ -121,7 +119,7 @@ function step(n, title, text, ic, viz = '') {
   return html`<div class="card step3-card"><div class="row"><span class="t-number muted step-n">${n}</span><span class="spacer"></span><span class="icon-tile">${raw(icon(ic))}</span></div><div class="step-viz">${raw(viz)}</div><h3 class="t-h2" style="margin-top:20px">${title}</h3><p class="secondary" style="margin-top:12px">${text}</p></div>`;
 }
 function statCell(kicker, value, unit, sub, viz) {
-  return `<div class="stat-cell"><div class="t-kicker">|${kicker}⟩</div><div class="row" style="align-items:flex-end;justify-content:space-between;gap:12px"><div class="row" style="align-items:baseline;gap:10px"><span class="stat-n">${value}</span><span class="stat-u">${unit}</span></div><div class="stat-viz">${viz}</div></div><div class="stat-sub">${sub}</div></div>`;
+  return `<div class="stat-cell"><div class="t-kicker">${kicker}</div><div class="row" style="align-items:flex-end;justify-content:space-between;gap:12px"><div class="row" style="align-items:baseline;gap:10px"><span class="stat-n">${value}</span><span class="stat-u">${unit}</span></div><div class="stat-viz">${viz}</div></div><div class="stat-sub">${sub}</div></div>`;
 }
 const vizBars = (c) => { const m = Math.max(...c); return `<svg width="64" height="32" viewBox="0 0 64 32" aria-hidden="true">${c.map((v, i) => `<rect x="${i * 11}" y="${32 - 4 - (v / m) * 26}" width="8" height="${4 + (v / m) * 26}" rx="2" fill="${i === c.indexOf(m) ? 'var(--text-primary)' : 'var(--data-3)'}"/>`).join('')}</svg>`; };
 const vizSteps = () => '<svg width="72" height="32" viewBox="0 0 72 32" aria-hidden="true"><path d="M8 16H36M44 16H64" stroke="var(--line-strong)" stroke-width="2"/><circle cx="8" cy="16" r="6" fill="var(--text-primary)"/><circle cx="40" cy="16" r="6" fill="var(--data-2)"/><circle cx="66" cy="16" r="5" fill="none" stroke="var(--data-3)" stroke-width="2"/></svg>';

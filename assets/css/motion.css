@@ -1,0 +1,48 @@
+/* Движение. Принципы: каждая анимация что-то объясняет (появился, нажат, выбран), быстрая и без отскока;
+   двигаются только opacity и transform; при prefers-reduced-motion движения нет, остаются смены цвета.
+   Длительности: 120 мс — отклик, 200 мс — смена состояния, 360–500 мс — появление блоков. */
+:root { --ease-out: cubic-bezier(.2, .8, .2, 1); --ease-io: cubic-bezier(.4, 0, .2, 1); --d-fast: 120ms; --d-base: 200ms; --d-slow: 360ms; }
+
+/* ---------- отклик на действие ---------- */
+.btn { transition: background-color var(--d-fast), border-color var(--d-fast), color var(--d-fast), transform 90ms var(--ease-out); }
+.btn:active:not(:disabled):not(.loading) { transform: scale(.97); }
+.icon-btn, .tile-btn, .tab, .chip { transition: background-color var(--d-fast), border-color var(--d-fast), color var(--d-fast), transform 90ms var(--ease-out); }
+.icon-btn:active, .tile-btn:active { transform: scale(.94); }
+.navlink::after { transition: background-color var(--d-base) var(--ease-io); }
+.control { transition: border-color var(--d-fast), box-shadow var(--d-fast); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ссылки-карточки чуть поднимаются */
+  a.card, button.card { transition: border-color var(--d-base), background-color var(--d-base), transform var(--d-base) var(--ease-out), box-shadow var(--d-base) var(--ease-out); }
+  a.card:hover, button.card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0, 0, 0, .28), inset 0 1px 0 var(--glass-fill); }
+  :root[data-theme="light"] a.card:hover { box-shadow: 0 10px 28px rgba(20, 24, 40, .1), inset 0 1px 0 var(--glass-fill); }
+  a.card:active { transform: translateY(0); transition-duration: 80ms; }
+
+  /* вход страницы */
+  .page, .editor-shell { animation: page-in var(--d-slow) var(--ease-out) both; }
+  .page.home { animation: page-fade 240ms var(--ease-out) both; }
+  @keyframes page-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes page-fade { from { opacity: 0; } to { opacity: 1; } }
+
+  /* главный экран: заголовок, текст и кнопки появляются по очереди, схема въезжает справа */
+  .home .hero-text > * { animation: rise 600ms var(--ease-out) both; }
+  .home .hero-text > :nth-child(2) { animation-delay: 70ms; } .home .hero-text > :nth-child(3) { animation-delay: 140ms; }
+  .home .hero-text > :nth-child(4) { animation-delay: 210ms; } .home .hero-text > :nth-child(5) { animation-delay: 280ms; }
+  .home .hero-demo { animation: slide-in 700ms 160ms var(--ease-out) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes slide-in { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+
+  /* блоки ниже первого экрана проявляются при прокрутке (motion.js) */
+  .rv { opacity: 0; transform: translateY(14px); }
+  .rv.in { opacity: 1; transform: none; transition: opacity var(--d-slow) var(--ease-out), transform 520ms var(--ease-out); transition-delay: var(--rv-d, 0ms); }
+
+  /* всплывающие слои */
+  .popover { animation: pop-in var(--d-base) var(--ease-out) both; transform-origin: top right; }
+  .modal { animation: modal-in 260ms var(--ease-out) both; }
+  .toast { animation: toastin 280ms var(--ease-out) both; }
+  @keyframes pop-in { from { opacity: 0; transform: translateY(-4px) scale(.97); } to { opacity: 1; transform: none; } }
+  @keyframes modal-in { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+
+  /* смена темы без резкой вспышки */
+  html.theming *, html.theming *::before, html.theming *::after { transition: background-color 300ms var(--ease-io), border-color 300ms var(--ease-io), color 300ms var(--ease-io), fill 300ms var(--ease-io), stroke 300ms var(--ease-io) !important; }
+}

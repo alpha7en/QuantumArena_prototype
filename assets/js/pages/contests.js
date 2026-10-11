@@ -32,7 +32,7 @@ export default async function contests() {
     ${raw(actBanner)}
     <div class="two-cards">
       <div class="card col" style="gap:12px">
-        <div class="row t-kicker">${raw(icon('contest', 'sm'))}<span>|следующий раунд⟩</span></div>
+        <div class="row t-kicker">${raw(icon('contest', 'sm'))}<span>следующий раунд</span></div>
         <h2 class="t-h2" style="font-size:26px">quantum weekly ${sc.next}</h2>
         <div class="t-mono secondary">${dateShort(start)} · ${timeHM(start)} · 90 мин · 4 задачи</div>
         <div class="row muted t-small">${raw(icon('people', 'sm'))}записались ${fmtInt(registeredCount(sc.next))}</div>
@@ -45,7 +45,7 @@ export default async function contests() {
       ${raw(sectionHead('лидеры сезона', '<a class="btn btn-outline sm" href="#/rating/season">рейтинг сезона' + icon('arrow-r', 'sm') + '</a>'))}
       <div class="card leaders">
         ${raw(podiumHtml(season))}
-        <div class="col" style="gap:10px;justify-content:center"><div class="t-kicker">|ваше место в сезоне⟩</div>
+        <div class="col" style="gap:10px;justify-content:center"><div class="t-kicker">ваше место в сезоне</div>
           ${currentUser() && rating != null ? html`<div class="row" style="justify-content:space-between;padding:12px 0;border-top:1px solid var(--line-subtle);border-bottom:1px solid var(--line-subtle)"><span class="mono muted">${fmtInt(place)}</span><span class="grow" style="margin-left:16px"><b>${currentUser().name} · вы</b><div class="muted t-small">${uniById(currentUser().uni).name} · ${d.rating >= 1400 ? 'специалист' : 'ученик'}</div></span><span class="t-number-s">${fmtInt(rating)}</span></div>` : html`<div class="secondary t-small">${isGuest() ? 'Войдите, чтобы увидеть своё место.' : 'Сыграйте раунд, и здесь появится ваше место.'}</div>`}
           <div class="muted t-small">Рейтинг меняется после каждого раунда. Раунды с таймером его не трогают.</div></div>
       </div>
@@ -57,9 +57,9 @@ export default async function contests() {
     <section class="col" style="gap:16px">
       ${raw(sectionHead('мероприятия', '<span class="muted t-small">кроме еженедельных раундов · идеи форматов, в демо недоступны</span>'))}
       <div class="events">
-        ${[['кубок sparq |arena⟩', 'турнир', 'Идея формата: отборочные раунды и финал, личный зачёт и зачёт по вузам. Условия пока не определены.', 'trophy'],
+        ${[['кубок sparq arena', 'турнир', 'Идея формата: отборочные раунды и финал, личный зачёт и зачёт по вузам. Условия пока не определены.', 'trophy'],
           ['спринт: меньше CNOT', 'спринт', 'Задача с открытым оптимумом: чем меньше гейтов и глубина, тем выше результат. Отдельная таблица рекордов.', 'energy'],
-          ['раунды по темам', 'архив', 'Прошедшие раунды, собранные по темам: запутанность, оракулы, коррекция ошибок.', 'book']].map(([t, k, text, ic]) => html`<div class="card col" style="gap:10px"><div class="row t-kicker">${raw(icon(ic, 'sm'))}<span>|${k}⟩</span></div><h3 class="t-h3">${t}</h3><p class="secondary t-small">${text}</p><div class="row muted t-small">${raw(icon('calendar', 'sm'))}в планах · без дат</div><button class="btn btn-outline sm" data-soon style="align-self:flex-start">подробнее${raw(icon('arrow-r', 'sm'))}</button></div>`)}
+          ['раунды по темам', 'архив', 'Прошедшие раунды, собранные по темам: запутанность, оракулы, коррекция ошибок.', 'book']].map(([t, k, text, ic]) => html`<div class="card col" style="gap:10px"><div class="row t-kicker">${raw(icon(ic, 'sm'))}<span>${k}</span></div><h3 class="t-h3">${t}</h3><p class="secondary t-small">${text}</p><div class="row muted t-small">${raw(icon('calendar', 'sm'))}в планах · без дат</div><button class="btn btn-outline sm" data-soon style="align-self:flex-start">подробнее${raw(icon('arrow-r', 'sm'))}</button></div>`)}
       </div>
     </section>
   </div>`;

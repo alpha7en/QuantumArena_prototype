@@ -13,7 +13,7 @@ export function titleBar(rating) {
 
 export function ratingCardHtml(d, place, of) {
   const r = d.rating, nt = r == null ? null : nextTitle(r);
-  return `<div class="card col" style="gap:14px"><div class="row t-kicker">${icon('growth', 'sm')}<span>|мой рейтинг⟩</span></div>
+  return `<div class="card col" style="gap:14px"><div class="row t-kicker">${icon('growth', 'sm')}<span>мой рейтинг</span></div>
     ${r == null ? `<div class="row" style="align-items:baseline;gap:14px"><span class="t-number">без рейтинга</span></div><div class="secondary t-small">Сыграйте первый раунд — рейтинг появится по его итогам. Раунды с таймером рейтинг не меняют.</div>`
       : `<div class="row" style="align-items:baseline;gap:14px"><span class="t-number" style="font-size:38px">${fmtInt(r)}</span><span class="t-h3" style="font-size:20px;color:var(--text-secondary)">${ratingTitle(r)}</span></div>
       <div class="secondary t-small">место ${fmtInt(place)} из ${fmtInt(of)}${nt ? ` · до титула «${nt.name}» — ${nt.min - r}` : ''}</div>`}

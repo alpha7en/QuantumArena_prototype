@@ -32,7 +32,7 @@ export function headerHtml(nav) {
     : `<button class="icon-btn" data-act="search" aria-label="поиск">${icon('search')}</button>
        <a class="btn btn-ghost sm" href="#/login">войти</a><a class="btn btn-secondary sm" href="#/register">регистрация</a>`;
   return `<div class="appnav-in">
-    <a class="logo" href="#/" aria-label="sparq arena — на главную">${logoMark()}<span class="word">sparq</span><span class="arena">|arena⟩</span></a>
+    <a class="logo" href="#/" aria-label="sparq arena — на главную">${logoMark()}<span class="word">sparq</span><span class="arena"><i class="kb"></i>arena<i class="ka"></i></span></a>
     <nav class="navmenu" id="navmenu" aria-label="разделы">${NAV.map(([k, t, href]) => `<a class="navlink ${nav === k ? 'active' : ''}" href="#${href}" ${nav === k ? 'aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
     <div class="nav-right">${right}<button class="icon-btn burger" data-act="burger" aria-label="меню">${icon('menu')}</button></div>
   </div>`;
@@ -40,7 +40,7 @@ export function headerHtml(nav) {
 
 export function footerHtml() {
   return `<div class="in">
-    <div class="brand"><a class="logo" href="#/" aria-label="на главную">${logoMark()}<span class="word">sparq</span><span class="arena">|arena⟩</span></a>
+    <div class="brand"><a class="logo" href="#/" aria-label="на главную">${logoMark()}<span class="word">sparq</span><span class="arena"><i class="kb"></i>arena<i class="ka"></i></span></a>
       <p>Платформа квантовых задач с тестирующей системой. Проект сообщества SPARQ. Сейчас — демо-версия: сервера нет, схемы и проверка работают в вашем браузере.</p></div>
     <div class="col"><h4>платформа</h4><a href="#/tasks">задачи</a><a href="#/contests">контесты</a><a href="#/rating">рейтинг</a><a href="#/sandbox">песочница</a><a href="#/learn">обучение</a></div>
     <div class="col"><h4>о проекте</h4><a href="https://github.com/alpha7en/QuantumArena_prototype/tree/main/docs" target="_blank" rel="noopener">документация</a><a href="https://github.com/alpha7en/QuantumArena_prototype/blob/main/docs/JUDGE.md" target="_blank" rel="noopener">как проверяются решения</a><a href="https://github.com/alpha7en/QuantumArena_prototype/blob/main/docs/DEMO_DATA.md" target="_blank" rel="noopener">что в демо смоделировано</a></div>
