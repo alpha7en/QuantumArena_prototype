@@ -43,7 +43,6 @@ export function footerHtml() {
     <span>sparq |arena⟩ · демо-версия платформы</span>
     <span>Участники, рейтинг и результаты раундов смоделированы. Ваши данные хранятся только в этом браузере.</span>
     <span class="spacer"></span>
-    <a href="https://github.com/alpha7en/QuantumArena_prototype" target="_blank" rel="noopener">исходный код</a>
     <a href="https://github.com/alpha7en/QuantumArena_prototype/tree/main/docs" target="_blank" rel="noopener">документация</a>
     <a href="#/learn">обучение</a>
   </div>`;

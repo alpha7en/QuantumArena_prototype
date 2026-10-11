@@ -39,7 +39,7 @@ function renderBanner() {
   const upd = () => document.documentElement.style.setProperty('--banner-h', $banner.offsetHeight + 'px');
   const s = getState();
   if (s.ui.bannerOff) { $banner.innerHTML = ''; upd(); return; }
-  $banner.innerHTML = `<div class="demo-banner">демо-версия: участники и результаты раундов смоделированы<span class="hide-sm"> · ваши данные хранятся только в этом браузере</span> · <a href="https://github.com/alpha7en/QuantumArena_prototype" target="_blank" rel="noopener">исходный код</a> <button data-close aria-label="скрыть" style="margin-left:8px;vertical-align:middle">${icon('x', 'sm')}</button></div>`;
+  $banner.innerHTML = `<div class="demo-banner">демо-версия: участники и результаты раундов смоделированы<span class="hide-sm"> · ваши данные хранятся только в этом браузере</span> <button data-close aria-label="скрыть" style="margin-left:8px;vertical-align:middle">${icon('x', 'sm')}</button></div>`;
   $banner.querySelector('[data-close]').onclick = () => { getState().ui.bannerOff = true; save(); $banner.innerHTML = ''; upd(); };
   upd();
 }
