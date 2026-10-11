@@ -30,3 +30,16 @@ for (const task of TASKS) {
     assert.notEqual(res.verdict, 'ok', `${task.id}: усечённый эталон принят`);
   });
 }
+
+// Сквозная проверка редактора: схема эталона → код → схема → судья (то, что делает переключатель «схема ⇄ код»).
+import { circuitToCode } from '../assets/js/lang/qiskitlite.js';
+for (const task of TASKS.filter((t) => !t.codeOnly)) {
+  test(`#${task.num} ${task.id}: схема → код → схема сохраняет решение`, () => {
+    const ref = buildRef(task)(undefined).circuit.clone().autoColumns();
+    const code = circuitToCode(ref);
+    const again = buildFromCode(code, { oracleArity: task.oracleArity || 0 });
+    assert.ok(!again.error, JSON.stringify(again.error) + '\n' + code);
+    const res = judge(task, () => ({ circuit: again.circuit }));
+    assert.equal(res.verdict, 'ok', `${task.id}: ${verdictText(res)}`);
+  });
+}

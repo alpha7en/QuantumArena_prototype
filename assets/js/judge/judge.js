@@ -63,6 +63,10 @@ export function runCases(circuit, suite, task) {
       const p = res.st ? marginal(res.st, e.qubits) : rhoMarginal(res.rho, e.qubits);
       let tv = 0; for (let k = 0; k < p.length; k++) tv += Math.abs(p[k] - e.probs[k]); tv /= 2;
       if (tv > (e.tol ?? 0.01)) return fail({ reason: 'dist', got: `расстояние до нужного распределения ${(tv).toFixed(3).replace('.', ',')}`, expected: null });
+    } else if (e.kind === 'probSet') {
+      const pr = res.st ? marginal(res.st, e.qubits) : rhoMarginal(res.rho, e.qubits);
+      const p = e.outcomes.reduce((a, k) => a + pr[k], 0);
+      if (p < e.min - 1e-9) return fail({ reason: 'prob', got: `вероятность выигрыша ${pct(p, 1)}`, expected: `нужно не меньше ${pct(e.min)}`, note: e.note || null });
     } else if (e.kind === 'prob') {
       const p = (res.st ? marginal(res.st, e.qubits) : rhoMarginal(res.rho, e.qubits))[e.outcome];
       const lo = e.min ?? 0, hi = e.max ?? 1;

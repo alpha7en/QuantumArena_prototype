@@ -1,6 +1,7 @@
 // Задачи на подготовку состояний (T1), синтез и разложение (T2), измерения (T6).
 import { State, rng, randomState, stateSuite, refSuite, subsystemSuite, mapSuite } from '../../judge/builders.js';
 import { Circuit } from '../../quantum/circuit.js';
+import { runOps } from '../../quantum/sim.js';
 
 const R = Math.SQRT1_2;
 const amps = (n, list) => State.fromAmps(n, list);
@@ -194,6 +195,29 @@ export const statesTasks = [
     hint: 'q0 и q2 напрямую не связаны. Запутывайте по цепочке.',
     hint2: 'H на q0, CX q0→q1, затем CX q1→q2.',
     analysis: ['Каждый CX «перекладывает» значение на следующий кубит цепочки. Связность запрещает CX между q0 и q2, но q1 играет роль посредника.'],
+  },
+  {
+    id: 'flip-cx', title: 'Разверни CNOT', topic: 'разложение', level: 2, archetype: 'T2',
+    statement: ['В редакторе уже собрана схема из пяти гейтов. Замените её равносильной — не длиннее одного гейта.', 'Схемы равносильны, если совпадают как преобразования (фазы между входами тоже).'],
+    io: { in: '|ab⟩', out: 'как у исходной схемы' },
+    qubits: 2, starter: 'from qiskit import QuantumCircuit\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.h(1)\nqc.cx(0, 1)\nqc.h(0)\nqc.h(1)\n',
+    limits: { gates: 1, depth: 1, basis: ['H', 'CX'] },
+    suite: () => mapSuite({ n: 2, inQubits: [0, 1], g: (x) => x ^ (((x >> 1) & 1)) }),
+    reference: head + 'qc = QuantumCircuit(2)\nqc.cx(1, 0)\n',
+    hint: 'Адамар на обоих кубитах меняет роли управляющего и целевого.',
+    hint2: 'H⊗H · CX(0→1) · H⊗H = CX(1→0).',
+    analysis: ['Адамар переводит базис Z в базис X, а в нём CX «смотрит» в обратную сторону: управление и цель меняются местами. Поэтому пять гейтов сводятся к одному CX в обратном направлении.'],
+  },
+  {
+    id: 'cry-from-cx', title: 'Управляемый поворот из CX', topic: 'разложение', level: 2, archetype: 'T2',
+    statement: ['Реализуйте управляемый поворот RY(π/3) на цели q1 с управлением q0, используя только RY и CX. Нужны не больше двух CX.'],
+    io: { in: '|c⟩|t⟩', out: 'RY(π/3) на t, если c = 1' },
+    qubits: 2, limits: { gates: 4, depth: 4, twoQubit: 2, basis: ['RY', 'CX'], coupling: { kind: 'line' } },
+    suite: () => refSuite({ n: 2, inQubits: [0, 1], ref: (s) => runOps([{ g: 'RY', t: [1], c: [0], p: [Math.PI / 3] }], 2, s) }),
+    reference: headPi + 'qc = QuantumCircuit(2)\nqc.ry(pi/6, 1)\nqc.cx(0, 1)\nqc.ry(-pi/6, 1)\nqc.cx(0, 1)\n',
+    hint: 'X·RY(θ)·X = RY(−θ). Подберите два поворота так, чтобы без управления они сокращались.',
+    hint2: 'RY(π/6), CX, RY(−π/6), CX.',
+    analysis: ['Если управление 0, два поворота сокращаются (π/6 − π/6 = 0). Если 1, каждый CX = X на цели, а X·RY(−θ)·X = RY(θ): повороты складываются в RY(π/3).'],
   },
 ];
 

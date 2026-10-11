@@ -42,7 +42,7 @@ export function mountTaskEditor(root, task, ctx = {}) {
 
   const S = {
     mode: codeOnly ? 'code' : (saved.mode || 'schema'),
-    circuit: nQ ? (saved.circuit ? Circuit.fromJSON(saved.circuit) : new Circuit(nQ)) : null,
+    circuit: nQ ? (saved.circuit ? Circuit.fromJSON(saved.circuit) : startCircuit(task, nQ)) : null,
     code: saved.code || null,
     param: task.params ? task.params.default : undefined,
     tab: 'state', armed: null, selected: null, verdict: null, running: null, undo: [], redo: [], hintLevel: D.hintUsed[task.id] || 0,
@@ -134,7 +134,7 @@ export function mountTaskEditor(root, task, ctx = {}) {
         S.live = liveState(task, circuit, S.param);
         S.limitRes = checkLimits(circuit, lim(), suite.n);
         const c = (suite.cases.find((x) => x.main) || suite.cases[0]);
-        if (S.live && c && c.expect.kind === 'state' && !c.expect.qubits && circuit.ops.length) S.match = fidelity(c.expect.state, S.live) >= 1 - TOL;
+        if (S.live && c && suite.cases.length === 1 && c.expect.kind === 'state' && !c.expect.qubits && circuit.ops.length) S.match = fidelity(c.expect.state, S.live) >= 1 - TOL;
       } else S.limitRes = { ok: false, issues: [{ kind: 'qubits', text: `в задаче ${suite.n} кубитов, в схеме — ${circuit.n}` }], stats: circuit.stats() };
     }
     renderToolbar(); renderCanvas(); renderBottom();
@@ -580,6 +580,11 @@ export function mountTaskEditor(root, task, ctx = {}) {
     destroyed = true; clearTimeout(saveT); clearInterval(clockT); document.removeEventListener('keydown', keyHandler);
     mutate((d) => { d.drafts[task.id] = { mode: S.mode, circuit: S.circuit ? S.circuit.toJSON() : null, code: S.code }; });
   };
+}
+
+function startCircuit(task, n) {
+  if (task.starter) { const r = buildFromCode(task.starter, { oracleArity: task.oracleArity || 0 }); if (!r.error && r.circuit.n === n) return r.circuit.autoColumns(); }
+  return new Circuit(n);
 }
 
 function starterCode(task) {

@@ -11,6 +11,7 @@ const ORDER = [
   'swap-cx', 'toffoli-ct', 'w3', 'ghz3-line', 'plus-i', 'minus', 'uniform-3', 'copy-bit', 'and-oracle', 'singlet',
   'rot-prep', 'compare-bits', 'maj-oracle', 'full-adder', 'add-mod4', 'measure-y', 'rep-encode', 'qft-3', 'grover-2',
   'dj-4', 'bv-4', 'swap-test', 'equal-regs', 'qpe-t', 'shor-encode', 'ghz-chain-n', 'even-nonzero',
+  'parity-phase', 'increment', 'flip-cx', 'cry-from-cx', 'chsh', 'bitflip-fix',
 ];
 
 export const TASKS = ORDER.map((id, i) => {
