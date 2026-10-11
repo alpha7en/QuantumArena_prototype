@@ -19,9 +19,9 @@
   a.card:active { transform: translateY(0); transition-duration: 80ms; }
 
   /* вход страницы */
-  .page, .editor-shell { animation: page-in var(--d-slow) var(--ease-out) both; }
+  .page, .editor-shell { animation: page-in 280ms var(--ease-out) both; }
   .page.home { animation: page-fade 240ms var(--ease-out) both; }
-  @keyframes page-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes page-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   @keyframes page-fade { from { opacity: 0; } to { opacity: 1; } }
 
   /* главный экран: заголовок, текст и кнопки появляются по очереди, схема въезжает справа */
@@ -34,7 +34,8 @@
 
   /* блоки ниже первого экрана проявляются при прокрутке (motion.js) */
   .rv { opacity: 0; transform: translateY(14px); }
-  .rv.in { opacity: 1; transform: none; transition: opacity var(--d-slow) var(--ease-out), transform 520ms var(--ease-out); transition-delay: var(--rv-d, 0ms); }
+  .rv { transition: opacity var(--d-slow) var(--ease-out), transform 520ms var(--ease-out); transition-delay: var(--rv-d, 0ms); }
+  .rv.in { opacity: 1; transform: none; }
 
   /* всплывающие слои */
   .popover { animation: pop-in var(--d-base) var(--ease-out) both; transform-origin: top right; }

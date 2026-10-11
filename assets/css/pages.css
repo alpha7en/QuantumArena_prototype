@@ -37,12 +37,14 @@
 @keyframes pod-rise { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
 @keyframes pod-fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @keyframes pod-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-.pod-block { animation: pod-rise .7s cubic-bezier(.2, .8, .2, 1) both; }
-.pod-top { animation: pod-fade .5s .35s cubic-bezier(.2, .8, .2, 1) both; }
-.pod-1 .pod-block { animation-delay: .1s; } .pod-1 .pod-top { animation-delay: .45s; } .pod-1 .pod-block::after { animation: pod-draw .6s .7s cubic-bezier(.2, .8, .2, 1) both; }
-.pod-2 .pod-block { animation-delay: .2s; } .pod-2 .pod-top { animation-delay: .55s; }
-.pod-3 .pod-block { animation-delay: .3s; } .pod-3 .pod-top { animation-delay: .65s; }
-@media (prefers-reduced-motion: reduce) { .pod-block, .pod-top, .pod-1 .pod-block::after { animation: none; } }
+/* до появления подиум скрыт (.arm), анимация идёт, когда до него долистали (.go) */
+.podium.arm .pod-block { clip-path: inset(100% 0 0 0); } .podium.arm .pod-top { opacity: 0; } .podium.arm .pod-1 .pod-block::after { transform: scaleX(0); }
+.podium.go .pod-block { animation: pod-rise .7s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--pod-d, 0ms) + .1s); }
+.podium.go .pod-top { animation: pod-fade .5s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--pod-d, 0ms) + .45s); }
+.podium.go .pod-1 .pod-block { animation-delay: calc(var(--pod-d, 0ms) + .1s); } .podium.go .pod-1 .pod-top { animation-delay: calc(var(--pod-d, 0ms) + .45s); }
+.podium.go .pod-1 .pod-block::after { animation: pod-draw .6s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--pod-d, 0ms) + .7s); }
+.podium.go .pod-2 .pod-block { animation-delay: calc(var(--pod-d, 0ms) + .2s); } .podium.go .pod-2 .pod-top { animation-delay: calc(var(--pod-d, 0ms) + .55s); }
+.podium.go .pod-3 .pod-block { animation-delay: calc(var(--pod-d, 0ms) + .3s); } .podium.go .pod-3 .pod-top { animation-delay: calc(var(--pod-d, 0ms) + .65s); }
 .pod-av { border-radius: 50%; }
 .pod-1 .pod-av { border-color: var(--text-primary); }
 
