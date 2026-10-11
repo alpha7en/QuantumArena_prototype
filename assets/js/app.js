@@ -14,8 +14,8 @@ const $app = document.getElementById('app');
 const $ftr = document.getElementById('ftr');
 const $banner = document.getElementById('demo-banner');
 let navKey = null;
-// Какой фон под страницей: см. assets/css/bg.css
-const BG_BY_NAV = { tasks: 'dots', contests: 'orbits', rating: 'interference', learn: 'orbits' };
+// Общий фон страницы нужен единицам: по умолчанию его нет, см. assets/css/bg.css
+const BG_BY_NAV = { rating: 'edge' };
 
 const page = (name) => () => import(`./pages/${name}.js`);
 route('/', page('home'));
@@ -55,7 +55,7 @@ setRenderer((view, ctx) => {
   navKey = view.nav ?? null;
   document.title = view.title ? `${view.title} · sparq |arena⟩` : 'sparq |arena⟩ — квантовые задачи';
   document.body.dataset.layout = view.layout || 'page';
-  document.documentElement.dataset.bg = view.layout === 'editor' ? 'none' : (view.bg || BG_BY_NAV[view.nav] || 'rings');
+  document.documentElement.dataset.bg = view.layout === 'editor' ? 'none' : (view.bg || BG_BY_NAV[view.nav] || 'none');
   $app.innerHTML = '';
   if (typeof view.html === 'string') $app.innerHTML = view.html; else if (view.html && view.html.s !== undefined) $app.innerHTML = view.html.s; else if (view.node) $app.append(view.node);
   $ftr.hidden = view.layout === 'editor';

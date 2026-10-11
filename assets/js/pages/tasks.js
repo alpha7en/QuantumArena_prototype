@@ -34,14 +34,14 @@ export default async function tasks(ctx) {
   const byLevel = [1, 2, 3].map((l) => ({ l, done: TASKS.filter((t) => t.level === l && solvedIds.has(t.id)).length, all: TASKS.filter((t) => t.level === l).length }));
 
   const view = html`
-  <div class="page">
+  <div class="page has-corner"><i class="corner" aria-hidden="true"></i>
     <div class="page-head">${raw(kicker('банк задач'))}<h1 class="t-display">задачи</h1>
       <p class="t-lead" style="max-width:640px">${total} ${ruPlural(total, 'задача', 'задачи', 'задач')} на синтез схем, алгоритмы и подавление шума. Решение принимается, если схема даёт нужное состояние и укладывается в лимиты.</p></div>
     ${isGuest() ? html`<div class="notice">${raw(icon('lock'))}<div class="grow"><div style="font-weight:600">Смотреть задачи можно без входа</div><div class="muted t-small">Чтобы решать и сохранять прогресс, войдите или зарегистрируйтесь — в демо аккаунт хранится только в этом браузере.</div></div><a class="btn btn-primary sm" href="#/register">войти и решать${raw(icon('arrow-r'))}</a></div>` : ''}
     ${showWelcome ? html`<div class="notice accent" id="welcome"><div class="grow"><div style="font-weight:600">Добро пожаловать, ${user.first}. Начните с задачи 1 — 2 гейта, около 5 минут.</div><div class="muted t-small">Проведём по редактору шаг за шагом. Подсказки отключаются в настройках.</div></div><a class="btn btn-primary sm" href="#/tasks/1">решить задачу 1${raw(icon('arrow-r'))}</a><button class="icon-btn" data-act="dismiss" aria-label="закрыть">${raw(icon('x', 'sm'))}</button></div>` : ''}
     <div class="stat-pair">
       <div class="card row" style="gap:20px;padding:24px 28px"><span class="t-number-xl" style="font-size:44px;line-height:48px;min-width:56px">${solved}</span><div class="grow"><div style="font-size:16px">из ${total} решено</div>${solved ? html`<div class="lvl-bars">${byLevel.map((x) => html`<div><div class="t-mono-s muted">${LEVELS[x.l]} · ${x.done}/${x.all}</div><div class="progress" style="margin-top:4px"><i style="width:${x.all ? x.done / x.all * 100 : 0}%"></i></div></div>`)}</div>` : html`<div class="muted t-small">после первой задачи здесь появится разбивка по сложности</div>`}</div></div>
-      <div class="card row" style="gap:20px;padding:24px 28px">${raw(icon('flame', 'lg'))}<div><div class="t-number-s">${streak} ${ruPlural(streak, 'день', 'дня', 'дней')} подряд</div><div class="muted t-small">решайте хотя бы одну задачу в день</div></div></div>
+      <div class="card row" style="gap:20px;padding:24px 28px">${raw(icon('flame', 'lg'))}<div><div class="t-number-s" style="white-space:normal">${streak} ${ruPlural(streak, 'день', 'дня', 'дней')} подряд</div><div class="muted t-small">решайте хотя бы одну задачу в день</div></div></div>
     </div>
     <div class="filters">
       <div class="control" style="flex:1;min-width:240px">${raw(icon('search'))}<input id="q" placeholder="Поиск по названию, номеру или теме" autocomplete="off"></div>

@@ -1,5 +1,5 @@
 import { html, raw, esc, on } from '../ui/dom.js';
-import { icon } from '../ui/icons.js';
+import { icon, socialIcon } from '../ui/icons.js';
 import { UNIVERSITIES } from '../data/people.js';
 import { register, login, validateEmail, validatePassword, getState, setPassword, currentUser } from '../store.js';
 import { navigate } from '../router.js';
@@ -14,7 +14,7 @@ const hero = (kind) => {
     login: ['вход', 'с возвращением', 'Продолжайте с того места, где остановились: черновики и решения сохранены в этом браузере.'],
     recover: ['восстановление', 'забыли пароль?', 'В демо письма не отправляются, поэтому новый пароль можно задать прямо здесь.'],
   }[kind];
-  return html`<div class="auth-hero card xl" data-k="${kind}"><div class="auth-hero-text"><div class="t-kicker">|${t[0]}⟩</div><h2 class="t-display md" style="max-width:520px">${t[1]}</h2><p class="t-lead" style="max-width:480px">${t[2]}</p></div></div>`;
+  return html`<div class="auth-hero card xl"><div class="auth-hero-text"><div class="t-kicker">|${t[0]}⟩</div><h2 class="t-display md" style="max-width:520px">${t[1]}</h2><p class="t-lead" style="max-width:480px">${t[2]}</p></div></div>`;
 };
 
 const field = (id, label, input, hint = '', cls = '') => html`<div class="field ${cls}" id="f-${id}"><label for="${id}">${label}</label>${raw(input)}<div class="hint" id="h-${id}">${hint}</div></div>`;
@@ -26,7 +26,7 @@ export default async function auth(ctx) {
   let form = '';
   if (kind === 'register') {
     form = html`<h1 class="t-h1" style="font-size:34px;line-height:40px">создать аккаунт</h1>
-      <div class="row" style="gap:12px"><button type="button" class="btn btn-secondary grow" data-social>Яндекс ID</button><button type="button" class="btn btn-secondary grow" data-social>VK ID</button></div>
+      <div class="row" style="gap:12px"><button type="button" class="btn btn-secondary grow" data-social>${raw(socialIcon('yandex'))}Яндекс ID</button><button type="button" class="btn btn-secondary grow" data-social>${raw(socialIcon('vk'))}VK ID</button></div>
       <div class="or"><span>или по почте</span></div>
       <form id="form" class="col" style="gap:14px" novalidate>
         <div class="row" style="gap:12px;align-items:flex-start">${field('first', 'Имя', '<div class="control"><input id="first" autocomplete="given-name" required></div>')}${field('last', 'Фамилия', '<div class="control"><input id="last" autocomplete="family-name" required></div>')}</div>
@@ -39,7 +39,7 @@ export default async function auth(ctx) {
       <div class="muted t-small" style="text-align:center">Уже есть аккаунт? <a class="link" href="#/login">войти</a></div>`;
   } else if (kind === 'login') {
     form = html`<h1 class="t-h1" style="font-size:34px;line-height:40px">войти</h1>
-      <div class="row" style="gap:12px"><button type="button" class="btn btn-secondary grow" data-social>Яндекс ID</button><button type="button" class="btn btn-secondary grow" data-social>VK ID</button></div>
+      <div class="row" style="gap:12px"><button type="button" class="btn btn-secondary grow" data-social>${raw(socialIcon('yandex'))}Яндекс ID</button><button type="button" class="btn btn-secondary grow" data-social>${raw(socialIcon('vk'))}VK ID</button></div>
       <div class="or"><span>или по почте</span></div>
       <form id="form" class="col" style="gap:14px" novalidate>
         ${field('email', 'Почта', `<div class="control">${icon('mail')}<input id="email" type="email" autocomplete="email" required></div>`)}

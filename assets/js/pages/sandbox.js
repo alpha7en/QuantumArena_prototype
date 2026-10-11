@@ -130,7 +130,7 @@ export default async function sandbox(ctx) {
     const ops = S.circuit.ops, cols = [...new Set(ops.map((o) => o.col))].sort((a, b) => a - b);
     left.innerHTML = `<h2 class="t-h2" style="font-size:20px">по шагам</h2><span class="status" style="align-self:flex-start"><span class="dot"></span>редактирование на паузе</span>
       ${cols.map((c, i) => { const group = ops.filter((o) => o.col === c); const d = describeOp(group[0]); const now = i === S.step; return `<div class="step-item ${now ? 'now' : ''}" style="${i > S.step ? 'opacity:.65' : ''}"><div class="tt"><span class="t">t${c + 1}</span>${esc(d.title)}</div><div class="muted" style="font-size:13px;line-height:18px">${esc(d.text)}</div></div>`; }).join('')}
-      <div class="muted t-mono-s" style="margin-top:auto">← → — шаг · Esc — выйти</div>`;
+      <div class="muted t-mono-s" style="margin-top:auto">стрелки влево и вправо — шаг · Esc — выйти</div>`;
   }
 
   // ---------- Холст и нижняя панель ----------

@@ -233,7 +233,7 @@ export function mountTaskEditor(root, task, ctx = {}) {
     const op = S.selected ? S.circuit.ops.find((o) => o.id === S.selected) : null;
     if (!op) { el.innerHTML = ''; return; }
     const ang = ['P', 'RX', 'RY', 'RZ'].includes(op.g);
-    el.innerHTML = `<span class="mono muted" style="font-size:13px">${esc(opName(op))}${op.t.length ? ` · q${op.t.join(', q')}` : ''}${op.c.length ? ` ← q${op.c.join(', q')}` : ''}</span>
+    el.innerHTML = `<span class="mono muted" style="font-size:13px">${esc(opName(op))}${op.t.length ? ` · q${op.t.join(', q')}` : ''}${op.c.length ? ` · упр. q${op.c.join(', q')}` : ''}</span>
       ${ang ? `<label class="row" style="gap:8px"><span class="muted t-small">угол θ</span><span class="control sm angle-input"><input id="ang" value="${esc(PI_TEXT(op.p[0]))}" aria-label="угол" spellcheck="false"></span></label>` : ''}
       <button class="btn btn-ghost xs" data-act="delop">${icon('trash', 'sm')}удалить гейт</button>`;
     const inp = el.querySelector('#ang');

@@ -4,20 +4,23 @@
 :root { --bg-line: var(--text-primary); --bg-node: #ff2a2a; --bg-glow: rgba(255, 42, 42, .5); --bg-haze: rgba(176, 0, 0, .34); --bg-trace: #ff3b3b; }
 :root[data-theme="light"] { --bg-node: #cc0000; --bg-glow: rgba(204, 0, 0, .28); --bg-haze: rgba(204, 0, 0, .09); --bg-trace: #cc0000; }
 
-/* ---------- общий фон страницы ---------- */
-.ambient { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
-.ambient i { position: absolute; display: block; }
-.ambient .art { top: calc(var(--header-h) - 120px); right: -240px; width: min(900px, 80vw); aspect-ratio: 1; background: var(--bg-line); opacity: .07; -webkit-mask: var(--art) center / contain no-repeat; mask: var(--art) center / contain no-repeat; }
-.ambient .haze { left: -10%; right: -10%; bottom: -22vh; height: 52vh; background: radial-gradient(ellipse at 50% 100%, var(--bg-haze), transparent 68%); }
-.ambient .dots { left: 0; right: 0; bottom: 0; height: 36vh; background: radial-gradient(circle, var(--line-strong) 1.2px, transparent 1.7px) 0 0 / 24px 22px; -webkit-mask: linear-gradient(0deg, #000, transparent); mask: linear-gradient(0deg, #000, transparent); opacity: .55; display: none; }
-:root[data-theme="light"] .ambient .art { opacity: .1; }
-html[data-bg="rings"] .ambient .art { --art: url(../img/bg/rings.svg); }
-html[data-bg="orbits"] .ambient .art { --art: url(../img/bg/orbits.svg); }
-html[data-bg="interference"] .ambient .art { --art: url(../img/bg/interference.svg); }
-html[data-bg="dots"] .ambient .art { --art: url(../img/bg/rings.svg); }
-html[data-bg="dots"] .ambient .dots { display: block; }
-html[data-bg="none"] .ambient, html[data-bg="haze"] .ambient .art { display: none; }
-body[data-layout="editor"] .ambient { display: none; }
+/* ---------- общий фон страницы: только там, где он нужен (сейчас рейтинг) ---------- */
+/* центр рисунка за краем экрана, чтобы взгляд не падал на пустую точку */
+.ambient { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; display: none; }
+html[data-bg="edge"] .ambient { display: block; }
+.ambient .art { position: absolute; top: calc(var(--header-h) - 200px); right: -560px; width: 900px; aspect-ratio: 1; background: var(--bg-line); opacity: .08; -webkit-mask: url(../img/bg/interference.svg) center / contain no-repeat; mask: url(../img/bg/interference.svg) center / contain no-repeat; }
+:root[data-theme="light"] .ambient .art { opacity: .12; }
+@media (max-width: 900px) { .ambient .art { width: 640px; right: -420px; top: calc(var(--header-h) - 140px); } }
+
+/* ---------- угол страницы: тихий рисунок в пустом правом верхнем углу ---------- */
+.page.has-corner { position: relative; isolation: isolate; }
+.corner { position: absolute; z-index: -1; pointer-events: none; top: 0; right: var(--page-pad); width: 360px; height: 320px; background: var(--bg-line); opacity: .1;
+  -webkit-mask: url(../img/bg/rings.svg) calc(100% + 320px) -320px / 640px 640px no-repeat, radial-gradient(circle at 100% 0, transparent 90px, #000 170px, #000 200px, transparent 330px);
+  -webkit-mask-composite: source-in;
+  mask: url(../img/bg/rings.svg) calc(100% + 320px) -320px / 640px 640px no-repeat, radial-gradient(circle at 100% 0, transparent 90px, #000 170px, #000 200px, transparent 330px);
+  mask-composite: intersect; }
+:root[data-theme="light"] .corner { opacity: .14; }
+@media (max-width: 760px) { .corner { display: none; } }
 
 /* ---------- красный узел с свечением ---------- */
 .bg-node, .deco::after { background: var(--bg-node); border-radius: 50%; box-shadow: 0 0 18px 2px var(--bg-glow); }

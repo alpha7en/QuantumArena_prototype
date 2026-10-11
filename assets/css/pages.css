@@ -18,16 +18,33 @@
 .sec-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 
 /* Подиум */
-.podium { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; align-items: end; margin-top: 8px; }
+.podium { position: relative; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; align-items: end; margin-top: 8px; }
 .pod { display: flex; flex-direction: column; align-items: center; gap: 0; min-width: 0; }
 .pod-top { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; padding-bottom: 14px; min-width: 0; }
 .pod-name { font: 600 14px/18px var(--font-body); max-width: 100%; }
 .pod-sub { font: 400 11px/14px var(--font-mono); color: var(--text-muted); }
 .pod-score { font: 500 13px/16px var(--font-mono); color: var(--text-secondary); }
-.pod-block { width: 100%; border-radius: 12px 12px 0 0; border: 1px solid var(--line-subtle); border-bottom: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-hover); }
+.pod-top { position: relative; }
+.pod-top::after { content: ''; position: absolute; left: 50%; bottom: 0; width: 1px; height: 14px; background: var(--line-strong); }
+.pod-block { position: relative; width: 100%; border-radius: 12px 12px 0 0; border: 1px solid var(--line-strong); border-bottom: 0; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, var(--bg-raised), var(--bg-hover));
+  -webkit-mask: linear-gradient(180deg, #000 60%, rgba(0, 0, 0, .35)); mask: linear-gradient(180deg, #000 60%, rgba(0, 0, 0, .35)); }
+/* линейка по верхней кромке блока */
+.pod-block::before { content: ''; position: absolute; left: 12px; right: 12px; top: 0; height: 7px; opacity: .55; background: linear-gradient(90deg, var(--line-control) 1px, transparent 1px) 0 0 / 8px 7px repeat-x; }
 .pod-num { font: 700 56px/60px var(--font-display); letter-spacing: -2px; color: var(--data-3); }
-.pod-1 .pod-block { height: 150px; background: var(--bg-raised); border-top: 2px solid var(--accent); } .pod-1 .pod-num { color: var(--text-primary); font-size: 72px; line-height: 76px; }
-.pod-2 .pod-block { height: 100px; } .pod-3 .pod-block { height: 74px; } .pod-3 .pod-num { font-size: 48px; }
+.pod-1 .pod-block { height: 160px; border-color: var(--line-control); } .pod-1 .pod-num { color: var(--text-primary); font-size: 72px; line-height: 76px; }
+.pod-1 .pod-block::after { content: ''; position: absolute; left: -1px; right: -1px; top: -1px; height: 2px; border-radius: 12px 12px 0 0; background: var(--accent); transform-origin: left; }
+.pod-2 .pod-block { height: 112px; } .pod-3 .pod-block { height: 86px; } .pod-3 .pod-num { font-size: 48px; }
+/* появление: блоки поднимаются, затем проявляются подписи, красная нить прочерчивается */
+@keyframes pod-rise { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes pod-fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes pod-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.pod-block { animation: pod-rise .7s cubic-bezier(.2, .8, .2, 1) both; }
+.pod-top { animation: pod-fade .5s .35s cubic-bezier(.2, .8, .2, 1) both; }
+.pod-1 .pod-block { animation-delay: .1s; } .pod-1 .pod-top { animation-delay: .45s; } .pod-1 .pod-block::after { animation: pod-draw .6s .7s cubic-bezier(.2, .8, .2, 1) both; }
+.pod-2 .pod-block { animation-delay: .2s; } .pod-2 .pod-top { animation-delay: .55s; }
+.pod-3 .pod-block { animation-delay: .3s; } .pod-3 .pod-top { animation-delay: .65s; }
+@media (prefers-reduced-motion: reduce) { .pod-block, .pod-top, .pod-1 .pod-block::after { animation: none; } }
 .pod-av { border-radius: 50%; }
 .pod-1 .pod-av { border-color: var(--text-primary); }
 
@@ -51,8 +68,8 @@ a.trow:hover::before, a.trow:focus-visible::before { content: ''; position: abso
 .tmark.done { border-color: var(--ok); color: var(--ok); } .tmark.done .ic { width: 12px; height: 12px; }
 .tmark.wip { border-color: var(--warn); box-shadow: inset 0 0 0 4px var(--bg-panel), inset 0 0 0 10px var(--warn); }
 .tcol-rate { display: flex; }
-@media (max-width: 1024px) { .trow { grid-template-columns: 44px minmax(0, 1fr) 130px 150px; } .tcol-topic { display: none; } }
-@media (max-width: 720px) { .trow { grid-template-columns: 36px minmax(0, 1fr) 100px; } .tcol-rate { display: none; } .stat-pair { grid-template-columns: 1fr; } }
+@media (max-width: 1024px) { .trow { grid-template-columns: 44px minmax(0, 1fr) 130px 150px; } .trow .tcol-topic { display: none; } }
+@media (max-width: 720px) { .trow { grid-template-columns: 36px minmax(0, 1fr) 100px; } .trow .tcol-rate { display: none; } .stat-pair { grid-template-columns: 1fr; } }
 
 /* ---------- Вход, регистрация ---------- */
 .auth { flex: 1; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; padding: 12px; min-height: calc(100vh - var(--header-h)); }
@@ -219,12 +236,20 @@ a.prow:hover { background: var(--bg-hover); }
 
 .res-task { flex-wrap: wrap; } .res-task .grow { flex: 1 1 180px; } .rate { flex-wrap: wrap; row-gap: 4px; }
 
-/* вход: рисунок и красный узел зависят от экрана (набор — в bg.css) */
-.auth-hero[data-k="register"]::before { -webkit-mask-image: url(../img/bg/orbits.svg); mask-image: url(../img/bg/orbits.svg); right: -18%; top: -30%; width: 96%; opacity: .16; }
-.auth-hero[data-k="recover"]::before { -webkit-mask-image: url(../img/bg/rings.svg); mask-image: url(../img/bg/rings.svg); right: -34%; top: -40%; width: 110%; opacity: .16; }
-.auth-hero::after { content: ''; position: absolute; z-index: 0; right: 16%; top: 22%; width: 9px; height: 9px; border-radius: 50%; background: var(--bg-node); box-shadow: 0 0 18px 2px var(--bg-glow); pointer-events: none; }
 /* пустое состояние: единственный неон на странице, под иконкой */
 .empty .ring { position: relative; border-color: var(--bg-node); box-shadow: 0 0 22px var(--bg-glow), inset 0 0 14px var(--bg-glow); color: var(--text-primary); }
-.hero-bg { --sw: min(900px, 66vw); }
-.hero-bg .sphere-node { position: absolute; width: 10px; height: 10px; left: calc(109% - var(--sw) / 2 - var(--sw) * .446 - 5px); top: calc(50% - var(--sw) * .1625 - 5px); }
-@media (max-width: 1100px) { .hero-bg .sphere-node { display: none; } }
+
+/* вход и выход гейта на странице «обучение» */
+.gio { border: 1px solid var(--line-subtle); background: var(--bg-inset); border-radius: 12px; padding: 4px 14px; }
+.gio-row { display: grid; grid-template-columns: 52px 1fr; gap: 8px; align-items: baseline; padding: 8px 0; font-size: 13px; line-height: 20px; }
+.gio-row .k { font: 400 11px/20px var(--font-mono); letter-spacing: .06em; color: var(--text-muted); }
+.gio-sep { display: flex; align-items: center; color: var(--text-muted); border-top: 1px dashed var(--line-strong); height: 0; margin: 0; justify-content: center; position: relative; }
+.gio-sep .ic { position: absolute; background: var(--bg-inset); padding: 0 6px; width: 28px; height: 18px; }
+/* кнопки входа через сервисы */
+.btn .ic.social { width: 16px; height: 18px; margin-right: 2px; flex: none; }
+/* «найти себя» — той же высоты, что поля рядом */
+.filters .btn { height: 44px; padding: 0 18px; }
+
+/* опора подиума: блоки стоят на линии, а не обрываются */
+.podium::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line-strong); }
+@media (max-width: 700px) { .filters .btn { width: 100%; justify-content: center; } }
