@@ -66,7 +66,7 @@ def solve() -> QuantumCircuit:
 <h4>Примеры (Sample Cases)</h4>
 <ul>
   <li>Вход: $|00\rangle \implies$ Выход: $|\Phi^-\rangle = 0.7071 |00\rangle - 0.7071 |11\rangle$.</li>
-  <li>Вероятность измерения в вычислительном базисе: $P(00) = 50\\%$, $P(11) = 50\\%$, $P(01) = 0\\%$, $P(10) = 0\\%$.</li>
+  <li>Вероятность измерения в вычислительном базисе: $P(00) = 50\%$, $P(11) = 50\%$, $P(01) = 0\%$, $P(10) = 0\%$.</li>
 </ul>
 
 <h4>Подсказки, предложенные в задаче (Hints)</h4>
@@ -108,9 +108,9 @@ def solve() -> QuantumCircuit:
 <h4>Постановка задачи</h4>
 <p>Вам дано целое число $n$. Реализуйте квантовую схему-оракул $O$ на $n+1$ кубитах, действующую на базисные вычислительные состояния следующим образом:</p>
 <div class="math-block">
-$$|\psi\rangle = |x\rangle_n |y\rangle_1 \xrightarrow{O} |x\rangle_n |y \oplus x_1 \oplus x_2 \oplus \\dots \oplus x_n\rangle_1$$
+$$|\psi\rangle = |x\rangle_n |y\rangle_1 \xrightarrow{O} |x\rangle_n |y \oplus x_1 \oplus x_2 \oplus \dots \oplus x_n\rangle_1$$
 </div>
-<p>где $|x\rangle = |x_1, x_2, \\dots, x_n\rangle$ обозначает первые $n$ кубитов регистра схемы, а $|y\rangle$ — последний (целевой) кубит. Символ $\oplus$ обозначает сложение по модулю 2 (XOR / проверку четности).</p>
+<p>где $|x\rangle = |x_1, x_2, \dots, x_n\rangle$ обозначает первые $n$ кубитов регистра схемы, а $|y\rangle$ — последний (целевой) кубит. Символ $\oplus$ обозначает сложение по модулю 2 (XOR / проверку четности).</p>
 
 <h4>Ограничения (Constraints)</h4>
 <ul>
@@ -130,11 +130,11 @@ def solve(n: int) -> QuantumCircuit:
 """,
         "taxonomy": r"""
 <ul>
-  <li><strong>Архетип задачи:</strong> <code>T2/T3: Обратимые булевы оракулы (Reversible Boolean Oracles)</code>. Реализация обратимого вычисления классической логической функции четности $\\bigoplus_{i=1}^n x_i$ в квантовом базисе.</li>
+  <li><strong>Архетип задачи:</strong> <code>T2/T3: Обратимые булевы оракулы (Reversible Boolean Oracles)</code>. Реализация обратимого вычисления классической логической функции четности $\bigoplus_{i=1}^n x_i$ в квантовом базисе.</li>
   <li><strong>Формат решения и контракт интерфейса:</strong> <code>Тип B (Параметризованный код Python)</code>. Требуется программный генератор схемы, принимающий целочисленный параметр разрядности $n \in [1, 10]$.</li>
   <li><strong>Входное квантовое состояние:</strong> Произвольное базисное или суперпозиционное состояние входного регистра $|x\rangle = \sum_k c_k |k\rangle$ и целевого кубита $|y\rangle$. Оракул обязан работать унитарно на всем Гильбертовом пространстве $\mathcal{H}_{2^{n+1}}$.</li>
   <li><strong>Выходное квантовое состояние:</strong> Когерентное состояние $|x\rangle |y \oplus \text{parity}(x)\rangle$. При подаче $|y\rangle = |-\rangle$ оракул осуществляет фазовый откат (phase kickback): $(-1)^{\text{parity}(x)} |x\rangle |-\rangle$.</li>
-  <li><strong>Топологические ограничения:</strong> Звездная топология (Star topology), где целевой кубит $y$ соединен со всеми кубитами $x_i$ ($i \in \{0, \\dots, n-1\}$). При линейной топологии требуется вставка SWAP-цепочек.</li>
+  <li><strong>Топологические ограничения:</strong> Звездная топология (Star topology), где целевой кубит $y$ соединен со всеми кубитами $x_i$ ($i \in \{0, \dots, n-1\}$). При линейной топологии требуется вставка SWAP-цепочек.</li>
   <li><strong>Принцип работы автосудьи (Auto-Judge):</strong> Проверка унитарности <code>Operator(qc)</code> или серии векторных эволюций для набора тестовых значений $n \in [1, 10]$ на суперпозициях вида $\frac{1}{\sqrt{2}}(|101\rangle + |010\rangle)|0\rangle$. Время валидации $\sim 20$ мс.</li>
   <li><strong>Устойчивость к перебору (Brute-force):</strong> <code>Защищена (Brute-Force Protected)</code>. Требует параметрического цикла по всему регистру $x$; статический перебор не масштабируется на произвольное $n$.</li>
 </ul>
@@ -186,7 +186,7 @@ def solve(n: int) -> QuantumCircuit:
 <h4>Постановка задачи</h4>
 <p>Вам дано целое число $n$. Реализуйте квантовое преобразование Фурье (QFT) для $n$ кубитов, переводящее базисные состояния вычислительного базиса согласно соотношению:</p>
 <div class="math-block">
-$$|j\rangle_n \xrightarrow{\text{QFT}} \frac{1}{\sqrt{2^n}} \sum_{k=0}^{2^n-1} \\exp\left(\frac{2\pi i j k}{2^n}\right) |k\rangle_n$$
+$$|j\rangle_n \xrightarrow{\text{QFT}} \frac{1}{\sqrt{2^n}} \sum_{k=0}^{2^n-1} \exp\left(\frac{2\pi i j k}{2^n}\right) |k\rangle_n$$
 </div>
 
 <h4>Ограничения (Constraints)</h4>
@@ -284,7 +284,7 @@ $$\text{Cost} = 10 N_{\text{CNOT}} + N_{\text{other}}$$
 <h4>Ограничения (Constraints)</h4>
 <ul>
   <li>Ровно 3 кубита (<code>QuantumCircuit(3)</code>), 0 вспомогательных анцилл.</li>
-  <li>Разрешенный базис строго ограничен: <code>cx</code>, <code>rz</code>, <code>sx</code>, <code>x</code>, <code>id</code> (или эквивалентные $T, T^\\dagger, H$).</li>
+  <li>Разрешенный базис строго ограничен: <code>cx</code>, <code>rz</code>, <code>sx</code>, <code>x</code>, <code>id</code> (или эквивалентные $T, T^\dagger, H$).</li>
   <li>Запрещены классические измерения и нелинейные инструкции.</li>
   <li>Унитарный оператор схемы должен быть строго эквивалентен матрице $CCX$ (с точностью до глобальной фазы).</li>
   <li><strong>Целевой ориентир:</strong> точная декомпозиция Тоффоли без анцилл требует ровно 6 вентилей CNOT ($N_{\text{CNOT}} = 6$).</li>
@@ -311,7 +311,7 @@ $$\text{Cost} = 10 N_{\text{CNOT}} + N_{\text{other}}$$
 
 <h4>Подсказки, предложенные в задаче (Hints)</h4>
 <ul>
-  <li>Классическая декомпозиция Баренко (Barenco et al., 1995) синтезирует $CCX$ из 6 CNOT и 7 однокубитных фазовых вентилей $T = RZ(\pi/4)$ и $T^\\dagger = RZ(-\pi/4)$.</li>
+  <li>Классическая декомпозиция Баренко (Barenco et al., 1995) синтезирует $CCX$ из 6 CNOT и 7 однокубитных фазовых вентилей $T = RZ(\pi/4)$ и $T^\dagger = RZ(-\pi/4)$.</li>
   <li>Вентиль Адамара $H$ синтезируется в базисе IBM как $RZ(\pi/2) - SX - RZ(\pi/2)$.</li>
   <li>Симметричная расстановка CNOT позволяет взаимно сократить внутренние фазовые набеги на управляющих кубитах.</li>
 </ul>
@@ -366,7 +366,7 @@ def solve() -> QuantumCircuit:
 <p>Синтезируйте неклиффордов поворот целевого кубита $R_X(\theta)$ с $\cos\theta = 3/5$ в универсальном конечном наборе вентилей $\{H, X, S, \text{CCX}\}$ с помощью протокола <strong>Repeat-Until-Success (RUS)</strong> на 3 кубитах (1 целевой кубит, 2 контрольных кубита) и 2 классических битах:</p>
 <ol>
   <li><strong>Попытка (Trial):</strong> Примените $H$ на контрольных кубитах и цели $\to$ CCX $\to$ $S$ на цели $\to$ CCX $\to$ $H$ на контрольных и цели $\to$ измерение контрольных кубитов в классический регистр <code>measures</code>.</li>
-  <li>Если результат измерения равен <code>00</code> — операция завершена успешно ($P_{\text{succ}} = 62.5\\%$).</li>
+  <li>Если результат измерения равен <code>00</code> — операция завершена успешно ($P_{\text{succ}} = 62.5\%$).</li>
   <li>Если результат отличен от <code>00</code> — на целевой кубит наложилась ошибка $X$, а контрольные кубиты перешли в состояния $|1\rangle$. Выполните <strong>активный детерминированный сброс</strong> контрольных кубитов в $|0\rangle$ (применив вентиль $X$, если измерен бит 1), скомпенсируйте ошибку на целевом кубите и повторите попытку.</li>
 </ol>
 
@@ -382,7 +382,7 @@ def solve() -> QuantumCircuit:
   <li><strong>Архетип задачи:</strong> <code>T6: Динамические квантовые цепи и классический feedforward (Dynamic Circuits)</code>. Гибридный квантово-классический контур с обратной связью на уровне контроллера квантового процессора в реальном времени.</li>
   <li><strong>Формат решения и контракт интерфейса:</strong> <code>Тип C (Динамическая схема / Dynamic Control Flow)</code>. Включает блоки ветвления <code>IfElseOp</code>, промежуточные измерения и контур активного сброса.</li>
   <li><strong>Входное квантовое состояние:</strong> Произвольное состояние целевого кубита $|\psi\rangle$ и вакуум вспомогательных кубитов $|00\rangle_{\text{ctrl}}$.</li>
-  <li><strong>Выходное квантовое состояние:</strong> Целевое состояние $R_X(\theta)|\psi\rangle$ с суммарной вероятностью успеха $85.9\\%$ после 2 раундов.</li>
+  <li><strong>Выходное квантовое состояние:</strong> Целевое состояние $R_X(\theta)|\psi\rangle$ с суммарной вероятностью успеха $85.9\%$ после 2 раундов.</li>
   <li><strong>Топологические ограничения:</strong> Звездная топология вокруг целевого кубита для двух последовательных вентилей Тоффоли CCX.</li>
   <li><strong>Принцип работы автосудьи (Auto-Judge):</strong> Проверка на симуляторе <code>qiskit_aer.AerSimulator</code> с поддержкой динамических инструкций. Анализ условных вероятностей ветвления и валидация матрицы плотности каждой ветви. Время проверки $\sim 150$ мс.</li>
   <li><strong>Устойчивость к перебору (Brute-force):</strong> <code>Защищена (Brute-Force Protected)</code>. Стохастический и дискретный перебор неприменимы к графам с динамическими ветвлениями и промежуточными измерениями.</li>
@@ -391,8 +391,8 @@ def solve() -> QuantumCircuit:
         "hints_and_examples": r"""
 <h4>Примеры распределений</h4>
 <ul>
-  <li>При исходе $b_1 b_0 = 00$: целевой кубит эволюционирует строго как $R_X(\theta) |\psi\rangle$, где $\theta = 2 \\arccos(3/5) \approx 1.8546$ рад.</li>
-  <li>Вероятность успеха за один цикл: $P(00) = 5/8 = 62.5\\%$.</li>
+  <li>При исходе $b_1 b_0 = 00$: целевой кубит эволюционирует строго как $R_X(\theta) |\psi\rangle$, где $\theta = 2 \arccos(3/5) \approx 1.8546$ рад.</li>
+  <li>Вероятность успеха за один цикл: $P(00) = 5/8 = 62.5\%$.</li>
 </ul>
 
 <h4>Подсказки, предложенные в задаче (Hints)</h4>
@@ -469,9 +469,9 @@ def build_rus_circuit() -> QuantumCircuit:
     </div>
   </li>
 </ol>
-<p>В классической физике (по теореме Белла) максимальная вероятность выигрыша локальной стратегии строго ограничена: $P_{\text{classical}} \le 75\\%$. Используя предварительно разделенную запутанную пару Белла $|\Phi^+\rangle = \frac{|00\rangle + |11\rangle}{\sqrt{2}}$, реализуйте стратегию, достигающую квантовой границы Цирельсона:</p>
+<p>В классической физике (по теореме Белла) максимальная вероятность выигрыша локальной стратегии строго ограничена: $P_{\text{classical}} \le 75\%$. Используя предварительно разделенную запутанную пару Белла $|\Phi^+\rangle = \frac{|00\rangle + |11\rangle}{\sqrt{2}}$, реализуйте стратегию, достигающую квантовой границы Цирельсона:</p>
 <div class="math-block">
-$$P_{\text{quantum}} = \cos^2\left(\frac{\pi}{8}\right) = \frac{2 + \sqrt{2}}{4} \approx 85.36\\% &gt; 75\\%$$
+$$P_{\text{quantum}} = \cos^2\left(\frac{\pi}{8}\right) = \frac{2 + \sqrt{2}}{4} \approx 85.36\% &gt; 75\%$$
 </div>
 
 <h4>Ограничения (Constraints)</h4>
@@ -488,8 +488,8 @@ $$P_{\text{quantum}} = \cos^2\left(\frac{\pi}{8}\right) = \frac{2 + \sqrt{2}}{4}
   <li><strong>Входное квантовое состояние:</strong> Предварительно запутанное состояние Белла $|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)$.</li>
   <li><strong>Выходное квантовое состояние:</strong> Распределение классических битов $(a, b)$ с квантовой корреляцией Цирельсона.</li>
   <li><strong>Топологические ограничения:</strong> 2 изолированных несвязанных кубита в момент выполнения ходов игроками.</li>
-  <li><strong>Принцип работы автосудьи (Auto-Judge):</strong> Двухуровневый аудит: (1) структурный анализ DAG на отсутствие двухкубитных гейтов после запутывания; (2) расчет аналитической вероятности выигрыша через <code>Statevector</code> на всех 4 парах входов $(x, y) \in \{0, 1\}^2$. Проходной порог: $P_{\text{win}} \ge 84\\%$. Время проверки &lt; 5 мс.</li>
-  <li><strong>Устойчивость к перебору (Brute-force):</strong> <code>Абсолютная защита (Физический предел Белла)</code>. Никакой классический алгоритм без квантовой запутанности не может преодолеть барьер $75\\%$.</li>
+  <li><strong>Принцип работы автосудьи (Auto-Judge):</strong> Двухуровневый аудит: (1) структурный анализ DAG на отсутствие двухкубитных гейтов после запутывания; (2) расчет аналитической вероятности выигрыша через <code>Statevector</code> на всех 4 парах входов $(x, y) \in \{0, 1\}^2$. Проходной порог: $P_{\text{win}} \ge 84\%$. Время проверки &lt; 5 мс.</li>
+  <li><strong>Устойчивость к перебору (Brute-force):</strong> <code>Абсолютная защита (Физический предел Белла)</code>. Никакой классический алгоритм без квантовой запутанности не может преодолеть барьер $75\%$.</li>
 </ul>
 """,
         "hints_and_examples": r"""
@@ -510,7 +510,7 @@ $$P_{\text{quantum}} = \cos^2\left(\frac{\pi}{8}\right) = \frac{2 + \sqrt{2}}{4}
       <li>Боб: при $y=0 \implies \theta_B = \pi/4$; при $y=1 \implies \theta_B = -\pi/4$.</li>
     </ul>
   </li>
-  <li>Разность эффективных углов между базисами измерения составляет строго $\pm \pi/8$ для первых трех пар и $3\pi/8$ для пары $(1, 1)$, что обеспечивает $P_{\text{win}} = \cos^2(\pi/8) \approx 85.36\\%$.</li>
+  <li>Разность эффективных углов между базисами измерения составляет строго $\pm \pi/8$ для первых трех пар и $3\pi/8$ для пары $(1, 1)$, что обеспечивает $P_{\text{win}} = \cos^2(\pi/8) \approx 85.36\%$.</li>
 </ul>
 """,
         "solution_code": """from qiskit import QuantumCircuit
@@ -580,7 +580,7 @@ $$|a\rangle_n |b\rangle_n |0\rangle_{c_{\text{in}}} |0\rangle_{c_{\text{out}}} \
   <li><strong>Выходное квантовое состояние:</strong> Результат сложения в регистре $b$ и старший перенос в $c_{\text{out}}$ при полностью распутанных анциллах.</li>
   <li><strong>Топологические ограничения:</strong> Линейная цепочка связей между смежными разрядами $a_i, b_i$ и переносными шинами.</li>
   <li><strong>Принцип работы автосудьи (Auto-Judge):</strong> Проверка на полной таблице истинности сложения всех пар целых чисел $(a, b)$ для $n \in [1, 4]$, проверка скалярного произведения анциллы $\langle 0 | c_{\text{in}} \rangle = 1.0$ на суперпозициях. Время проверки $\sim 250$ мс.</li>
-  <li><strong>Устойчивость к перебору (Brute-force):</strong> <code>Защищена (Brute-Force Protected)</code>. Экспоненциальный размер унитарной матрицы $2^{2n+2} \\times 2^{2n+2}$ исключает случайный подбор вентилей.</li>
+  <li><strong>Устойчивость к перебору (Brute-force):</strong> <code>Защищена (Brute-Force Protected)</code>. Экспоненциальный размер унитарной матрицы $2^{2n+2} \times 2^{2n+2}$ исключает случайный подбор вентилей.</li>
 </ul>
 """,
         "hints_and_examples": r"""
@@ -697,7 +697,7 @@ $$U(t) = \left( e^{-i H \Delta t} \right)^k \approx \left( e^{-i \alpha \Delta t
   </li>
   <li><strong>Эволюция $X \otimes X$ ($RXX$):</strong> через базис Адамара ($H X H = Z$):
     <div class="math-block">
-    $$e^{-i \frac{\theta_x}{2} (X \otimes X)} = (H \otimes H) \\cdot \text{CNOT}_{0 \to 1} \\cdot (I \otimes R_z(\theta_x)) \\cdot \text{CNOT}_{0 \to 1} \\cdot (H \otimes H), \quad \theta_x = \frac{2\alpha t}{k}$$
+    $$e^{-i \frac{\theta_x}{2} (X \otimes X)} = (H \otimes H) \cdot \text{CNOT}_{0 \to 1} \cdot (I \otimes R_z(\theta_x)) \cdot \text{CNOT}_{0 \to 1} \cdot (H \otimes H), \quad \theta_x = \frac{2\alpha t}{k}$$
     </div>
   </li>
 </ul>
@@ -776,7 +776,7 @@ def solve(alpha: float, beta: float, time: float, depth: int) -> QuantumCircuit:
 <h4>Проверочная матрица Хэмминга $H_{3\times 7}$</h4>
 <p>Столбцы матрицы $H$ соответствуют двоичной записи номера кубита (от 1 до 7):</p>
 <div class="math-block">
-$$H = \\begin{pmatrix} 1 & 0 & 0 & 0 & 1 & 1 & 1 \\\\ 0 & 1 & 0 & 1 & 0 & 1 & 1 \\\\ 0 & 0 & 1 & 1 & 1 & 0 & 1 \\end{pmatrix}$$
+$$H = \begin{pmatrix} 1 & 0 & 0 & 0 & 1 & 1 & 1 \\ 0 & 1 & 0 & 1 & 0 & 1 & 1 \\ 0 & 0 & 1 & 1 & 1 & 0 & 1 \end{pmatrix}$$
 </div>
 
 <h4>Подсказки, предложенные в задаче (Hints)</h4>
@@ -888,7 +888,7 @@ def build_steane_syndrome_circuit() -> QuantumCircuit:
   <li>Если Ева измеряет фотон в неверном базисе ($b_E \neq b_A$), волновая функция коллапсирует. При измерении Бобом в базисе Алисы вероятность ошибки составляет $50\%$.</li>
   <li>Итоговый теоретический уровень ошибок при сплошном перехвате:
     <div class="math-block">
-    $$\\mathbb{E}[\text{QBER}] = P(b_E \neq b_A) \\times P(\text{Error} \\mid b_E \neq b_A) = \frac{1}{2} \\times \frac{1}{2} = 25\\% &gt; 11\\%$$
+    $$\mathbb{E}[\text{QBER}] = P(b_E \neq b_A) \times P(\text{Error} \mid b_E \neq b_A) = \frac{1}{2} \times \frac{1}{2} = 25\% &gt; 11\%$$
     </div>
   </li>
 </ul>
@@ -1026,328 +1026,6 @@ def generate_catalog_html(output_path: str):
   <!-- KaTeX for formulas -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-  
-  <style>
-    @page {
-      size: A4 portrait;
-      margin: 14mm 14mm 14mm 14mm;
-    }
-    
-    * {
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      color: #0f172a;
-      background-color: #ffffff;
-      line-height: 1.5;
-      font-size: 13px;
-      margin: 0;
-      padding: 0;
-    }
-    
-    .page-break {
-      page-break-before: always;
-      break-before: page;
-    }
-    
-    .cover-page {
-      min-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 40px 20px;
-    }
-    
-    .cover-badge {
-      display: inline-block;
-      padding: 6px 16px;
-      border-radius: 9999px;
-      background-color: #f1f5f9;
-      color: #e11d48;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 24px;
-      border: 1px solid #e2e8f0;
-    }
-    
-    .cover-title {
-      font-size: 32px;
-      font-weight: 900;
-      color: #0f172a;
-      line-height: 1.2;
-      margin: 0 0 16px 0;
-    }
-    
-    .cover-subtitle {
-      font-size: 16px;
-      color: #475569;
-      max-width: 650px;
-      margin: 0 0 32px 0;
-    }
-    
-    .cover-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      max-width: 600px;
-      width: 100%;
-      margin-bottom: 40px;
-    }
-    
-    .cover-metric {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      padding: 16px;
-      border-radius: 12px;
-      text-align: center;
-    }
-    
-    .cover-metric-val {
-      font-size: 24px;
-      font-weight: 900;
-      color: #0f172a;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    }
-    
-    .cover-metric-lbl {
-      font-size: 11px;
-      font-weight: 700;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-top: 4px;
-    }
-    
-    /* Task Article Cards */
-    .task-card {
-      padding: 0 0 20px 0;
-    }
-    
-    .task-header {
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 12px;
-      margin-bottom: 16px;
-    }
-    
-    .task-meta {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-    
-    .task-num {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 11px;
-      font-weight: 900;
-      color: #0f172a;
-      background: #e2e8f0;
-      padding: 3px 8px;
-      border-radius: 6px;
-    }
-    
-    .badge {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 9999px;
-    }
-    
-    .badge-platform {
-      background-color: #ede9fe;
-      color: #5b21b6;
-    }
-    
-    .badge-archetype {
-      background-color: #e0f2fe;
-      color: #0369a1;
-    }
-    
-    .badge-diff {
-      background-color: #f1f5f9;
-      color: #334155;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    }
-    
-    .task-title {
-      font-size: 20px;
-      font-weight: 900;
-      color: #0f172a;
-      margin: 0;
-      line-height: 1.3;
-    }
-    
-    /* Section Styles */
-    .task-section {
-      margin-bottom: 18px;
-    }
-    
-    .section-title {
-      font-size: 12px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #e11d48;
-      border-left: 3px solid #e11d48;
-      padding-left: 8px;
-      margin: 0 0 8px 0;
-    }
-    
-    .section-content {
-      color: #334155;
-      font-size: 12.5px;
-    }
-    
-    .section-content p {
-      margin: 0 0 8px 0;
-    }
-    
-    .section-content h4 {
-      font-size: 12px;
-      font-weight: 800;
-      color: #0f172a;
-      margin: 10px 0 4px 0;
-      text-transform: uppercase;
-    }
-    
-    .section-content ul {
-      margin: 0 0 8px 0;
-      padding-left: 20px;
-    }
-    
-    .section-content li {
-      margin-bottom: 4px;
-    }
-    
-    .math-block {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 8px 12px;
-      margin: 8px 0;
-      text-align: center;
-      overflow-x: auto;
-    }
-    
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 11.5px;
-      margin: 8px 0;
-    }
-    
-    .data-table th, .data-table td {
-      border: 1px solid #cbd5e1;
-      padding: 6px 10px;
-      text-align: left;
-    }
-    
-    .data-table th {
-      background-color: #f1f5f9;
-      font-weight: 800;
-      color: #1e293b;
-    }
-    
-    /* Code Blocks */
-    .code-block {
-      background-color: #090d16 !important;
-      color: #e2e8f0 !important;
-      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
-      font-size: 11px !important;
-      line-height: 1.45 !important;
-      padding: 12px 16px !important;
-      border-radius: 10px !important;
-      overflow-x: auto !important;
-      margin: 6px 0 !important;
-      border: 1px solid #1e293b !important;
-      white-space: pre !important;
-    }
-    
-    code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 11.5px;
-      background-color: #f1f5f9;
-      padding: 1px 4px;
-      border-radius: 4px;
-      color: #0f172a;
-    }
-    
-    pre code {
-      background-color: transparent !important;
-      padding: 0 !important;
-      color: inherit !important;
-    }
-    
-    @media print {
-      body {
-        background: #ffffff !important;
-        color: #000000 !important;
-        font-size: 12px !important;
-      }
-      .task-card {
-        page-break-inside: auto;
-      }
-      .code-block {
-        page-break-inside: avoid;
-        background-color: #0f172a !important;
-        color: #f8fafc !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      .badge, .task-num, .cover-metric {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- COVER PAGE -->
-  <section class="cover-page">
-    <div class="cover-badge">QuantumArena • Реестр разобранных соревновательных задач</div>
-    <h1 class="cover-title">Избранные квантовые задачи<br/>мировых платформ и олимпиад</h1>
-    <p class="cover-subtitle">
-      Эталонный срез соревновательных задач с полным условием, строгой привязкой к таксономии QuantumArena, подсказками и верифицированным программным решением на Qiskit.
-    </p>
-    
-    <div class="cover-grid">
-      <div class="cover-metric">
-        <div class="cover-metric-val">10</div>
-        <div class="cover-metric-lbl">Разнородных задач</div>
-      </div>
-      <div class="cover-metric">
-        <div class="cover-metric-val">5</div>
-        <div class="cover-metric-lbl">Платформ (QCoder, IBM, MS, Xanadu, НТО)</div>
-      </div>
-      <div class="cover-metric">
-        <div class="cover-metric-val">8</div>
-        <div class="cover-metric-lbl">Квантовых архетипов</div>
-      </div>
-      <div class="cover-metric">
-        <div class="cover-metric-val">100%</div>
-        <div class="cover-metric-lbl">Верифицированный код решений</div>
-      </div>
-    </div>
-    
-    <div style="font-size: 11px; color: #94a3b8; font-family: ui-monospace, SFMono-Regular, monospace;">
-      Формат документа: Полное условие • Классификация и ограничения • Подсказки • Код решения
-    </div>
-  </section>
-
-  <!-- TASKS BODY -->
-  __TASKS_HTML__
-
-  </script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
   
   <style>

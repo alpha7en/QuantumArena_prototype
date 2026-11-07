@@ -615,8 +615,8 @@ def svg_circuit_draper_adder():
       <text x="170" y="100" font-family="system-ui, sans-serif" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle">QFT</text>
 
       <!-- VARYING BLOCK: Controlled Phase Rotations R_k (Colored Violet) -->
-      <rect x="290" y="30" width="340" height="190" rx="12" fill="#ede9fe" fill-opacity="0.45" stroke="#6366f1" stroke-width="2" stroke-dasharray="6 4"/>
-      <text x="460" y="50" font-family="system-ui, sans-serif" font-size="11" font-weight="900" fill="#4338ca" text-anchor="middle">ВАРЬИРУЕТСЯ ВРАЩЕНИЕ R_k = diag(1, e^{2πi/2^k})</text>
+      <rect x="290" y="14" width="340" height="206" rx="12" fill="#ede9fe" fill-opacity="0.45" stroke="#6366f1" stroke-width="2" stroke-dasharray="6 4"/>
+      <text x="460" y="31" font-family="system-ui, sans-serif" font-size="10.5" font-weight="900" fill="#4338ca" text-anchor="middle">ВАРЬИРУЕТСЯ ВРАЩЕНИЕ R_k = diag(1, e^{2πi/2^k})</text>
 
       <!-- Control from a to b0 -->
       <line x1="380" y1="60" x2="380" y2="200" stroke="#6366f1" stroke-width="2.5"/>
@@ -751,9 +751,9 @@ def svg_circuit_deutsch_jozsa():
       <text x="130" y="216" font-family="monospace" font-size="18" font-weight="900" fill="#ffffff" text-anchor="middle">H</text>
 
       <!-- VARYING BLOCK: Oracle U_f (Colored Violet) -->
-      <rect x="230" y="35" width="220" height="200" rx="14" fill="#ede9fe" stroke="#6366f1" stroke-width="2.5"/>
+      <rect x="215" y="35" width="250" height="200" rx="14" fill="#ede9fe" stroke="#6366f1" stroke-width="2.5"/>
       <text x="340" y="125" font-family="system-ui, sans-serif" font-size="22" font-weight="900" fill="#4338ca" text-anchor="middle">ORACLE U_f</text>
-      <text x="340" y="155" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#6366f1" text-anchor="middle">ВАРЬИРУЕТСЯ ВХОДНОЙ ФУНКЦИЕЙ</text>
+      <text x="340" y="155" font-family="system-ui, sans-serif" font-size="10.5" font-weight="700" fill="#6366f1" text-anchor="middle">ВАРЬИРУЕТСЯ ВХОДНОЙ ФУНКЦИЕЙ</text>
 
       <!-- Static H layer 2 on input register (Neutral Slate) -->
       <rect x="530" y="38" width="40" height="44" rx="6" fill="#1e293b" stroke="#334155"/>
@@ -2245,6 +2245,7 @@ def export_pdf(html_path, pdf_path):
         '--headless=new',
         '--disable-gpu',
         '--no-pdf-header-footer',
+        '--virtual-time-budget=3000',
         f'--print-to-pdf={pdf_path}',
         f'file://{html_path}'
     ]
@@ -2255,7 +2256,7 @@ if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.abspath(__file__))
     html_out = os.path.join(base_dir, "index.html")
     md_out = os.path.join(base_dir, "slides.md")
-    pdf_out = os.path.join(base_dir, "QuantumArena_Taxonomy.pdf")
+    pdf_out = os.path.join(base_dir, "QuantumArena_CLASSIFICATION.pdf")
     generate_index_html(html_out)
     generate_slides_md(md_out)
     export_pdf(html_out, pdf_out)

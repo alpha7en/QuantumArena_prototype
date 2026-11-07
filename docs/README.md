@@ -11,3 +11,5 @@
 | [DEPLOY.md](DEPLOY.md) | публикация на GitHub Pages |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | запуск, тесты, карта кода |
 | [ROADMAP.md](ROADMAP.md) | что сделано, ограничения, дальнейшие шаги |
+| [specs/](specs/) | дополнительные технические спецификации, ресерч по автогрейдеру и материалы (`sparq_Arena_dop_materialy.pdf`) |
+| [../presentation/](../presentation/) | презентация классификации (`QuantumArena_CLASSIFICATION.pdf`), разбор 10 задач (`QuantumArena_Diverse_Tasks_Catalog.pdf`) и конкурентный анализ (`Quantum_Competitive_Intelligence_Report.pdf`) |

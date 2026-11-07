@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Анализ квантовых соревновательных и алгоритмических платформ</title>
+<style>
+@page {
+  size: A4;
+  margin: 16mm 14mm 16mm 14mm;
+  @bottom-right {
+    content: "Стр. " counter(page);
+    font-size: 8pt;
+    color: #64748b;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  @bottom-left {
+    content: "QuantumArena: Анализ соревновательных платформ";
+    font-size: 8pt;
+    color: #64748b;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #1e293b;
+  line-height: 1.5;
+  font-size: 9.3pt;
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4 {
+  color: #0f172a;
+  font-weight: 700;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+h1 {
+  font-size: 17pt;
+  line-height: 1.25;
+  border-bottom: 2.5px solid #1e3a8a;
+  padding-bottom: 6px;
+  margin-top: 0;
+  color: #1e3a8a;
+}
+
+h2 {
+  font-size: 12.5pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 4px;
+  color: #0f172a;
+  margin-top: 1.5em;
+}
+
+h3 {
+  font-size: 10.5pt;
+  color: #1e40af;
+  margin-top: 1.1em;
+}
+
+h4 {
+  font-size: 8.8pt;
+  color: #334155;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 0.9em;
+  border-left: 3px solid #3b82f6;
+  padding-left: 6px;
+}
+
+p {
+  margin: 0.4em 0 0.6em 0;
+}
+
+a {
+  color: #1d4ed8;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #e2e8f0;
+  margin: 1.2em 0;
+}
+
+/* Таблицы */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.8em 0 1.2em 0;
+  font-size: 7.7pt;
+  line-height: 1.35;
+}
+
+th, td {
+  border: 1px solid #cbd5e1;
+  padding: 5px 6px;
+  text-align: left;
+  vertical-align: top;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+th {
+  background-color: #1e3a8a;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 7.9pt;
+}
+
+tr {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+/* Списки */
+ol, ul {
+  margin: 0.4em 0 0.8em 0;
+  padding-left: 18px;
+}
+
+li {
+  margin-bottom: 0.45em;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* Карточки формул */
+.formula-card {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-left: 4px solid #2563eb;
+  border-radius: 6px;
+  padding: 8px 14px;
+  margin: 8px 0 10px 0;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.formula-label {
+  font-size: 7.8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
+  font-weight: 700;
+  margin-bottom: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.formula-expr {
+  font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", "Times New Roman", serif;
+  font-size: 11pt;
+  color: #0f172a;
+  text-align: center;
+  padding: 3px 0;
+  line-height: 1.5;
+}
+
+.formula-caption {
+  font-size: 8.2pt;
+  color: #64748b;
+  margin-top: 5px;
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.math-frac {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0 4px;
+}
+
+.math-num {
+  border-bottom: 1.2px solid #0f172a;
+  padding-bottom: 1px;
+}
+
+.math-den {
+  padding-top: 1px;
+}
+
+.math-radicand {
+  border-top: 1.2px solid #0f172a;
+  padding-top: 1px;
+  margin-left: 1px;
+  display: inline-block;
+}
+
+/* Бейджи */
+.gpb-pill {
+  display: inline-block;
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 8pt;
+  font-weight: 600;
+  margin-left: 4px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.gpb-icon {
+  margin-right: 3px;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 8.5pt;
+  background: #f1f5f9;
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: #0f172a;
+}
+</style>
+</head>
+<body>
+<h1>Анализ квантовых соревновательных и алгоритмических платформ</h1>
+<h2>Исследование мирового рынка и архитектурные бенчмарки</h2>
+<hr />
+<h2>Введение и структура документа</h2>
+<p>Настоящий аналитический отчет представляет собой структурированное исследование мирового рынка платформ для проведения квантовых алгоритмических соревнований, хакатонов, бенчмаркинга и образовательного тестирования.</p>
+<p>Материал организован по принципу последовательного углубления:
+1. <strong>Раздел 1. Выводы для продукта:</strong> 9 ключевых выводов и практических рекомендаций, сформированных на основе практики ведущих платформ.
+2. <strong>Раздел 2. Сравнительные таблицы характеристик и инженерные ограничения платформ:</strong> Систематизированные таблицы по ключевым аспектам (технологии и рантайм, экономика и TCO, соревнования и охват), а также детальный разбор вычислительных и стоимостных лимитов.
+3. <strong>Раздел 3. Сопоставление с подходами QuantumArena:</strong> Анализ точек пересечения, заимствуемых практик и технологических преимуществ нашего проекта по отношению к каждой из 9 платформ.
+4. <strong>Раздел 4. Профили и технический разбор платформ:</strong> Обзор 9 ключевых игроков (паспорт, стек автогрейдера, экономическая модель, турнирная активность) с прямыми проверяемыми ссылками на первоисточники.</p>
+<hr />
+<h2>Раздел 1. Выводы для продукта</h2>
+<p>Ключевые продуктовые и инженерные решения, сформированные на основе анализа ведущих мировых платформ:</p>
+<ol>
+<li>
+<p><strong>Гибридный ввод задач (GUI + Code):</strong> Разделение аудитории на новичков и опытных разработчиков требует параллельной поддержки визуального схемотехнического редактора и классической кодовой среды (Monaco Editor). Такой комбинированный интерфейс доказал свою востребованность на практике <a href="https://quantum.ibm.com/composer">IBM Quantum Composer</a>, обеспечив приток сотен тысяч активных пользователей.</p>
+</li>
+<li>
+<p><strong>Перетекание специалистов по спортивному программированию (AtCoder Red):</strong> Квантовые алгоритмические задачи в турнирном формате во многом сводятся к комбинаторике и оптимизации, поэтому фокус на классических олимпиадниках обеспечивает быстрый рост сильного сообщества. Эту механику подтверждает опыт платформы <a href="https://qcoder.jp">QCoder</a>, где победителями рейтинговых квантовых контестов стали топ-кодеры платформы AtCoder со статусом Red: <a href="https://atcoder.jp/users/tatyam"><code>tatyam</code></a> (автор <code>tatyam tree</code>), <a href="https://atcoder.jp/users/Kitagawa_Koki"><code>Kitagawa_Koki</code></a> и <a href="https://atcoder.jp/users/SSRS"><code>SSRS</code></a>.</p>
+</li>
+<li>
+<p><strong>B2B-монетизация через передачу баз кандидатов спонсорам контестов:</strong> Прямая подписочная модель с физических лиц не покрывает расходы на соревновательную платформу. Основную выручку генерирует спонсирование соревнований технологическими компаниями, получающими доступ к проверенным профилям сильнейших участников контеста. По этой бизнес-модели сервис <a href="https://qcoder.jp/contests">QCoder</a> привлекает японские технологические корпорации (Fujitsu, NEC, Hitachi) со спонсорскими пакетами $20 000–$100 000 за соревнование по отработанной схеме <a href="https://jobs.atcoder.jp/">AtCoder Jobs</a>.</p>
+</li>
+<li>
+<p><strong>Клиентский WebAssembly-рантайм (Pyodide) до 16 кубитов против падений серверов на 28 кубитах:</strong> Перенос симуляции квантовых схем до 16 кубитов в браузер участника через WebAssembly (Pyodide) снижает серверные расходы до стоимости статического хостинга (менее 3 000 ₽/месяц) и полностью защищает от перегрузок в пиковые моменты турниров. Для сравнения, облачные серверы автогрейдера <a href="https://github.com/QCoderDev/qcoder-github-runners">QCoder</a> на инстансах AWS Graviton4 ограничены 4 ГБ оперативной памяти и падают из-за исчерпания памяти (Linux OOM Killer) на задачах с 28 кубитами (2<sup>28</sup> &times; 16 байт = 4.0 ГиБ).</p>
+</li>
+<li>
+<p><strong>Квантовый античит на базе ZX-исчисления:</strong> Проверка эквивалентности схем прямым сравнением унитарных матриц или матриц плотности требует экспоненциальной памяти (<i>O</i>(4<sup><i>n</i></sup>)) и приводит к сбоям автогрейдера под нагрузкой. Графовое переписывание на базе ZX-исчисления (библиотека PyZX) сводит схему к канонической форме за полиномиальное время <i>O</i>(<i>m</i><sup>3</sup>) и надежно определяет плагиат при перестановке независимых вентилей. Наглядный пример неоптимального подхода — академический проект <a href="https://qprogram.org">qprogram.org</a> (<a href="https://arxiv.org/abs/2601.20247">arXiv:2601.20247</a>), серверы которого возвращают ошибку HTTP 504 Gateway Timeout из-за матричного расчета, требующего 64 ГБ памяти уже на 16 кубитах.</p>
+</li>
+<li>
+<p><strong>Универсальный формат работы с открытыми стандартами (Qiskit, Cirq, PennyLane, OpenQASM 3.0):</strong> Соревновательная платформа должна поддерживать все распространенные библиотеки и языки описания квантовых схем без ограничений. Платформы с закрытым стеком, такие как <a href="https://learning.quantum.ibm.com/">IBM Quantum Learning</a> (только Qiskit) или <a href="https://github.com/microsoft/QuantumKatas">Microsoft Quantum Katas</a> (только Q#), отсекают более половины разработчиков, использующих альтернативные открытые библиотеки.</p>
+</li>
+<li>
+<p><strong>Требование построения схем под реалистичные ограничения:</strong> Вместо абстрактных математических упражнений современные соревнования требуют от участников построения квантовых цепей с учетом физических ограничений — базисного набора вентилей, связности кубитов на чипе и глубины преобразования. Востребованность таких прикладных задач доказана успехом серии соревнований <a href="https://github.com/Classiq/classiq-library">Classiq Coding Competition</a> компании <a href="https://www.classiq.io/">Classiq</a>, привлекшей более 1 500 участников.</p>
+</li>
+<li>
+<p><strong>Оптимизация схем (минимизация глубины и двухкубитных вентилей):</strong> На текущем этапе развития квантовых процессоров главным критерием качества решения является не только математическая точность, но и устойчивость к шуму за счет минимизации числа двухкубитных вентилей (CX/CZ) и общей глубины схемы. Индустриальным стандартом таких компиляторных оптимизаций выступает открытый инструментарий <a href="https://github.com/CQCL/tket">Quantinuum TKET</a> с алгоритмами сжатия цепей <code>FullPeepholeOptimise</code>.</p>
+</li>
+<li>
+<p><strong>Задачи по квантовому криптоанализу и постквантовой криптографии (PQC):</strong> Включение в турнирную программу задач на квантовые алгоритмы факторизации, дискретного логарифмирования и анализ постквантовых алгоритмов привлекает специалистов по прикладной математике и информационной безопасности. Высокий интерес к этой тематике подтверждают профильные соревнования, включая трек <a href="https://ntcontest.ru/tracks/nto-school/energeticheskiy-proekt/kvant-ingineering/">«Квантовый инжиниринг»</a> Национальной технологической олимпиады.</p>
+</li>
+</ol>
+<hr />
+<h2>Раздел 2. Сравнительные таблицы характеристик и инженерные ограничения платформ</h2>
+<p>Сравнительный анализ внешних платформ структурирован по трем ключевым измерениям: архитектура автогрейдера, экономика инфраструктуры (TCO) и масштабы турнирной аудитории.</p>
+<h3>Таблица 1. Технологическая архитектура, рантайм и методы верификации</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Платформа / Инициатива</th>
+<th style="text-align: left;">Вычислительный рантайм автогрейдера</th>
+<th style="text-align: left;">Поддерживаемые SDK</th>
+<th style="text-align: left;">Метод валидации решений</th>
+<th style="text-align: left;">Предел масштабирования памяти</th>
+<th style="text-align: left;">Сетевая изоляция раннеров</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>QCoder (Япония)</strong></td>
+<td style="text-align: left;">Cloud EC2 (AWS Graviton4 <code>c8g.large</code>)</td>
+<td style="text-align: left;">Qiskit, Qulacs, Cirq, Braket</td>
+<td style="text-align: left;">Statevector fidelity (<i>F</i> &ge; 1 &minus; 10<sup>&minus;6</sup>)</td>
+<td style="text-align: left;"><i>n</i> = 28 кубитов (жесткий OOM-барьер при 4 ГБ RAM)</td>
+<td style="text-align: left;">Docker-контейнеры (базовая изоляция)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>qprogram.org (США)</strong></td>
+<td style="text-align: left;">Server-side Backend + IBM Quantum QPU</td>
+<td style="text-align: left;">Qiskit, OpenQASM 2.0/3.0</td>
+<td style="text-align: left;">Матричное расстояние Гильберта-Шмидта</td>
+<td style="text-align: left;"><i>n</i> = 16 кубитов (<i>O</i>(4<sup><i>n</i></sup>) требует 64 ГБ RAM; HTTP 504)</td>
+<td style="text-align: left;">Cloud REST API (без локальной изоляции)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IBM Quantum (США)</strong></td>
+<td style="text-align: left;">IBM Quantum Platform Cloud</td>
+<td style="text-align: left;">Qiskit 1.0+ исключительно</td>
+<td style="text-align: left;">Сравнение векторов состояния / QPU shots</td>
+<td style="text-align: left;">Ограничено квотами Qiskit Runtime ($1.60/сек)</td>
+<td style="text-align: left;">Проприетарное облако IBM Cloud</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Xanadu (Канада)</strong></td>
+<td style="text-align: left;">Xanadu Cloud + PennyLane Server</td>
+<td style="text-align: left;">PennyLane, PyTorch, JAX</td>
+<td style="text-align: left;">Градиентный спуск / дифференцируемое моделирование</td>
+<td style="text-align: left;">Аналитический расчет градиентов (узкое место при батчах)</td>
+<td style="text-align: left;">Cloud Sandbox на базе AWS</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Quantinuum (UK/US)</strong></td>
+<td style="text-align: left;">Quantinuum Nexus + H-Series QPU</td>
+<td style="text-align: left;">TKET, Qiskit, PyTKET</td>
+<td style="text-align: left;">Синтаксическая валидация AST + HQC прогон</td>
+<td style="text-align: left;">Ограничено бюджетом HQC-кредитов ($147+ за прогон)</td>
+<td style="text-align: left;">Enterprise Cloud (Azure/AWS VPC)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Classiq (Израиль)</strong></td>
+<td style="text-align: left;">Classiq Quantum Synthesis Engine</td>
+<td style="text-align: left;">Classiq Python SDK, Qiskit</td>
+<td style="text-align: left;">Синтез цепи по предикатам ограничений</td>
+<td style="text-align: left;">NP-полная задача CSP/SAT (таймауты компиляции)</td>
+<td style="text-align: left;">Проприетарный SaaS-кластер</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MTÜ QWorld (Эстония)</strong></td>
+<td style="text-align: left;">Децентрализованный (Jupyter Notebooks)</td>
+<td style="text-align: left;">Qiskit, Cirq, ProjectQ</td>
+<td style="text-align: left;">Ручная и полуавтоматическая проверка (nbgrader)</td>
+<td style="text-align: left;">Зависит от ноутбука студента (нет единого раннера)</td>
+<td style="text-align: left;">Локальное исполнение на машинах учащихся</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>СП «КВАНТ» / РКЦ (РФ)</strong></td>
+<td style="text-align: left;">Веб-портал «учикванты.рф» / Stepik</td>
+<td style="text-align: left;">Python (базовый), Qiskit</td>
+<td style="text-align: left;">Тестовые вопросы с выбором ответа, текстовый автотест</td>
+<td style="text-align: left;">Нет квантовой симуляции в реальном времени</td>
+<td style="text-align: left;">Веб-сервер без квантового вычислительного ядра</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MS Azure Quantum (США)</strong></td>
+<td style="text-align: left;">Azure Quantum Workspace</td>
+<td style="text-align: left;">Q#, Qiskit, Cirq</td>
+<td style="text-align: left;">Компиляция в промежуточное представление QIR</td>
+<td style="text-align: left;">Ограничено квотами подписки Azure ($125k+/мес)</td>
+<td style="text-align: left;">Изоляция корпоративного облака Azure</td>
+</tr>
+</tbody>
+</table>
+<h3>Таблица 2. Экономика, TCO и модели монетизации</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Платформа</th>
+<th style="text-align: left;">Модель монетизации</th>
+<th style="text-align: left;">Стоимость проведения соревнований для B2B</th>
+<th style="text-align: left;">Стоимость вычислений для пользователей</th>
+<th style="text-align: left;">Грантовое и венчурное финансирование</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>QCoder</strong></td>
+<td style="text-align: left;">B2B-спонсорство контестов корпорациями</td>
+<td style="text-align: left;">$20 000 – $100 000 USD за турнир (пакетный споншип)</td>
+<td style="text-align: left;">Бесплатно для участников ($2–$5 USD себестоимость на AWS)</td>
+<td style="text-align: left;">Гранты IPA MITOU (~$20k) + Unitary Fund ($4 000 USD)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>qprogram.org</strong></td>
+<td style="text-align: left;">Академическая / Некоммерческая</td>
+<td style="text-align: left;">Недоступно для B2B (закрытая платформа консорциума)</td>
+<td style="text-align: left;">Бесплатно (субсидируется грантом NSF)</td>
+<td style="text-align: left;">Академические гранты NSF США + доступ к QPU от IBM</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IBM Quantum</strong></td>
+<td style="text-align: left;">Cloud Pay-as-you-go + Enterprise субсидии</td>
+<td style="text-align: left;">Спонсорские контракты IBM Quantum Network ($250k+/год)</td>
+<td style="text-align: left;">$1.60 USD / секунда квантового времени (Qiskit Runtime)</td>
+<td style="text-align: left;">Корпоративный R&amp;D бюджет корпорации IBM</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Xanadu</strong></td>
+<td style="text-align: left;">Продажа квантового облака + софт</td>
+<td style="text-align: left;">Спонсорство QHack через вендоров (AWS, Xanadu)</td>
+<td style="text-align: left;">Бесплатный симулятор, платное облако QPU ($1–$3/мин)</td>
+<td style="text-align: left;">$40M CAD (Strategic Innovation Fund) + $160M+ VC</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Quantinuum</strong></td>
+<td style="text-align: left;">B2B Enterprise подписка</td>
+<td style="text-align: left;">Недоступно (индивидуальные контракты от $100k+)</td>
+<td style="text-align: left;">Расчет по формуле HQC ($147–$185 USD за типичный запуск)</td>
+<td style="text-align: left;">Совместное финансирование Honeywell и Cambridge Quantum</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Classiq</strong></td>
+<td style="text-align: left;">Годовые корпоративные лицензии</td>
+<td style="text-align: left;">Организация хакатонов под ключ ($50k–$100k)</td>
+<td style="text-align: left;">Академический Free Tier, Enterprise от $50 000/год</td>
+<td style="text-align: left;">$63M USD суммарных венчурных инвестиций (Series B)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MTÜ QWorld</strong></td>
+<td style="text-align: left;">Членские взносы + гранты</td>
+<td style="text-align: left;">Платные воркшопы для компаний (€500–€2 000/курс)</td>
+<td style="text-align: left;">Бесплатно для студентов за счет спонсоров</td>
+<td style="text-align: left;">Микрогранты Unitary Fund, Erasmus+, нац. гранты</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>СП «КВАНТ» / РКЦ</strong></td>
+<td style="text-align: left;">Госбюджетное финансирование (ДК)</td>
+<td style="text-align: left;">В рамках мероприятий Дорожной карты (Росатом)</td>
+<td style="text-align: left;">Бесплатно для школьников и студентов</td>
+<td style="text-align: left;">Финансирование ДК «Квантовые вычисления» (24.1 млрд ₽)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MS Azure Quantum</strong></td>
+<td style="text-align: left;">Потребление облачных ресурсов Azure</td>
+<td style="text-align: left;">Корпоративные подписки Microsoft Enterprise Agreement</td>
+<td style="text-align: left;">План Elements от $125 000 до $175 000 USD в месяц</td>
+<td style="text-align: left;">R&amp;D бюджет корпорации Microsoft</td>
+</tr>
+</tbody>
+</table>
+<h3>Таблица 3. Библиотека задач, аудитория и турнирная активность</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Платформа</th>
+<th style="text-align: left;">Количество задач</th>
+<th style="text-align: left;">Регулярность турниров</th>
+<th style="text-align: left;">Охват участников (активная база)</th>
+<th style="text-align: left;">Ключевая целевая аудитория</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>QCoder</strong></td>
+<td style="text-align: left;">30+ авторских соревновательных задач</td>
+<td style="text-align: left;">Ежемесячно (серии QPC001–QPC006)</td>
+<td style="text-align: left;">500–800 активных контестантов (включая Red AtCoder)</td>
+<td style="text-align: left;">Спортивные программисты, студенты Токийского университета</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>qprogram.org</strong></td>
+<td style="text-align: left;">12 задач (Beginner, Intermediate, Advanced)</td>
+<td style="text-align: left;">Статичный бенчмарк (без регулярных серий)</td>
+<td style="text-align: left;">300+ исследователей (консорциум UCLA, MIT, Chicago)</td>
+<td style="text-align: left;">Академические исследователи в области FTQC и QEC</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IBM Quantum</strong></td>
+<td style="text-align: left;">100+ образовательных модулей, ежегодный Challenge</td>
+<td style="text-align: left;">1–2 раза в год (IBM Quantum Challenge)</td>
+<td style="text-align: left;">500 000+ зарегистрированных пользователей глобально</td>
+<td style="text-align: left;">Широкая аудитория: от школьников до корпоративных физиков</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Xanadu</strong></td>
+<td style="text-align: left;">50+ задач в PennyLane Challenges</td>
+<td style="text-align: left;">Ежегодный хакатон QHack (февраль)</td>
+<td style="text-align: left;">3 000+ участников ежегодного QHack</td>
+<td style="text-align: left;">ML-инженеры, специалисты по квантовому машинному обучению</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Quantinuum</strong></td>
+<td style="text-align: left;">Библиотека прикладных алгоритмов InQuanto</td>
+<td style="text-align: left;">Закрытые индустриальные челленджи</td>
+<td style="text-align: left;">1 000+ корпоративных пользователей и ученых</td>
+<td style="text-align: left;">Квантовые химики, материаловеды, enterprise-исследователи</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Classiq</strong></td>
+<td style="text-align: left;">30+ задач в открытой библиотеке GitHub</td>
+<td style="text-align: left;">Ежегодный Classiq Coding Competition</td>
+<td style="text-align: left;">1 500+ участников соревнований</td>
+<td style="text-align: left;">Инженеры квантовых алгоритмов, оптимизаторы схем</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MTÜ QWorld</strong></td>
+<td style="text-align: left;">4 стандартизированных курса (Bronze/Silver/Nickel)</td>
+<td style="text-align: left;">Ежеквартальные воркшопы + QJam</td>
+<td style="text-align: left;">5 000+ сертифицированных выпускников в 26+ странах</td>
+<td style="text-align: left;">Студенты региональных вузов, начинающие разработчики</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>СП «КВАНТ» / РКЦ</strong></td>
+<td style="text-align: left;">20+ задач в олимпиаде НТО и Уроке Цифры</td>
+<td style="text-align: left;">Ежегодные сезоны НТО и тематические смены</td>
+<td style="text-align: left;">100 000+ просмотров уроков, 500+ участников НТО</td>
+<td style="text-align: left;">Российские школьники, студенты технических вузов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MS Azure Quantum</strong></td>
+<td style="text-align: left;">25+ ката в репозитории QuantumKatas</td>
+<td style="text-align: left;">Статичный репозиторий для самообучения</td>
+<td style="text-align: left;">50 000+ форков и звезд на GitHub</td>
+<td style="text-align: left;">Разработчики экосистемы Microsoft, инженеры на Q#</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>Инженерные и стоимостные ограничения соревновательных и обучающих платформ</h3>
+<ol>
+<li><strong>QCoder (Япония): Ограничение оперативной памяти при симуляции чистого состояния.</strong><br />
+   Внутренние конфигурации раннеров QCoder настроены на инстансы AWS Graviton4 <code>c8g.large</code> (2 vCPU, 4 ГБ RAM). Согласно закону масштабирования памяти для симуляции вектора состояния:</li>
+</ol>
+<div class="formula-card">
+  <div class="formula-label">Масштабирование памяти вектора состояния (Statevector)</div>
+  <div class="formula-expr">
+    <i>M</i>(<i>n</i>) = 2<sup><i>n</i></sup> &times; 16 байт
+  </div>
+  <div class="formula-caption">
+    При <i>n</i> = 28 кубитах: 2<sup>28</sup> &times; 16 байт = 4 294 967 296 байт = <b>4.0 ГиБ</b> (приводит к аварийному завершению автогрейдера по Linux OOM Killer на инстансах AWS Graviton4 <code>c8g.large</code> с лимитом 4 ГБ RAM).
+  </div>
+</div>
+
+<p>При переходе к задачам размерности <i>n</i> = 28 вектор состояния занимает 4.0 ГиБ, что приводит к завершению процессов автогрейдера по Linux Out-Of-Memory Killer. Сервис не масштабируется на высококубитные задачи без кратного удорожания серверной инфраструктуры.</p>
+<ol start="2">
+<li><strong>Academic QuantumArena (qprogram.org, США): Матричный расчет расстояния Гильберта-Шмидта.</strong><br />
+   Вместо компактных канонических представлений автогрейдер вычисляет матричное расстояние Гильберта-Шмидта:</li>
+</ol>
+<div class="formula-card">
+  <div class="formula-label">Матричное расстояние Гильберта-Шмидта (qprogram.org)</div>
+  <div class="formula-expr">
+    <i>D</i><sub>HS</sub>(<i>U</i>, <i>V</i>) = &radic;<span class="math-radicand">1 &minus; <span class="math-frac"><span class="math-num">1</span><span class="math-den"><i>d</i><sup>2</sup></span></span> |Tr(<i>U</i><sup>&dagger;</sup><i>V</i>)|<sup>2</sup></span>, &emsp; <i>d</i> = 2<sup><i>n</i></sup>
+  </div>
+  <div class="formula-caption">
+    Хранение двух унитарных матриц 2<sup><i>n</i></sup> &times; 2<sup><i>n</i></sup> требует 2 &times; (2<sup>2<i>n</i></sup> &times; 16) байт. Для <i>n</i> = 16 кубитов расчет требует <b>64 ГиБ RAM</b>, что приводит к систематическим сбоям HTTP 504 Gateway Timeout на публичных серверах платформы.
+  </div>
+</div>
+
+<p>Хранение двух унитарных матриц размера 2<sup><i>n</i></sup> &times; 2<sup><i>n</i></sup> требует 2 &times; (2<sup>2<i>n</i></sup> &times; 16) байт. Для <i>n</i> = 16 кубитов это составляет 2 &times; 2<sup>32</sup> &times; 16 байт = 64 ГиБ оперативной памяти, что вызывает фатальные сбои HTTP 504 Gateway Timeout на публичных серверах платформы.</p>
+<ol start="3">
+<li><strong>Quantinuum (США / Великобритания): Экономический барьер аппаратных запусков по тарификации HQC.</strong><br />
+   Расчет стоимости операций в Quantinuum Nexus производится по формуле кредитов HQC:</li>
+</ol>
+<div class="formula-card">
+  <div class="formula-label">Формула расчета кредитов HQC (Quantinuum Nexus)</div>
+  <div class="formula-expr">
+    <b>HQC</b> = 5 + <i>C</i> &times; 
+    <span class="math-frac">
+      <span class="math-num"><i>N</i><sub>1q</sub> + 10 &middot; <i>N</i><sub>2q</sub> + 5 &middot; <i>N</i><sub>m</sub></span>
+      <span class="math-den">5000</span>
+    </span>
+  </div>
+  <div class="formula-caption">
+    где <i>C</i> — число шотов (1000), <i>N</i><sub>1q</sub> — однокубитные вентили, <i>N</i><sub>2q</sub> — двухкубитные вентили (20), <i>N</i><sub>m</sub> — измерения. При стандартном соревновательном запуске стоимость составляет 123 HQC (<b>$147.60–$184.50 USD</b>).
+  </div>
+</div>
+
+<p>где <i>C</i> — число шотов, <i>N</i><sub>1q</sub> — однокубитные вентили, <i>N</i><sub>2q</sub> — двухкубитные вентили (коэффициент 10 из-за времени лазерного перемещения ионов в ловушке), <i>N</i><sub>m</sub> — измерения. При соревновательном запуске (1000 шотов, цепь из 20 двухкубитных вентилей) стоимость одного сабмита достигает 123 HQC, что эквивалентно <strong>$147.60–$184.50 USD</strong>. Массовый автогрейдинг на реальных квантовых процессорах H1/H2 коммерчески неосуществим для открытых соревнований.</p>
+<ol start="4">
+<li><strong>Xanadu PennyLane (Канада): Бутылочное горлышко расчета градиентов по Parameter-Shift Rule.</strong><br />
+   В задачах квантового машинного обучения (QML) вычисление градиентов по правилу сдвига параметров требует 2<i>P</i> дополнительных прогонов цепи для <i>P</i> параметров:</li>
+</ol>
+<div class="formula-card">
+  <div class="formula-label">Правило сдвига параметров (Parameter-Shift Rule, PennyLane)</div>
+  <div class="formula-expr">
+    <span class="math-frac">
+      <span class="math-num">&part;&lang;<i>B̂</i>&rang;</span>
+      <span class="math-den">&part;<i>&theta;<sub>i</sub></i></span>
+    </span>
+    = 
+    <span class="math-frac">
+      <span class="math-num">&lang;<i>B̂</i>&rang;<sub><i>&theta;<sub>i</sub></i> + <i>s</i></sub> &minus; &lang;<i>B̂</i>&rang;<sub><i>&theta;<sub>i</sub></i> &minus; <i>s</i></sub></span>
+      <span class="math-den">2 sin <i>s</i></span>
+    </span>
+  </div>
+  <div class="formula-caption">
+    Вычисление градиентов для <i>P</i> параметров требует 2<i>P</i> дополнительных прогонов квантовой схемы, перегружая симуляционный кластер при массовом автогрейдинге.
+  </div>
+</div>
+
+<p>При одновременной проверке сотен решений участников с вариационными цепями (100+ параметров) симуляционный кластер мгновенно перегружается, требуя перехода на методы сопряженного дифференцирования (Adjoint Differentiation), которые, однако, не поддерживаются на реальном квантовом оборудовании.</p>
+<ol start="5">
+<li>
+<p><strong>Classiq Technologies (Израиль): Недетерминированное время синтеза схем солверами ограничений.</strong><br />
+   Платформа использует движок удовлетворения ограничений (Boolean Satisfiability / Constraint Programming) для автоматического синтеза квантовых схем. В задачах со сложными предикатами ограничений задача синтеза NP-полна, поэтому время компиляции ведет себя непредсказуемо, приводя к зависанию раннеров при составлении участниками сложных граничных условий.</p>
+</li>
+<li>
+<p><strong>IBM Quantum (США): Очереди на физические процессоры и почасовая стоимость Qiskit Runtime.</strong><br />
+   Открытый доступ к квантовым процессорам IBM сопровождается очередями от 2 до 24 часов на исполнение схемы, что исключает интерактивный автогрейдинг во время соревнований. Коммерческий тариф Qiskit Runtime составляет $1.60 USD за секунду ($96 USD в минуту), что делает массовые прогоны на QPU экономически нецелесообразными без предварительного отбора на симуляторах.</p>
+</li>
+<li>
+<p><strong>Microsoft Azure Quantum (США): Высокая стоимость Enterprise-инфраструктуры и языковая изоляция.</strong><br />
+   Корпоративный пакет Azure Quantum Elements тарифицируется от $125 000 до $175 000 USD в месяц, что ориентировано на крупные химические и материаловедческие концерны и отсекает открытые соревнования. Кроме того, исходная привязка автогрейдера Katas к языку Q# вызвала отток широкой аудитории в пользу экосистемы Python.</p>
+</li>
+<li>
+<p><strong>MTÜ QWorld (Эстония): Отсутствие серверного автогрейдера и ручная валидация.</strong><br />
+   Платформа не имеет централизованного защищенного вычислительного кластера для онлайн-соревнований. Задания выполняются в локальных блокнотах Jupyter на компьютерах участников и проверяются полуавтоматически через nbgrader или вручную преподавателями, что делает невозможным проведение динамичных соревнований с мгновенным лидербордом.</p>
+</li>
+<li>
+<p><strong>Российский квантовый сектор (учикванты.рф / СП «КВАНТ» / НТО): Отсутствие интерактивного квантового автогрейдера.</strong><br />
+   На образовательном портале «учикванты.рф» проверка знаний ограничена статическими тестами с выбором ответа, а задания школьного трека НТО проверяются жюри офлайн или через текстовый анализ вывода (stdout). Отсутствует открытая отечественная платформа с интерактивным автогрейдингом квантовых цепей в реальном времени.</p>
+</li>
+</ol>
+<hr />
+<h2>Раздел 3. Сопоставление с подходами QuantumArena</h2>
+<p>Сопоставительный анализ подходов QuantumArena с девятью ключевыми мировыми и российскими платформами:</p>
+<h3>1. Сопоставление с QCoder (Япония)</h3>
+<ul>
+<li><strong>Точки пересечения:</strong> Фокус на спортивное программирование, рейтинговая ELO-система, проведение регулярных контестов.</li>
+<li><strong>Заимствуемые практики:</strong> Механика вовлечения олимпиадников высших дивизионов (AtCoder Red); спонсорская B2B-модель с передачей профилей финалистов компаниям-партнерам.</li>
+<li><strong>Отличительные особенности QuantumArena:</strong></li>
+<li><em>Вычислительный рантайм:</em> Выполнение симуляций до 16 кубитов в браузере (Pyodide WASM) снижает серверные затраты до &lt;3 000 ₽/мес против $2–$5 за контест на AWS у QCoder.</li>
+<li><em>Интерфейс:</em> Двухрежимный ввод (визуальный Drag-and-Drop редактор + редактор кода Monaco) расширяет воронку пользователей за пределы узкой группы опытных спортивных программистов.</li>
+<li><em>Квантовый античит:</em> Проверка решений на базе ZX-исчисления выявляет заимствования даже при перестановке независимых коммутирующих вентилей.</li>
+</ul>
+<h3>2. Сопоставление с Academic QuantumArena (qprogram.org, США)</h3>
+<ul>
+<li><strong>Точки пересечения:</strong> Бенчмаркинг алгоритмов ранней отказоустойчивости (FTQC) и квантовой коррекции ошибок (QEC).</li>
+<li><strong>Заимствуемые практики:</strong> Академическая строгость формулировок задач по коррекции ошибок (коды Шора, Стейна, оценка вероятности логического сбоя).</li>
+<li><strong>Отличительные особенности QuantumArena:</strong></li>
+<li><em>Алгоритм верификации:</em> Графовое переписывание PyZX со сложностью <i>O</i>(<i>m</i><sup>3</sup>) вместо вычисления расстояния Гильберта-Шмидта, требующего <i>O</i>(4<sup><i>n</i></sup>) оперативной памяти и вызывающего таймауты HTTP 504 на 16 кубитах.</li>
+<li><em>Продуктовая инфраструктура:</em> Масштабируемая турнирная платформа, интерактивный лидерборд в реальном времени и отсутствие серверных сбоев.</li>
+</ul>
+<h3>3. Сопоставление с IBM Quantum Platform</h3>
+<ul>
+<li><strong>Точки пересечения:</strong> Использование визуального конструктора схем и интерактивных образовательных модулей.</li>
+<li><strong>Заимствуемые практики:</strong> Высокий уровень UX/DX визуального редактора квантовых вентилей.</li>
+<li><strong>Отличительные особенности QuantumArena:</strong></li>
+<li><em>Универсальность стандартов:</em> Поддержка Qiskit, Cirq, PennyLane и OpenQASM 3.0 без привязки к единственному фреймворку.</li>
+<li><em>Мгновенный отклик:</em> Локальная симуляция дает отклик &lt;50 мс без многочасового ожидания в очередях на квантовые процессоры IBM.</li>
+</ul>
+<h3>4. Сопоставление с Xanadu (PennyLane)</h3>
+<ul>
+<li><strong>Точки пересечения:</strong> Задачи квантового машинного обучения (QML) и вариационные алгоритмы (VQE, QAOA).</li>
+<li><strong>Заимствуемые практики:</strong> Форматы прикладных хакатонов по квантовой оптимизации и численному моделированию.</li>
+<li><strong>Отличительные особенности QuantumArena:</strong></li>
+<li><em>Эффективность автогрейдера:</em> Проверка решений без перегрузки серверов численным расчетом Parameter-Shift Rule и без привязки к тяжелым пакетам глубокого обучения (PyTorch, JAX) для базовых алгоритмических задач.</li>
+</ul>
+<h3>5. Сопоставление с Quantinuum (Nexus &amp; TKET)</h3>
+<ul>
+<li><strong>Точки пересечения:</strong> Оптимизация схем (минимизация глубины и двухкубитных вентилей).</li>
+<li><strong>Заимствуемые практики:</strong> Применение правил локальных эквивалентностей вентилей для упрощения цепей.</li>
+<li><strong>Отличительные особенности QuantumArena:</strong></li>
+<li><em>Доступность:</em> Браузерный рантайм позволяет проводить массовые открытые соревнования без высоких затрат на аппаратное время (по тарифной формуле HQC).</li>
+</ul>
+<h3>6. Сопоставление с Classiq Technologies</h3>
+<ul>
+<li><strong>Точки пересечения:</strong> Задачи на оптимизацию булевых оракулов и синтез сложных многокубитных операторов.</li>
+<li><strong>Заимствуемые практики:</strong> Требование построения схем под реалистичные ограничения (декомпозиция многокубитных вентилей, лимит анцилл).</li>
+<li><strong>Отличительные особенности QuantumArena:</strong></li>
+<li><em>Открытость:</em> Свободный доступ для студенческого и академического сообщества без закрытых коммерческих лицензий от $50 000 в год.</li>
+</ul>
+<h3>7. Сопоставление с MTÜ QWorld &amp; QCousins</h3>
+<ul>
+<li><strong>Точки пересечения:</strong> Образовательные треки и международные хакатоны (QJam).</li>
+<li><strong>Заимствуемые практики:</strong> Сетевая модель вовлечения студентов через создание квантовых клубов в университетах.</li>
+<li><strong>Отличительные особенности QuantumArena:</strong></li>
+<li><em>Автоматизация:</em> Автоматический грейдинг в реальном времени вместо ручной проверки учебных блокнотов преподавателями через nbgrader.</li>
+</ul>
+<h3>8. Сопоставление с Российским сектором (учикванты.рф / СП «КВАНТ» / РКЦ)</h3>
+<ul>
+<li><strong>Точки пересечения:</strong> Работа со студентами профильных технических вузов (МФТИ, МИФИ, МГУ, ВШЭ, МИСИС) и олимпиадным движением (НТО).</li>
+<li><strong>Заимствуемые практики:</strong> Связь с прикладными задачами олимпиад и научно-образовательной повесткой.</li>
+<li><strong>Отличительные особенности QuantumArena:</strong></li>
+<li><em>Глубина проверки:</em> Полноценный квантовый автогрейдинг структуры схемы и вектора состояния вместо статических тестов с выбором ответа или слепой проверки текстового вывода (stdout).</li>
+</ul>
+<h3>9. Сопоставление с Microsoft Azure Quantum (Quantum Katas)</h3>
+<ul>
+<li><strong>Точки пересечения:</strong> Модульные обучающие алгоритмические задачи (Quantum Katas), компиляция через промежуточное представление QIR.</li>
+<li><strong>Заимствуемые практики:</strong> Формат интерактивных задач с модульным юнит-тестированием квантовых операций.</li>
+<li><strong>Отличительные особенности QuantumArena:</strong></li>
+<li><em>Языковая доступность:</em> Поддержка привычного для разработчиков стека Python вместо специфического языка Q#, вызвавшего отток аудитории.</li>
+<li><em>Низкий порог входа:</em> Открытая соревновательная среда без необходимости подключения дорогостоящих корпоративных пакетов Azure Quantum Elements ($125 000 – $175 000 USD в месяц).</li>
+</ul>
+<hr />
+<h2>Раздел 4. Профили и технический разбор платформ (01–09)</h2>
+<h3>Кейс 1: QCoder (一般社団法人 QCoder, Япония)</h3>
+<h4>Паспорт платформы</h4>
+<ul>
+<li><strong>Юридическое наименование:</strong> 一般社団法人 QCoder (General Incorporated Association QCoder).</li>
+<li><strong>Юрисдикция / Регистрация:</strong> Токио, Япония. Зарегистрирована 5 февраля 2026 г.</li>
+<li><strong>Официальный сайт:</strong> <a href="https://qcoder.jp">qcoder.jp</a> (англоязычная версия: <a href="https://qcoder.jp/en">qcoder.jp/en</a>).</li>
+<li><strong>Ключевые персоналии:</strong> </li>
+<li>Кейн Юкиёси (<a href="https://www.ipa.go.jp/jinzai/mitou/target/2023/gaiyou_fk-2.html">Yokohama National University / IPA MITOU Fellow</a>) — сооснователь и главный архитектор;</li>
+<li>Сюнъя Таката (<a href="https://www.ipa.go.jp/jinzai/mitou/target/2024/gaiyou-fk-2.html">Keio University / IPA MITOU Fellow</a>) — сооснователь и ведущий разработчик;</li>
+<li>Кэйсукэ Фудзии (<a href="https://qcoder.jp/contributors">Osaka University / QunaSys</a>) — научный консультант, ведущий ученый Японии в области квантовых вычислений.</li>
+<li><strong>Финансирование и гранты:</strong> </li>
+<li>Гранты государственной программы IPA MITOU Target FY2023/FY2024 (проект «Облачная платформа для соревновательного программирования в квантовых вычислениях»);</li>
+<li>Международный грант <a href="https://unitary.fund/posts/2024_qcoder.html">Unitary Fund Microgrant ($4,000 USD, ноябрь 2024)</a> на интернационализацию платформы.</li>
+</ul>
+<h4>Технологический стек и автогрейдер</h4>
+<ul>
+<li><strong>Инфраструктура исполнения:</strong> Открытый репозиторий конфигураций раннеров <a href="https://github.com/QCoderDev/qcoder-github-runners">QCoderDev/qcoder-github-runners</a>. Исполнение на виртуальных машинах AWS EC2 семейства Graviton4 (<code>c8g.large</code>, 2 vCPU, 4 ГБ RAM) в Токийском регионе (<code>ap-northeast-1</code>).</li>
+<li><strong>Изоляция:</strong> Базовые Docker-контейнеры без микро-VM гипервизора.</li>
+<li><strong>Метод валидации:</strong> Сравнение вектора состояния участника с эталонным вектором. Расчет fidelity <i>F</i> = |&lang;<i>&psi;</i><sub>target</sub> | <i>&psi;</i><sub>user</sub>&rang;|<sup>2</sup>. Вердикт <code>Accepted</code> выносится при <i>F</i> &ge; 1 &minus; 10<sup>&minus;6</sup>.</li>
+<li><strong>Узкое место:</strong> Жесткий OOM-барьер на 28 кубитах из-за лимита в 4 ГБ RAM на раннерах.</li>
+</ul>
+<h4>Экономика и монетизация</h4>
+<ul>
+<li><strong>Бизнес-модель:</strong> Пакетное спонсирование контестов японскими корпорациями (Fujitsu, NEC, Hitachi) по модели <a href="https://atcoder.jp">AtCoder</a>.</li>
+<li><strong>Стоимость для спонсора:</strong> $20 000 – $100 000 USD за турнир, включая доступ к профилям финалистов.</li>
+<li><strong>Себестоимость раннеров:</strong> Почасовые спотовые тарифы AWS Graviton4 составляют <code>$0.0158–$0.0250/час</code> (<code>$0.0079–$0.0125/core-hour</code>). Проведение контеста на 500 участников обходится всего в <strong>$2.00–$5.00 USD</strong>.</li>
+</ul>
+<h4>Сообщество и турнирные успехи</h4>
+<ul>
+<li><strong>Соревнования:</strong> Проведено 6 официальных рейтинговых турниров серии <a href="https://qcoder.jp/contests">QPC (QPC001–QPC006)</a>.</li>
+<li><strong>Привлечение олимпиадников AtCoder:</strong> Платформа подтвердила успешность вовлечения Red-олимпиадников AtCoder:</li>
+<li><a href="https://atcoder.jp/users/tatyam"><code>tatyam</code></a> (AtCoder Red 2848+, автор <code>tatyam tree</code>) — победитель <a href="https://qcoder.jp/en/contests/QPC001">QPC001</a> и <a href="https://qcoder.jp/en/contests/QPC005">QPC005</a>;</li>
+<li><a href="https://qcoder.jp/en/users/Kitagawa_Koki"><code>Kitagawa_Koki</code></a> (AtCoder Red 2800+) — победитель <a href="https://qcoder.jp/en/contests/QPC006">QPC006</a>;</li>
+<li><a href="https://atcoder.jp/users/SSRS"><code>SSRS</code></a> (AtCoder Grandmaster 3000+) — 2-е место на QPC001;</li>
+<li><a href="https://atcoder.jp/users/Harnel"><code>Harnel</code></a> (AtCoder Red) — победитель QPC002 и QPC004.</li>
+</ul>
+<hr />
+<h3>Кейс 2: Academic QuantumArena (qprogram.org, США / Консорциум)</h3>
+<h4>Паспорт платформы</h4>
+<ul>
+<li><strong>Наименование инициативы:</strong> Academic QuantumArena (Benchmark for Early Fault-Tolerant Quantum Algorithms).</li>
+<li><strong>Юрисдикция / Организаторы:</strong> Консорциум ведущих университетов США: UCLA, MIT, UChicago, Columbia University, Georgia Tech.</li>
+<li><strong>Официальный сайт:</strong> <a href="https://qprogram.org">qprogram.org</a>.</li>
+<li><strong>Ключевые персоналии:</strong> </li>
+<li>Джон Чжуоян Йе (John Zhuoyang Ye, UCLA) — основатель и главный разработчик платформы;</li>
+<li>Йенс Пальсберг (Prof. Jens Palsberg, ACM Fellow, UCLA) — научный руководитель проекта;</li>
+<li>Соавторы препринта: Лилиан Конг, Фред Чонг (Chicago), Билл Фефферман (<a href="https://arxiv.org/abs/2601.20247">список авторов препринта</a>).</li>
+<li><strong>Научное обоснование:</strong> Препринт <a href="https://arxiv.org/abs/2601.20247">arXiv:2601.20247 (январь 2026)</a>: <em>«QuantumArena: An Early Fault-Tolerant Benchmark Competition»</em>.</li>
+<li><strong>Финансирование:</strong> Федеральные исследовательские гранты NSF США (National Science Foundation) + доступ к квантовым процессорам IBM Quantum Network.</li>
+</ul>
+<h4>Технологический стек и автогрейдер</h4>
+<ul>
+<li><strong>Архитектура бэкенда:</strong> Серверное приложение на базе Python FastAPI / Nginx с вызовом удаленных бэкендов <a href="https://qprogram.org/api/challenge/global-hardware-ranking">IBM Quantum (Brisbane, Heron)</a>.</li>
+<li><strong>Метод верификации:</strong> Прямое матричное расстояние Гильберта-Шмидта через унитарные матрицы.</li>
+<li><strong>Узкое место:</strong> Экспоненциальный рост объема памяти <i>O</i>(4<sup><i>n</i></sup>) (2 &times; 2<sup>2<i>n</i></sup> &times; 16 байт). При <i>n</i> = 16 кубитах расчет требует 64 ГБ RAM, что приводит к таймаутам HTTP 504 Gateway Timeout при одновременных запросах.</li>
+<li><strong>Ограничения:</strong> Отсутствие визуального конструктора схем и античитерской защиты.</li>
+</ul>
+<h4>Экономика и применимость</h4>
+<ul>
+<li><strong>Модель:</strong> Чисто академический некоммерческий бенчмарк. Монетизация отсутствует. Платформа не предназначена для проведения B2B-контестов, хакатонов и рекрутинга.</li>
+</ul>
+<hr />
+<h3>Кейс 3: IBM Quantum Platform &amp; Challenges (IBM, США)</h3>
+<h4>Паспорт платформы</h4>
+<ul>
+<li><strong>Организация:</strong> International Business Machines Corporation (IBM), Армонк, Нью-Йорк, США.</li>
+<li><strong>Официальные ресурсы:</strong> Портал <a href="https://quantum.ibm.com">quantum.ibm.com</a>, визуальный редактор <a href="https://quantum.ibm.com/composer">IBM Quantum Composer</a>, образовательный портал <a href="https://learning.quantum.ibm.com/">IBM Quantum Learning</a>.</li>
+<li><strong>Ключевые персоналии:</strong> Дарио Гил (SVP IBM Research), Джей Гамбетта (IBM Fellow, VP Quantum).</li>
+<li><strong>Капитализация / Бюджет:</strong> Публичная корпорация (NYSE: IBM), ежегодные R&amp;D-инвестиции в квантовое направление превышают $1 млрд USD.</li>
+</ul>
+<h4>Технологический стек и автогрейдер</h4>
+<ul>
+<li><strong>Среда и SDK:</strong> Исключительно Qiskit 1.0+ в среде IBM Quantum Lab (Jupyter) и облачный рантайм Qiskit Runtime Primitives (Sampler, Estimator).</li>
+<li><strong>Метод проверки:</strong> Проверка решений на виртуальных эмуляторах (<code>qiskit-aer</code>) или физических сверхпроводниковых процессорах IBM (Heron 133q, Eagle 127q).</li>
+<li><strong>Узкое место:</strong> Длительные очереди на исполнение (от 2 до 24 часов на открытых бэкендах) и высокая стоимость коммерческого доступа ($1.60 USD / сек).</li>
+</ul>
+<h4>Экономика и монетизация</h4>
+<ul>
+<li><strong>Тарифы:</strong> Официальный тариф <a href="https://www.ibm.com/quantum/pricing">IBM Quantum Pricing</a> составляет <strong>$1.60 USD за секунду</strong> квантового времени выполнения в Qiskit Runtime.</li>
+<li><strong>Корпоративные подписки:</strong> Членство в IBM Quantum Network стоит от <strong>$250 000 до $1 000 000+ USD в год</strong>.</li>
+<li><strong>Турниры:</strong> Ежегодный <a href="https://github.com/qiskit-community/ibm-quantum-challenge-2024">IBM Quantum Challenge</a> привлекает 3 000+ участников, финансируется за счет маркетингового бюджета корпорации для удержания пользователей в экосистеме Qiskit.</li>
+</ul>
+<hr />
+<h3>Кейс 4: Xanadu &amp; PennyLane (Xanadu Quantum Technologies, Канада)</h3>
+<h4>Паспорт платформы</h4>
+<ul>
+<li><strong>Организация:</strong> Xanadu Quantum Technologies Inc., Торонто, Онтарио, Канада. Основана в 2016 г.</li>
+<li><strong>Официальный сайт:</strong> <a href="https://www.xanadu.ai">xanadu.ai</a>, портал соревнований <a href="https://qhack.ai">qhack.ai</a>, задачи <a href="https://pennylane.ai/challenges/">pennylane.ai/challenges</a>.</li>
+<li><strong>Основатель и CEO:</strong> Кристиан Вайдбрук (Christian Weedbrook).</li>
+<li><strong>Финансирование:</strong> Свыше $160 млн USD венчурных инвестиций (Bessemer Venture Partners, OMERS) + правительственный грант в <strong>$40 млн CAD</strong> от <a href="https://www.xanadu.ai/press/2023-01-23-supporting-canadas-leadership-in-quantum-computing-to-grow-the-economy-and-create-jobs/">Government of Canada Strategic Innovation Fund (январь 2023)</a>.</li>
+</ul>
+<h4>Технологический стек и автогрейдер</h4>
+<ul>
+<li><strong>Среда и фреймворки:</strong> Фреймворк PennyLane с поддержкой автоматического дифференцирования через PyTorch, TensorFlow и JAX.</li>
+<li><strong>Специфика грейдера:</strong> Автоматическая оценка вариационных квантовых схем (VQE, QAOA, QML). Проверка сходимости функции потерь и градиентного спуска.</li>
+<li><strong>Узкое место:</strong> Медленный расчет градиентов по формуле сдвига параметров (Parameter-Shift Rule), требующий удвоенного количества прогонов схемы на каждый параметр.</li>
+</ul>
+<h4>Экономика и соревнования</h4>
+<ul>
+<li><strong>Мероприятия:</strong> Ежегодный глобальный квантовый хакатон <a href="https://qhack.ai/">QHack</a>, собирающий свыше 3 000 участников из 80+ стран.</li>
+<li><strong>Спонсоры QHack:</strong> Крупнейшие облачные провайдеры (AWS, Microsoft, Google Cloud), предоставляющие вычислительные кредиты.</li>
+</ul>
+<hr />
+<h3>Кейс 5: Quantinuum (Quantinuum / Honeywell, Великобритания / США)</h3>
+<h4>Паспорт платформы</h4>
+<ul>
+<li><strong>Организация:</strong> Quantinuum Ltd. Образована в 2021 г. в результате слияния Cambridge Quantum Computing и Honeywell Quantum Solutions.</li>
+<li><strong>Штаб-квартира:</strong> Брумфилд, Колорадо, США / Кембридж, Великобритания.</li>
+<li><strong>Официальный сайт:</strong> <a href="https://www.quantinuum.com">quantinuum.com</a>, документация платформы <a href="https://docs.quantinuum.com/nexus/">docs.quantinuum.com/nexus</a>.</li>
+<li><strong>Ключевые персоналии:</strong> Раджиб Хазра (CEO), Ильяс Хан (Founder &amp; Chief Commercial Officer).</li>
+<li><strong>Финансирование:</strong> Стратегические раунды от Honeywell, JPMorgan Chase и Mitsui &amp; Co. (оценка компании превышает $5 млрд USD).</li>
+</ul>
+<h4>Технологический стек и автогрейдер</h4>
+<ul>
+<li><strong>Платформа и компилятор:</strong> Облачная система Quantinuum Nexus, пакет вычислительной квантовой химии InQuanto и квантовый компилятор <a href="https://github.com/CQCL/tket">TKET (репозиторий CQCL/tket)</a>.</li>
+<li><strong>Аппаратная база:</strong> Ионные ловушки System Model H1 и H2 с рекордно высоким квантовым объемом (Quantum Volume).</li>
+<li><strong>Экономика запусков:</strong> Формула кредитов <a href="https://docs.quantinuum.com/nexus/">HQC (Honeywell Quantum Credits)</a>:</li>
+</ul>
+<div class="formula-card">
+  <div class="formula-label">Формула расчета кредитов HQC (Quantinuum Nexus)</div>
+  <div class="formula-expr">
+    <b>HQC</b> = 5 + <i>C</i> &times; 
+    <span class="math-frac">
+      <span class="math-num"><i>N</i><sub>1q</sub> + 10 &middot; <i>N</i><sub>2q</sub> + 5 &middot; <i>N</i><sub>m</sub></span>
+      <span class="math-den">5000</span>
+    </span>
+  </div>
+  <div class="formula-caption">
+    Стоимость одного запуска типовой задачи (1000 шотов, 20 двухкубитных вентилей) составляет 123 HQC (<b>$147.60–$184.50 USD</b>).
+  </div>
+</div>
+
+<ul>
+<li><strong>Вывод:</strong> Платформа ориентирована строго на дорогостоящие корпоративные R&amp;D-контракты в фармакологии и материаловедении, полностью исключая открытые массовые контесты.</li>
+</ul>
+<hr />
+<h3>Кейс 6: Classiq Technologies (Classiq, Израиль / США)</h3>
+<h4>Паспорт платформы</h4>
+<ul>
+<li><strong>Организация:</strong> Classiq Technologies Ltd., Тель-Авив, Израиль. Основана в 2020 г.</li>
+<li><strong>Официальный сайт:</strong> <a href="https://www.classiq.io">classiq.io</a>, библиотека задач <a href="https://github.com/Classiq/classiq-library">github.com/Classiq/classiq-library</a>.</li>
+<li><strong>Основатели:</strong> Нир Минерби (CEO), Амир Навех, Ницан Регев.</li>
+<li><strong>Финансирование:</strong> $63 млн USD венчурных инвестиций, включая раунд Series B на $33 млн USD с участием <a href="https://www.classiq.io/company">SoftBank, HSBC и Samsung NEXT</a>.</li>
+</ul>
+<h4>Технологический стек и автогрейдер</h4>
+<ul>
+<li><strong>Инновационный подход:</strong> Высокоуровневый функциональный синтез квантовых цепей. Пользователь формулирует задачу на языке ограничений, а движок синтезирует оптимальную схему.</li>
+<li><strong>Соревнования:</strong> <a href="https://github.com/Classiq/classiq-library">Classiq Coding Competition</a> (проводились в 2022 и 2024 гг.). Задачи на декомпозицию многокубитных вентилей Тоффоли (MCX) и решение комбинаторных головоломок Какуро.</li>
+<li><strong>Узкое место:</strong> Проприетарный закрытый компилятор; NP-полнота алгоритмов синтеза схем при усложнении предикатов ограничений.</li>
+<li><strong>Модель:</strong> Корпоративная годовая подписка ($50 000 – $250 000 USD/год) для enterprise-клиентов (BMW, HSBC).</li>
+</ul>
+<hr />
+<h3>Кейс 7: MTÜ QWorld &amp; QCousins Network (MTÜ QWorld, Эстония / Глобально)</h3>
+<h4>Паспорт организации</h4>
+<ul>
+<li><strong>Юридическое лицо:</strong> Некоммерческая ассоциация MTÜ QWorld.</li>
+<li><strong>Регистрационный код:</strong> <a href="https://ariregister.rik.ee/">80582236 в Эстонском бизнес-регистре (e-Business Register)</a>. Зарегистрирована в Таллине, Эстония.</li>
+<li><strong>Официальный сайт:</strong> <a href="https://qworld.net">qworld.net</a>, хакатоны <a href="https://qjam.qworld.net">qjam.qworld.net</a>.</li>
+<li><strong>Руководство (правление / Juhatus):</strong> </li>
+<li>Д-р Абузер Якарылмаз (Dr. Abuzer Yakaryilmaz) — председатель правления (Латвийский университет);</li>
+<li>Д-р Золтан Зимбораш (Dr. Zoltán Zimborás) — член правления (Исследовательский центр физики Вигнера, Венгрия);</li>
+<li>Павел Гура (Paweł Gora) — член правления (Варшавский университет, руководитель QPoland).</li>
+<li><strong>Финансирование:</strong> Некоммерческие гранты <a href="https://unitary.fund/grants/">Unitary Fund</a>, европейские образовательные гранты Erasmus+, спонсорские взносы.</li>
+</ul>
+<h4>Сеть QCousins и образовательные треки</h4>
+<ul>
+<li><strong>Сеть филиалов:</strong> 26+ национальных ячеек <a href="https://qworld.net/qcousins/">QCousins</a> (QTurkey, QLatvia, QPoland, QIndia, QEgypt и др.).</li>
+<li><strong>Курсы и сертификация:</strong> Стандартизированные практические воркшопы:</li>
+<li><a href="https://qworld.net/qbronze/">QBronze</a> — основы квантовых вычислений на Qiskit (введение в кубиты и алгоритм Гровера);</li>
+<li><a href="https://qworld.net/qsilver/">QSilver</a> — квантовое преобразование Фурье и алгоритм Шора;</li>
+<li><a href="https://qjam.qworld.net/">QJam</a> — международный квантовый геймджем (разработка игр с квантовой физикой).</li>
+<li><strong>Слабое место грейдера:</strong> Отсутствие единой защищенной автоматизированной соревновательной платформы. Задания выполняются в локальных Jupyter Notebooks и проверяются вручную менторами через nbgrader.</li>
+</ul>
+<hr />
+<h3>Кейс 8: Российский квантовый сектор (СП «КВАНТ», РКЦ, учикванты.рф)</h3>
+<h4>Паспорт инициатив</h4>
+<ul>
+<li><strong>Ключевые операторы:</strong> </li>
+<li>ООО «СП «КВАНТ» (<a href="https://egrul.nalog.ru/">ИНН 7706468798</a>, проектный офис ГК «Росатом» по квантовым вычислениям);</li>
+<li>Фонд «МЦКТ» / Российский квантовый центр (<a href="https://egrul.nalog.ru/">ИНН 7701357530</a>, стратегический партнер Газпромбанка);</li>
+<li>Образовательный портал <a href="https://xn--80adrir4ab6a5b.xn--p1ai/">учикванты.рф</a>.</li>
+<li><strong>Нормативная база:</strong> <a href="https://rosatom.ru/">Дорожная карта «Квантовые вычисления»</a> до 2030 года с общим объемом финансирования 24.1 млрд ₽ (включая 13.2 млрд ₽ бюджетных средств).</li>
+<li><strong>Ключевые персоналии:</strong> Руслан Юнусов (сооснователь РКЦ, советник генерального директора Росатома), Алексей Федоров (директор Института физики и квантовой инженерии Университета МИСИС).</li>
+</ul>
+<h4>Текущее состояние соревновательной и образовательной базы</h4>
+<ul>
+<li><strong>Существующие платформы:</strong> Проект <a href="https://xn--h1adlhdnlo2c.xn--p1ai/lessons/quantum-computer">«Урок цифры: Квантовый мир»</a>, школьный трек Национальной технологической олимпиады (НТО) <a href="https://ntcontest.ru/tracks/nto-school/energeticheskiy-proekt/kvant-ingineering/">«Квантовый инжиниринг»</a>.</li>
+<li><strong>Технологический разрыв:</strong> </li>
+<li>На платформе «учикванты.рф» проверка знаний сводится к статическим тестам с выбором ответа;</li>
+<li>Отсутствует открытая отечественная платформа с интерактивным автогрейдингом квантового кода в реальном времени;</li>
+<li>Задачи олимпиады НТО проверяются пакетными скриптами жюри офлайн.</li>
+</ul>
+<hr />
+<h3>Кейс 9: Microsoft Azure Quantum &amp; Quantum Katas (Microsoft, США)</h3>
+<h4>Паспорт платформы</h4>
+<ul>
+<li><strong>Организация:</strong> Microsoft Corporation, Редмонд, Вашингтон, США.</li>
+<li><strong>Официальный сайт:</strong> <a href="https://azure.microsoft.com/en-us/pricing/details/azure-quantum/">azure.microsoft.com/quantum</a>, репозиторий <a href="https://github.com/microsoft/QuantumKatas">github.com/microsoft/QuantumKatas</a>.</li>
+<li><strong>Ключевые персоналии:</strong> Сатья Наделла (CEO Microsoft), Криста Своре (VP Quantum Software).</li>
+</ul>
+<h4>Стек, автогрейдер и экономика</h4>
+<ul>
+<li><strong>Язык и рантайм:</strong> Язык программирования Q# и открытый компилятор QIR (Quantum Intermediate Representation).</li>
+<li><strong>Архитектура Katas:</strong> Серия открытых обучающих задач (Superposition, Measurement, Deutsch-Jozsa, Grover), реализованных через модульные тесты Visual Studio / .NET Core.</li>
+<li><strong>Тарифы:</strong> Пакет <a href="https://learn.microsoft.com/en-us/azure/quantum/">Azure Quantum Elements</a> для корпоративных расчетов стоит от <strong>$125 000 до $175 000 USD в месяц</strong>, ориентирован на крупнейшие фармакологические и химические концерны.</li>
+<li><strong>Ограничение:</strong> Исходная жесткая привязка к языку Q# вызвала отток аудитории в сторону Qiskit/Python, вынудив Microsoft в 2024 году внедрять Python-обвязки.</li>
+</ul>
+<hr />
+<h2>Заключение и стратегические рекомендации</h2>
+<p>Проведенный анализ подтверждает наличие структурного окна возможностей для соревновательной платформы <strong>QuantumArena</strong>:</p>
+<ol>
+<li><strong>Ниша открытых квантовых контестов свободна:</strong> Существующие решения либо сталкиваются с аппаратными ограничениями памяти (QCoder на 28 кубитах, qprogram.org на 16 кубитах), либо коммерчески недоступны для открытых турниров (Quantinuum, Azure Quantum), либо замкнуты на единственный вендорский стек (IBM, Microsoft).</li>
+<li><strong>Технологическое преимущество клиентского WASM и PyZX:</strong> Комбинация исполнения симуляций в браузере участника (до 16 кубитов) и квантового графового античита на базе ZX-исчисления со сложностью <i>O</i>(<i>m</i><sup>3</sup>) устраняет перегрузку серверов в моменты пиковой турнирной активности и обеспечивает TCO инфраструктуры менее 3 000 ₽/месяц.</li>
+<li><strong>Практическая ценность для технологических и финансовых партнеров:</strong> Превращение платформы в независимый полигон тестирования алгоритмических решений, проведение прикладных корпоративных чемпионатов и формирование прозрачного канала привлечения квалифицированных специалистов по алгоритмам и квантовым вычислениям.</li>
+</ol>
+</body>
+</html>
