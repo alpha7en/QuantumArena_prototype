@@ -1,0 +1,43 @@
+id: SA-021
+slug: equals-const
+title: Оракул равенства константе
+status: reference
+level: 1
+tree: {trunk: T3, branch: T3.3, hybrid: [T3.1]}
+facets:
+  input: reg_anc
+  answer: generator
+  params:
+    - {name: n, kind: size, range: [1, 7]}
+    - {name: a, kind: data, note: 'целое, $0\le a<2^n$'}
+  gates: {mode: basis, set: [x, mcx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_anc_phase
+qubits: {data: 'n+1'}
+limits: {gates: '2*n+1'}
+signature: 'solve(n: int, a: int) -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [многоконтрольный гейт, сопряжение X, классические данные]
+  key_idea: 'Многоконтрольный $X$ срабатывает на $1\dots1$; гейты $X$ на нулевых битах $a$ переносят условие на $x=a$.'
+source: {kind: adapted, ref: 'презентация классификации, T3.2'}
+gui: false
+io:
+  input: '$|x\rangle|y\rangle$, константа $a$'
+  output: '$|x\rangle|y\oplus[x=a]\rangle$'
+statement: |
+  Напишите функцию `solve(n, a)`, которая возвращает схему на $n+1$ кубите ($1\le n\le 7$, $0\le a<2^n$):
+  $$|x\rangle|y\rangle\;\longmapsto\;|x\rangle\,|y\oplus[x=a]\rangle .$$
+  Регистр $x$ — кубиты $0,\dots,n-1$ (кубит $i$ — бит $i$), кубит $y$ имеет номер $n$. Регистр $x$ после схемы не
+  должен измениться.
+
+  **Разрешено:** гейты $X$, многоконтрольный $X$ (`mcx`); не больше $2n+1$ гейтов; вспомогательных кубитов нет.
+hints:
+  - 'При $a=1\dots1$ достаточно одного многоконтрольного $X$.'
+editorial: |
+  $X$ на кубитах, где бит $a$ равен 0, затем `mcx` со всеми кубитами $x$ в роли управляющих и целевым $y$, затем
+  те же $X$ ещё раз — они возвращают регистр $x$.
+pitfalls:
+  - 'Не вернуть гейты $X$: ответ в $y$ верный, но вход испорчен, и оракул нельзя встроить в алгоритм.'

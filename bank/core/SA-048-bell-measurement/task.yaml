@@ -1,0 +1,43 @@
+id: SA-048
+slug: bell-measurement
+title: Какое из состояний Белла
+status: reference
+level: 1
+tree: {trunk: T6, branch: T6.1}
+facets:
+  input: promise
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: final
+  check: dist
+qubits: {data: 2}
+limits: {gates: 2}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: reverse
+  elements: [измерение в базисе Белла, обращение схемы подготовки]
+  key_idea: 'Схема подготовки, пройденная в обратном порядке, переводит базис Белла в вычислительный.'
+source: {kind: real, ref: 'QuantumKatas Measurements (различение состояний Белла)', note: 'условие написано заново'}
+gui: true
+io:
+  input: 'одно из четырёх состояний Белла'
+  output: 'бит $c_0$ — знак ($+$: 0, $-$: 1), бит $c_1$ — тип ($\Phi$: 0, $\Psi$: 1)'
+statement: |
+  Два кубита находятся в одном из четырёх состояний Белла:
+  $$|\Phi^\pm\rangle=\frac{1}{\sqrt2}\left(|00\rangle\pm|11\rangle\right),\qquad
+    |\Psi^\pm\rangle=\frac{1}{\sqrt2}\left(|01\rangle\pm|10\rangle\right)$$
+  (строки записаны как $q_1q_0$). Постройте схему с двумя классическими битами: кубит $q_0$ измеряется в бит
+  $c_0$, кубит $q_1$ — в бит $c_1$. С вероятностью 1 должно получаться: $c_0=0$ для знака плюс и $c_0=1$ для
+  минуса; $c_1=0$ для $\Phi$ и $c_1=1$ для $\Psi$.
+
+  **Разрешено:** гейты $H$, $CX$ и измерения в конце; не больше 2 гейтов.
+hints:
+  - 'Как эти состояния готовят из $|00\rangle$, $|01\rangle$, $|10\rangle$, $|11\rangle$?'
+editorial: |
+  Состояния Белла получаются схемой «$H$ на $q_0$, затем `cx(0, 1)`» из четырёх базисных. Обратная схема —
+  `cx(0, 1)`, затем $H$ на $q_0$ — возвращает их в базисные: чётность оказывается в $q_1$, знак — в $q_0$.
+pitfalls:
+  - 'Порядок «$H$, затем $CX$» — это подготовка, а не обращение.'

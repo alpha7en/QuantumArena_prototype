@@ -1,0 +1,39 @@
+id: SA-011
+slug: cz-from-cx
+title: CZ из CX и двух H
+status: reference
+level: 1
+tree: {trunk: T2, branch: T2.1}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 2}
+limits: {gates: 3}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [сопряжение Адамаром]
+  key_idea: '$HXH=Z$: гейты $H$ вокруг целевого кубита превращают $CX$ в $CZ$.'
+source: {kind: own, ref: 'sparq arena (демо v2, задача cz-kick)'}
+gui: true
+io:
+  input: 'произвольное состояние двух кубитов'
+  output: '$CZ$: знак минус при $|11\rangle$'
+statement: |
+  Реализуйте гейт $CZ$ на двух кубитах: он умножает амплитуду при $|11\rangle$ на $-1$ и не меняет остальные.
+  Схема должна быть верна для любого входного состояния.
+
+  **Разрешено:** гейты $H$, $CX$; не больше 3 гейтов.
+hints:
+  - 'Чему равно произведение $HXH$?'
+editorial: |
+  $H$ на целевом кубите, $CX$, снова $H$ на целевом. При управляющем 0 два $H$ сокращаются, при управляющем 1
+  выполняется $HXH=Z$.
+pitfalls:
+  - 'Проверять только базисные входы: $CX$ и $CZ$ различаются на суперпозициях.'

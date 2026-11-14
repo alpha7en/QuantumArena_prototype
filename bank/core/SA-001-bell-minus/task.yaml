@@ -1,0 +1,41 @@
+id: SA-001
+slug: bell-minus
+title: Состояние Белла со знаком минус
+status: reference
+level: 1
+tree: {trunk: T1, branch: T1.2}
+facets:
+  input: zero
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, x, z, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq0_phase
+qubits: {data: 2}
+limits: {gates: 3, depth: 3}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [состояние Белла, относительный знак]
+  key_idea: 'Z после запутывания меняет знак при $|11\rangle$.'
+source: {kind: real, ref: 'QCoder QPC002 A2', note: 'механика исходной задачи, условие написано заново'}
+gui: true
+io:
+  input: '$|00\rangle$'
+  output: '$\frac{1}{\sqrt{2}}\left(|00\rangle-|11\rangle\right)$'
+statement: |
+  Два кубита находятся в состоянии $|00\rangle$. Получите состояние
+  $$|\Phi^-\rangle=\frac{1}{\sqrt{2}}\left(|00\rangle-|11\rangle\right).$$
+  Глобальная фаза не учитывается.
+
+  **Разрешено:** гейты $H$, $X$, $Z$, $CX$; не больше 3 гейтов.
+hints:
+  - 'Сначала получите $|\Phi^+\rangle$: $H$ на первом кубите и $CX$.'
+  - 'Гейт $Z$ меняет знак амплитуды у состояний, где его кубит равен 1.'
+editorial: |
+  $H$ и $CX$ дают $\frac{1}{\sqrt2}(|00\rangle+|11\rangle)$. Гейт $Z$ на любом из двух кубитов умножает
+  $|11\rangle$ на $-1$ и не трогает $|00\rangle$. Равноценный вариант: $X$, затем $H$ на первом кубите, затем $CX$.
+pitfalls:
+  - 'Остановиться на $|\Phi^+\rangle$: модули амплитуд совпадают, знак — нет.'

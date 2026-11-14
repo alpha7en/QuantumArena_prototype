@@ -1,0 +1,46 @@
+id: SA-055
+slug: ghz-game
+title: Игра GHZ
+status: reference
+level: 2
+tree: {trunk: T7, branch: T7.2}
+facets:
+  input: resource
+  answer: generator
+  params: [{name: bit, kind: data, note: 'вопрос рефери, 0 или 1'}]
+  gates: {mode: basis, set: [h, s, sdg, x, z]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: prob
+qubits: {data: 1}
+limits: {gates: 2}
+signature: 'solve(bit: int) -> QuantumCircuit'
+method:
+  kind: transfer
+  elements: [нелокальная игра, измерения в базисах X и Y, стабилизаторы GHZ]
+  key_idea: 'Для GHZ произведение $XXX$ всегда $+1$, а $XYY$, $YXY$, $YYX$ всегда $-1$.'
+source: {kind: real, ref: 'QuantumKatas GHZGame', note: 'условие написано заново'}
+gui: false
+io:
+  input: 'состояние $\frac{1}{\sqrt2}(|000\rangle+|111\rangle)$; вопросы $r,s,t$ с чётным числом единиц'
+  output: 'ответы $a,b,c$ с $a\oplus b\oplus c=r\vee s\vee t$ — всегда'
+statement: |
+  Три игрока делят состояние $\frac{1}{\sqrt2}(|000\rangle+|111\rangle)$ и не общаются. Рефери даёт им биты
+  $r,s,t$; обещано, что единиц среди них чётное число (тройки $000$, $011$, $101$, $110$). Каждый игрок применяет
+  к своему кубиту операцию, зависящую от своего бита, и измеряет его; результаты — ответы $a,b,c$. Игроки
+  выигрывают, если $a\oplus b\oplus c=r\vee s\vee t$. Классически нельзя выигрывать чаще чем в 75 % случаев.
+
+  Напишите функцию `solve(bit)` — операцию одного игрока на одном кубите (стратегия у всех троих одинаковая).
+  Игроки должны выигрывать с вероятностью 1 на каждой из четырёх троек.
+
+  **Разрешено:** гейты $H$, $S$, $S^\dagger$, $X$, $Z$; не больше 2 гейтов.
+hints:
+  - 'Измерение в базисе $X$ — это $H$ перед измерением; в базисе $Y$ — $S^\dagger$, затем $H$.'
+  - 'Чему равно произведение трёх результатов измерения $X$ на GHZ?'
+editorial: |
+  При вопросе 0 игрок измеряет $X$ ($H$), при вопросе 1 — $Y$ ($S^\dagger$, $H$). Состояние GHZ — собственное
+  для $XXX$ с значением $+1$ и для $XYY$, $YXY$, $YYX$ с значением $-1$. Значит, сумма ответов по модулю 2 равна 0
+  для тройки $000$ и 1 для остальных — в точности $r\vee s\vee t$.
+pitfalls:
+  - 'Измерять $X$ при любом вопросе: выигрыш только на тройке $000$.'

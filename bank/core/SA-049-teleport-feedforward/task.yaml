@@ -1,0 +1,42 @@
+id: SA-049
+slug: teleport-feedforward
+title: Телепортация с обратной связью
+status: reference
+level: 2
+tree: {trunk: T6, branch: T6.2, hybrid: [T7.1]}
+facets:
+  input: any
+  answer: dynamic
+  params: []
+  gates: {mode: basis, set: [h, x, z, cx]}
+  coupling: line
+  ancilla: {kind: clean, max: 2}
+  measure: mid
+  check: channel
+qubits: {data: 3}
+limits: {cx: 2, measurements: 2}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [пара Белла, измерение в базисе Белла, условные гейты]
+  key_idea: 'Два классических бита измерения говорят, какие из поправок $X$ и $Z$ применить к третьему кубиту.'
+source: {kind: real, ref: 'IBM Quantum Challenge Spring 2023, Lab 2 (Quantum Teleportation)', note: 'условие написано заново; бюджет CX исключает перенос обменами'}
+gui: true
+io:
+  input: '$|\psi\rangle|0\rangle|0\rangle$ на цепочке $q_0 - q_1 - q_2$'
+  output: 'кубит $q_2$ в состоянии $|\psi\rangle$ при любых исходах измерений'
+statement: |
+  Кубит $q_0$ находится в неизвестном состоянии $|\psi\rangle$, кубиты $q_1$ и $q_2$ — в $|0\rangle$. Кубиты
+  соединены в цепочку $q_0 - q_1 - q_2$. Постройте схему с двумя классическими битами, после которой кубит $q_2$
+  окажется в состоянии $|\psi\rangle$ — при любых результатах измерений.
+
+  **Разрешено:** гейты $H$, $X$, $Z$, $CX$ между соседями, измерения и гейты под классическим условием
+  (`with qc.if_test((бит, 1)):`); не больше 2 гейтов $CX$ и 2 измерений.
+hints:
+  - 'Двух $CX$ не хватит, чтобы перенести состояние обменами. Один из них создаёт пару Белла на $q_1$, $q_2$.'
+  - 'После измерения $q_0$ и $q_1$ в базисе Белла кубит $q_2$ отличается от $|\psi\rangle$ на $X$ и $Z$ в известных степенях.'
+editorial: |
+  $H$ на $q_1$ и `cx(1, 2)` — пара Белла. `cx(0, 1)` и $H$ на $q_0$ — измерение в базисе Белла (SA-048). Затем
+  измерить $q_0$ в $c_0$ и $q_1$ в $c_1$; если $c_1=1$, применить $X$ к $q_2$; если $c_0=1$, применить $Z$.
+pitfalls:
+  - 'Без поправки $Z$: в половине случаев у $|1\rangle$ неверный знак.'

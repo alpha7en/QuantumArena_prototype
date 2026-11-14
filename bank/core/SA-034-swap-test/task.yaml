@@ -1,0 +1,42 @@
+id: SA-034
+slug: swap-test
+title: Swap-тест
+status: reference
+level: 2
+tree: {trunk: T4, branch: T4.5}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, cswap]}
+  coupling: all
+  ancilla: {kind: clean, max: 1}
+  measure: final
+  check: dist
+qubits: {data: 3}
+limits: {gates: 3}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [управляемый обмен, интерференция на вспомогательном кубите]
+  key_idea: 'Вспомогательный кубит интерферирует ветви «обменяли» и «не обменяли»; вероятность нуля равна $\frac{1+|\langle a|b\rangle|^2}{2}$.'
+source: {kind: real, ref: 'QOSF Monthly Challenge 2021-02 (скрининг менторской программы), Task 1', note: 'взято ядро задачи — сама схема теста; условие написано заново'}
+gui: true
+io:
+  input: '$|0\rangle|a\rangle|b\rangle$: $q_0$ вспомогательный, $q_1$ и $q_2$ — неизвестные состояния'
+  output: 'измерение $q_0$: $P(0)=\frac{1}{2}\left(1+|\langle a|b\rangle|^2\right)$'
+statement: |
+  Кубиты $q_1$ и $q_2$ находятся в неизвестных состояниях $|a\rangle$ и $|b\rangle$, кубит $q_0$ — в $|0\rangle$.
+  Постройте схему с одним классическим битом, в который измеряется $q_0$, так, чтобы
+  $$P(\text{результат }0)=\frac{1+|\langle a|b\rangle|^2}{2}$$
+  для любых $|a\rangle$ и $|b\rangle$.
+
+  **Разрешено:** гейты $H$, управляемый обмен (`cswap`), одно измерение; не больше 3 гейтов.
+hints:
+  - 'Если состояния одинаковы, обмен ничего не меняет — результат должен быть 0 наверняка.'
+editorial: |
+  $H$ на $q_0$, `cswap(0, 1, 2)`, снова $H$ на $q_0$, измерение. Перед вторым $H$ состояние равно
+  $\frac{1}{\sqrt2}\left(|0\rangle|a\rangle|b\rangle+|1\rangle|b\rangle|a\rangle\right)$; амплитуда нуля после $H$
+  пропорциональна симметричной части, её норма и даёт формулу.
+pitfalls:
+  - 'Без второго $H$ вероятность всегда $\frac12$.'

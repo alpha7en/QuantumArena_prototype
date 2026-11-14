@@ -1,0 +1,43 @@
+id: SA-032
+slug: bernstein-vazirani-xor
+title: Бернштейн — Вазирани с битовым оракулом
+status: reference
+level: 2
+tree: {trunk: T4, branch: T4.1, hybrid: [T3.2]}
+facets:
+  input: oracle
+  answer: generator
+  params: [{name: n, kind: size, range: [1, 7]}, {name: oracle, kind: circuit, note: 'гейт на $n+1$ кубите'}]
+  gates: {mode: basis, set: [h, x, z]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: final
+  check: prob
+qubits: {data: 'n+1'}
+limits: {oracle_calls: 1}
+signature: 'solve(n: int, oracle: Gate) -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [битовый оракул, фазовый откат, интерференция]
+  key_idea: 'Кубит ответа в состоянии $|-\rangle$ превращает битовый оракул в фазовый.'
+source: {kind: adapted, ref: 'учебная классика; спецификация 04 проекта (задача 2); ladder_ec C03 (bv_ancilla)'}
+gui: false
+io:
+  input: 'оракул $|x\rangle|y\rangle\to|x\rangle|y\oplus s\cdot x\rangle$'
+  output: 'измерение регистра $x$ даёт $s$ с вероятностью 1'
+statement: |
+  Задана скрытая строка $s\in\{0,1\}^n$. Платформа передаёт гейт `oracle` на $n+1$ кубите:
+  $$|x\rangle|y\rangle\;\longmapsto\;|x\rangle\,|y\oplus s\cdot x\rangle ,\qquad s\cdot x=\bigoplus_i s_ix_i ,$$
+  где $x$ — кубиты $0,\dots,n-1$, $y$ — кубит $n$.
+
+  Напишите функцию `solve(n, oracle)`. Она возвращает схему на $n+1$ кубите с $n$ классическими битами: кубит $i$
+  регистра $x$ измеряется в бит $i$. Результат измерения должен быть равен $s$ с вероятностью 1.
+
+  **Разрешено:** гейты $H$, $X$, $Z$, измерения в конце; оракул — не больше одного раза.
+hints:
+  - 'Что делает оракул с состоянием $|x\rangle\otimes\frac{1}{\sqrt2}(|0\rangle-|1\rangle)$?'
+editorial: |
+  $X$ и $H$ на кубите $y$ готовят $|-\rangle$. Тогда оракул действует как $|x\rangle\to(-1)^{s\cdot x}|x\rangle$.
+  Слой $H$ до и после оракула на регистре $x$ переводит $|0\dots0\rangle$ в $|s\rangle$.
+pitfalls:
+  - 'Кубит $y$ оставлен в $|0\rangle$: фазы нет, измерение всегда даёт $0\dots0$.'

@@ -1,0 +1,44 @@
+id: SA-028
+slug: ripple-adder
+title: Сумматор с одной анциллой
+status: reference
+level: 3
+tree: {trunk: T3, branch: T3.4, hybrid: [T3.5]}
+facets:
+  input: reg_anc
+  answer: generator
+  params: [{name: n, kind: size, range: [1, 4]}]
+  gates: {mode: basis, set: [cx, ccx]}
+  coupling: all
+  ancilla: {kind: clean, max: 1}
+  measure: none
+  check: eq_anc_phase
+qubits: {data: '2*n', ancilla_max: 1}
+limits: {gates: '6*n'}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [арифметика на месте, перенос, развычисление, бюджет анцилл]
+  key_idea: 'Блок MAJ пропускает перенос вверх по разрядам, блок UMA на обратном пути отменяет его и пишет сумму.'
+source: {kind: real, ref: 'S. Cuccaro et al., 2004 (arXiv:quant-ph/0410184); QuantumKatas RippleCarryAdder; ladder_ec C11', note: 'условие написано для банка'}
+gui: false
+io:
+  input: '$|a\rangle|b\rangle$, два регистра по $n$ кубитов'
+  output: '$|a\rangle|(a+b)\bmod 2^n\rangle$'
+statement: |
+  Напишите функцию `solve(n)`, которая для $1\le n\le 4$ возвращает схему сложения:
+  $$|a\rangle|b\rangle\;\longmapsto\;|a\rangle\,|(a+b)\bmod 2^n\rangle .$$
+  Число $a$ занимает кубиты $0,\dots,n-1$, число $b$ — кубиты $n,\dots,2n-1$ (младший бит первым). Можно
+  использовать один вспомогательный кубит с номером $2n$; после схемы он должен вернуться в $|0\rangle$.
+
+  **Разрешено:** гейты $CX$, $CCX$; не больше $6n$ гейтов.
+hints:
+  - 'Перенос из разряда — мажоритарная функция трёх битов: $a_i$, $b_i$ и входящего переноса.'
+  - 'Перенос можно временно хранить в кубите $a_i$ и вернуть $a_i$ на обратном проходе.'
+editorial: |
+  Блок $\mathrm{MAJ}(c,b,a)$: `cx(a, b)`, `cx(a, c)`, `ccx(c, b, a)` — в кубите $a$ оказывается перенос. Блок
+  $\mathrm{UMA}(c,b,a)$: `ccx(c, b, a)`, `cx(a, c)`, `cx(c, b)` — восстанавливает $a$ и $c$, в $b$ пишет бит суммы.
+  Лестница MAJ идёт от младшего разряда к старшему (первый перенос — анцилла), лестница UMA — обратно. Сумматор
+  на QFT в базис этой задачи не укладывается.
+pitfalls:
+  - 'Только лестница MAJ: в регистре $a$ остаются переносы.'

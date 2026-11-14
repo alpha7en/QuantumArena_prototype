@@ -1,0 +1,42 @@
+id: SA-031
+slug: grover-two-qubits
+title: Один из четырёх — наверняка
+status: reference
+level: 2
+tree: {trunk: T4, branch: T4.2}
+facets:
+  input: oracle
+  answer: generator
+  params: [{name: oracle, kind: circuit, note: 'гейт на 2 кубитах'}]
+  gates: {mode: basis, set: [h, x, z, cz]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: final
+  check: prob
+qubits: {data: 2}
+limits: {oracle_calls: 1, gates: 12}
+signature: 'solve(oracle: Gate) -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [фазовый оракул, оператор диффузии]
+  key_idea: 'При $N=4$ одна итерация Гровера поворачивает состояние точно на отмеченный элемент.'
+source: {kind: adapted, ref: 'учебная классика; демо v2 (grover-2); QuantumKatas GroversAlgorithm'}
+gui: true
+io:
+  input: 'оракул, меняющий знак у одного из четырёх состояний'
+  output: 'измерение даёт отмеченное состояние с вероятностью 1'
+statement: |
+  Гейт `oracle` на двух кубитах меняет знак амплитуды ровно у одного базисного состояния $|w\rangle$, $w\in\{0,1,2,3\}$;
+  какого — неизвестно. Напишите функцию `solve(oracle)`. Она возвращает схему на двух кубитах с двумя
+  классическими битами (кубит $i$ измеряется в бит $i$), измерение которой даёт $w$ с вероятностью 1.
+
+  **Разрешено:** гейты $H$, $X$, $Z$, $CZ$, измерения в конце; оракул — один раз; не больше 12 гейтов вместе с
+  оракулом.
+hints:
+  - 'После оракула нужно отражение относительно равной суперпозиции.'
+  - 'Отражение относительно $|00\rangle$ — это гейты $X$ вокруг $CZ$.'
+editorial: |
+  $H$ на обоих кубитах, оракул, затем диффузия: $H$, $X$, $CZ$, $X$, $H$. Угол поворота за итерацию равен
+  $2\arcsin\frac{1}{\sqrt4}=60^\circ$, начальный угол $30^\circ$, после одной итерации — ровно $90^\circ$.
+pitfalls:
+  - 'Измерить сразу после оракула: знак не виден, все исходы равновероятны.'

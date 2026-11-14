@@ -1,0 +1,39 @@
+id: SA-046
+slug: plus-or-minus
+title: Плюс или минус
+status: reference
+level: 1
+tree: {trunk: T6, branch: T6.1}
+facets:
+  input: promise
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: final
+  check: dist
+qubits: {data: 1}
+limits: {gates: 1}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [базис измерения, обещание на вход]
+  key_idea: 'Измерение в базисе $X$ — это $H$ перед измерением в вычислительном базисе.'
+source: {kind: real, ref: 'QuantumKatas Measurements, задача 1.3', note: 'условие написано заново'}
+gui: true
+io:
+  input: 'кубит в состоянии $|+\rangle$ или $|-\rangle$'
+  output: 'результат измерения: 0 для $|+\rangle$, 1 для $|-\rangle$'
+statement: |
+  Кубит находится в одном из двух состояний: $|+\rangle=\frac{1}{\sqrt2}(|0\rangle+|1\rangle)$ или
+  $|-\rangle=\frac{1}{\sqrt2}(|0\rangle-|1\rangle)$. Постройте схему с одним классическим битом, измерение которой
+  даёт 0 для $|+\rangle$ и 1 для $|-\rangle$ с вероятностью 1.
+
+  **Разрешено:** гейт $H$ и одно измерение; не больше одного гейта.
+hints:
+  - 'Измерение сразу даёт 0 и 1 поровну для обоих состояний.'
+editorial: |
+  $H|+\rangle=|0\rangle$, $H|-\rangle=|1\rangle$: один $H$, затем измерение.
+pitfalls:
+  - 'Измерение без $H$: результат не зависит от состояния.'

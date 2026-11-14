@@ -1,0 +1,41 @@
+id: SA-003
+slug: ghz-n
+title: GHZ на n кубитах
+status: reference
+level: 1
+tree: {trunk: T1, branch: T1.2}
+facets:
+  input: zero
+  answer: generator
+  params: [{name: n, kind: size, range: [2, 12]}]
+  gates: {mode: basis, set: [h, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq0_phase
+qubits: {data: n}
+limits: {gates: n}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: generalize
+  elements: [состояние Белла, параметр n]
+  key_idea: 'Один $H$ и $n-1$ гейтов $CX$ копируют значение первого кубита в базисе.'
+source: {kind: adapted, ref: 'учебная классика; QOSF Monthly Challenge 2021-08 (разминка); ladder_ec C01'}
+gui: false
+io:
+  input: '$|0\dots0\rangle$'
+  output: '$\frac{1}{\sqrt{2}}\left(|0\dots0\rangle+|1\dots1\rangle\right)$'
+statement: |
+  Напишите функцию `solve(n)`, которая для $2\le n\le 12$ возвращает схему на $n$ кубитах. Схема переводит
+  $|0\dots0\rangle$ в состояние
+  $$|\mathrm{GHZ}_n\rangle=\frac{1}{\sqrt{2}}\left(|0\dots0\rangle+|1\dots1\rangle\right).$$
+
+  **Разрешено:** гейты $H$, $CX$; не больше $n$ гейтов.
+hints:
+  - 'При $n=2$ это состояние Белла.'
+  - 'Гейт $CX$ с управляющим кубитом в суперпозиции «дотягивает» её до целевого.'
+editorial: |
+  $H$ на кубите 0, затем $CX(0,i)$ для $i=1,\dots,n-1$ — или цепочкой $CX(i-1,i)$. Оба варианта используют ровно
+  $n$ гейтов. Это первая задача банка, где ответ — программа: схема зависит от $n$.
+pitfalls:
+  - '$H$ на всех кубитах даёт равную суперпозицию всех $2^n$ строк, а не GHZ.'

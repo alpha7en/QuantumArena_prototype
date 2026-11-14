@@ -1,0 +1,44 @@
+id: SA-045
+slug: zne-folding
+title: Свёртка схемы для экстраполяции шума
+status: reference
+level: 1
+tree: {trunk: T5, branch: T5.5}
+facets:
+  input: oracle
+  answer: generator
+  params:
+    - {name: k, kind: repeat, range: [0, 5]}
+    - {name: gate, kind: circuit, note: 'гейт $G$ на двух кубитах'}
+    - {name: gate_dg, kind: circuit, note: 'обратный гейт $G^\dagger$'}
+  gates: {mode: basis, set: []}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 2}
+limits: {}
+signature: 'solve(k: int, gate: Gate, gate_dg: Gate) -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [подавление ошибок, $G G^\dagger=I$, параметр-повтор]
+  key_idea: 'Вставка $G^\dagger G$ не меняет результат без шума, но увеличивает число шумных гейтов в $2k+1$ раз.'
+source: {kind: adapted, ref: 'QOSF Monthly Challenge 2023-03 (Working with NISQ devices, Mitiq)', note: 'из задачи взят один шаг метода ZNE — свёртка; условие написано заново'}
+gui: false
+io:
+  input: 'гейт $G$ и обратный к нему, число $k$'
+  output: 'схема $G\,(G^\dagger G)^k$: ровно $2k+1$ вызовов'
+statement: |
+  Метод экстраполяции к нулевому шуму запускает одну и ту же схему с искусственно увеличенным шумом. Шум
+  увеличивают свёрткой: гейт $G$ заменяют на $G\,(G^\dagger G)^k$ — без шума это тот же оператор, но шумных
+  гейтов в $2k+1$ раз больше.
+
+  Напишите функцию `solve(k, gate, gate_dg)` для $0\le k\le 5$. Она возвращает схему на двух кубитах, которая
+  реализует $G$ и содержит ровно $2k+1$ вызовов переданных гейтов (`gate` — это $G$, `gate_dg` — $G^\dagger$;
+  оба действуют на кубиты $[0, 1]$). Других гейтов в схеме быть не должно.
+hints:
+  - 'Порядок важен: после $G$ идёт $G^\dagger$, затем снова $G$.'
+editorial: |
+  `gate`, затем $k$ раз пара `gate_dg`, `gate`. Оператор равен $G$, число вызовов — $2k+1$.
+pitfalls:
+  - '$2k+1$ копий $G$ подряд: число гейтов верное, оператор — нет.'

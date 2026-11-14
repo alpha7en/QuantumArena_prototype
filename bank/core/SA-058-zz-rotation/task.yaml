@@ -1,0 +1,40 @@
+id: SA-058
+slug: zz-rotation
+title: Экспонента ZZ
+status: reference
+level: 1
+tree: {trunk: T8, branch: T8.1}
+facets:
+  input: any
+  answer: generator
+  params: [{name: theta, kind: angle, note: 'вещественное'}]
+  gates: {mode: basis, set: [cx, rz]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 2}
+limits: {gates: 3}
+signature: 'solve(theta: float) -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [чётность на CX, поворот вокруг z, непрерывный параметр]
+  key_idea: '$Z\otimes Z$ на базисном состоянии равно $(-1)^{a\oplus b}$: $CX$ собирает чётность, $R_z$ ставит фазу.'
+source: {kind: adapted, ref: 'учебная классика; строительный блок задач Xanadu QHack 2023 (троттеризация)'}
+gui: false
+io:
+  input: 'произвольное состояние двух кубитов, угол $\theta$'
+  output: '$e^{-i\theta Z\otimes Z}$'
+statement: |
+  Напишите функцию `solve(theta)`, которая возвращает схему на двух кубитах с оператором
+  $$e^{-i\theta\,Z\otimes Z}$$
+  с точностью до глобальной фазы, для любого вещественного $\theta$.
+
+  **Разрешено:** гейты $CX$, $R_z(\lambda)=e^{-i\lambda Z/2}$; не больше 3 гейтов.
+hints:
+  - 'На состоянии $|ab\rangle$ оператор даёт фазу $e^{-i\theta}$ при $a=b$ и $e^{i\theta}$ при $a\ne b$.'
+editorial: |
+  `cx(0, 1)` кладёт в кубит 1 чётность $a\oplus b$; `rz(2θ)` на нём даёт фазу $e^{\mp i\theta}$; второй `cx`
+  возвращает кубит. Множитель 2 — из определения $R_z(\lambda)=e^{-i\lambda Z/2}$.
+pitfalls:
+  - 'Угол $\theta$ вместо $2\theta$.'

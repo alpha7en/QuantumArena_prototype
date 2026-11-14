@@ -1,0 +1,43 @@
+id: SA-006
+slug: w-state-n
+title: W-состояние на n кубитах
+status: reference
+level: 2
+tree: {trunk: T1, branch: T1.3}
+facets:
+  input: zero
+  answer: generator
+  params: [{name: n, kind: size, range: [2, 10]}]
+  gates: {mode: basis, set: [x, ry, cry, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq0_phase
+qubits: {data: n}
+limits: {gates: '2*n'}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [расчётные углы поворота, каскад, параметр n]
+  key_idea: 'Одна единица «передаётся» по цепочке: на шаге $i$ на месте остаётся доля $\frac{1}{n-i}$.'
+source: {kind: real, ref: 'QCoder QPC003 A3–A6; QOSF Monthly Challenge 2021-08 (W states)', note: 'условие написано заново'}
+gui: false
+io:
+  input: '$|0\dots0\rangle$'
+  output: '$\frac{1}{\sqrt{n}}\left(|10\dots0\rangle+|01\dots0\rangle+\dots+|0\dots01\rangle\right)$'
+statement: |
+  Напишите функцию `solve(n)`, которая для $2\le n\le 10$ возвращает схему на $n$ кубитах. Схема переводит
+  $|0\dots0\rangle$ в равную суперпозицию всех строк с ровно одной единицей:
+  $$|W_n\rangle=\frac{1}{\sqrt{n}}\sum_{k=0}^{n-1}|2^k\rangle .$$
+
+  **Разрешено:** гейты $X$, $R_y$, управляемый $R_y$ (`cry`), $CX$; не больше $2n$ гейтов.
+hints:
+  - 'Начните с $|0\dots01\rangle$: единица на кубите 0.'
+  - 'Управляемый поворот с углом $\theta$ переносит на соседний кубит амплитуду $\sin\frac{\theta}{2}$; $CX$ в обратную сторону убирает единицу с прежнего места.'
+editorial: |
+  $X$ на кубите 0. Для $i=0,\dots,n-2$: `cry(θ_i, i, i+1)`, затем `cx(i+1, i)`, где
+  $\cos\frac{\theta_i}{2}=\sqrt{\frac{1}{n-i}}$. На шаге $i$ единица остаётся на кубите $i$ с амплитудой
+  $\sqrt{\frac{1}{n-i}}$ от пришедшей, остальное уходит дальше. Произведение долей даёт $\frac{1}{\sqrt n}$ для
+  каждого кубита. Всего $2n-1$ гейтов.
+pitfalls:
+  - 'Одинаковые углы на всех шагах: веса убывают геометрически, а не равны.'

@@ -1,0 +1,38 @@
+id: SA-040
+slug: cx-native
+title: CX в нативном базисе
+status: reference
+level: 2
+tree: {trunk: T5, branch: T5.1, hybrid: [T2.1]}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: native, set: [cz, rz, sx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 2}
+limits: {gates: 7, two_qubit: 1}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [нативный базис, сопряжение Адамаром]
+  key_idea: '$CX=H_t\cdot CZ\cdot H_t$, а $H$ собирается из $R_z$ и $\sqrt{X}$ (SA-039).'
+source: {kind: adapted, ref: 'презентация классификации, T5.2 (отображение в нативную архитектуру IBM)'}
+gui: true
+io:
+  input: 'произвольное состояние двух кубитов'
+  output: '$CX$: управляющий $q_0$, целевой $q_1$'
+statement: |
+  Процессор выполняет гейты $CZ$, $R_z(\lambda)$ и $\sqrt{X}$ (`sx`). Реализуйте гейт $CX$ с управляющим кубитом
+  $q_0$ и целевым $q_1$ с точностью до глобальной фазы.
+
+  **Разрешено:** гейты $CZ$, $R_z$, $\sqrt{X}$; не больше 7 гейтов, из них один двухкубитный.
+hints:
+  - 'Чем $CX$ отличается от $CZ$? Вспомните $HZH=X$.'
+editorial: |
+  Адамар на целевом кубите (три нативных гейта), $CZ$, снова Адамар. Всего $3+1+3=7$ гейтов.
+pitfalls:
+  - 'Адамары на управляющем кубите вместо целевого: получается $CX$ в обратную сторону.'

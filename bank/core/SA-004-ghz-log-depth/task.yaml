@@ -1,0 +1,43 @@
+id: SA-004
+slug: ghz-log-depth
+title: GHZ со знаком минус за глубину 6
+status: reference
+level: 2
+tree: {trunk: T1, branch: T1.6, hybrid: [T1.2]}
+facets:
+  input: zero
+  answer: generator
+  params: [{name: n, kind: size, range: [2, 16]}]
+  gates: {mode: basis, set: [h, x, z, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq0_phase
+qubits: {data: n}
+limits: {depth: 6}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: constraint
+  elements: [GHZ, относительный знак, бюджет глубины]
+  key_idea: 'Запутанность удваивается за слой: $2^t$ кубитов после $t$ слоёв $CX$.'
+source: {kind: real, ref: 'QCoder QPC002 A3–A5', note: 'условие написано заново; эталон совпадает по идее с ladder_ec Q01 (ghzm_tree)'}
+gui: false
+io:
+  input: '$|0\dots0\rangle$'
+  output: '$\frac{1}{\sqrt{2}}\left(|0\dots0\rangle-|1\dots1\rangle\right)$'
+statement: |
+  Напишите функцию `solve(n)`, которая для $2\le n\le 16$ возвращает схему на $n$ кубитах. Схема переводит
+  $|0\dots0\rangle$ в состояние
+  $$\frac{1}{\sqrt{2}}\left(|0\dots0\rangle-|1\dots1\rangle\right).$$
+
+  **Разрешено:** гейты $H$, $X$, $Z$, $CX$ между любыми кубитами; глубина схемы не больше 6.
+hints:
+  - 'Цепочка $CX$ имеет глубину $n$. Какие гейты $CX$ можно выполнять одновременно?'
+  - 'Кубит, который уже запутан, сам может быть управляющим.'
+editorial: |
+  После $H$ и $Z$ на кубите 0 он находится в $\frac{1}{\sqrt2}(|0\rangle-|1\rangle)$. Далее слоями: если запутаны
+  кубиты $0,\dots,k-1$, один слой гейтов $CX(j, j+k)$ добавляет ещё $k$ кубитов. За $t$ слоёв набирается $2^t$
+  кубитов, для $n\le16$ хватает четырёх слоёв. Глубина: $2+\lceil\log_2 n\rceil\le 6$.
+pitfalls:
+  - 'Цепочка или «звезда» от кубита 0: глубина растёт как $n$.'
+  - 'Забытый знак: дерево без $Z$ даёт GHZ с плюсом.'

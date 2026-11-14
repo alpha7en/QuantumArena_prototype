@@ -1,0 +1,51 @@
+id: SA-038
+slug: simon
+title: Алгоритм Саймона целиком
+status: reference
+level: 3
+tree: {trunk: T4, branch: T4.4}
+facets:
+  input: oracle
+  answer: hybrid
+  params:
+    - {name: n, kind: size, range: [2, 5]}
+    - {name: oracle, kind: circuit, note: 'гейт на $2n$ кубитах'}
+    - {name: run, kind: callback, note: 'запускает схему один раз и возвращает результат измерения'}
+  gates: {mode: basis, set: [h, x, z, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: final
+  check: classical
+qubits: {data: '2*n'}
+limits: {oracle_calls: 1}
+budget: {runs: '10*n'}
+signature: 'solve(n: int, oracle: Gate, run: Callable[[QuantumCircuit], int]) -> int'
+method:
+  kind: transfer
+  elements: [интерференция, 'линейные уравнения по модулю 2', классическая постобработка]
+  key_idea: 'Каждый запуск даёт случайный $y$ с $y\cdot s=0$; набрав $n-1$ независимых уравнений, находим $s$.'
+source: {kind: adapted, ref: 'QuantumKatas SimonsAlgorithm', note: 'условие написано для банка: полный алгоритм с бюджетом запусков'}
+gui: false
+io:
+  input: 'оракул $|x\rangle|0\rangle\to|x\rangle|f(x)\rangle$, $f(x)=f(x\oplus s)$, $s\ne0$'
+  output: 'число $s$'
+statement: |
+  Функция $f:\{0,1\}^n\to\{0,1\}^n$ устроена так, что $f(x)=f(x')$ тогда и только тогда, когда $x'=x$ или
+  $x'=x\oplus s$, где $s\ne0$ — скрытая строка. Платформа передаёт гейт `oracle` на $2n$ кубитах:
+  $|x\rangle|z\rangle\to|x\rangle|z\oplus f(x)\rangle$, регистр $x$ — кубиты $0,\dots,n-1$.
+
+  Напишите функцию `solve(n, oracle, run)` для $2\le n\le 5$, которая возвращает число $s$ (бит $i$ числа — $s_i$).
+  Функция `run(qc)` выполняет вашу схему один раз и возвращает результат измерения как целое число
+  $\sum_i c_i2^i$.
+
+  **Разрешено:** в каждой схеме — гейты $H$, $X$, $Z$, $CX$, измерения в конце, оракул не больше одного раза,
+  не больше $2n$ кубитов; функцию `run` можно вызвать не больше $10n$ раз.
+hints:
+  - 'Схема «$H$, оракул, $H$» на регистре $x$ выдаёт только такие $y$, что $y\cdot s=0$.'
+  - 'Ищите ненулевое $s$, ортогональное всем полученным $y$.'
+editorial: |
+  Квантовая часть: $H$ на регистре $x$, оракул, $H$, измерение регистра $x$. Результат равномерно распределён по
+  $2^{n-1}$ строкам $y$ с $y\cdot s=0$. Классическая часть: собрать результаты и найти единственное ненулевое $s$,
+  ортогональное всем. При $10n$ запусках вероятность не набрать $n-1$ независимых уравнений пренебрежимо мала.
+pitfalls:
+  - 'Вернуть первый же измеренный $y$: это не $s$, а вектор, ортогональный $s$.'

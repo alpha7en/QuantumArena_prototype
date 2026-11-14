@@ -1,0 +1,42 @@
+id: SA-008
+slug: cluster-ring
+title: Кластерное состояние на кольце
+status: reference
+level: 2
+tree: {trunk: T1, branch: T1.4, hybrid: [T1.6]}
+facets:
+  input: zero
+  answer: generator
+  params: [{name: n, kind: size, range: [3, 12]}]
+  gates: {mode: basis, set: [h, cz]}
+  coupling: ring
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq0_phase
+qubits: {data: n}
+limits: {depth: 4}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: constraint
+  elements: [графовое состояние, кольцо, бюджет глубины]
+  key_idea: 'Гейты $CZ$ коммутируют, поэтому рёбра кольца красятся в 2 или 3 цвета — по слою на цвет.'
+source: {kind: adapted, ref: 'презентация классификации, T1.4 (линейный кластер)', note: 'добавлены кольцо и бюджет глубины'}
+gui: false
+io:
+  input: '$|0\dots0\rangle$, кольцо из $n$ кубитов'
+  output: '$\prod_{i} CZ_{i,\,i+1 \bmod n}\,|+\rangle^{\otimes n}$'
+statement: |
+  $n$ кубитов ($3\le n\le 12$) соединены в кольцо: кубит $i$ связан с кубитом $(i+1) \bmod n$. Напишите функцию
+  `solve(n)`, которая возвращает схему, готовящую из $|0\dots0\rangle$ кластерное состояние кольца
+  $$|C_n\rangle=\prod_{i=0}^{n-1} CZ_{i,\,(i+1)\bmod n}\;|+\rangle^{\otimes n}.$$
+
+  **Разрешено:** гейты $H$ и $CZ$ между соседями по кольцу; глубина не больше 4.
+hints:
+  - 'Все гейты $CZ$ диагональны и коммутируют: их можно переставлять как угодно.'
+  - 'Сколько слоёв нужно, чтобы покрыть все рёбра кольца непересекающимися парами при чётном и при нечётном $n$?'
+editorial: |
+  Слой $H$, затем рёбра $(i,i+1)$ с чётным $i$, затем с нечётным. При чётном $n$ замыкающее ребро $(n-1,0)$
+  помещается во второй слой, при нечётном требует третьего. Глубина 3 или 4.
+pitfalls:
+  - 'Гейты $CZ$ подряд по кругу в одну «лесенку»: глубина $n+1$.'
+  - 'Забытое замыкающее ребро: получается линейный кластер.'

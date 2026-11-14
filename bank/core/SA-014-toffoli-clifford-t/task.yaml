@@ -1,0 +1,42 @@
+id: SA-014
+slug: toffoli-clifford-t
+title: Тоффоли из CX и T
+status: reference
+level: 3
+tree: {trunk: T2, branch: T2.2, hybrid: [T5.4]}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, t, tdg, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 3}
+limits: {gates: 16, cx: 6, t: 7}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [фазовый полином, чётности на CX, сопряжение Адамаром]
+  key_idea: 'Знак $(-1)^{abc}$ раскладывается по чётностям: $4abc=a+b+c-(a\oplus b)-(a\oplus c)-(b\oplus c)+(a\oplus b\oplus c)$.'
+source: {kind: real, ref: 'IBM Quantum Challenge 2021, Exercise 1 (Toffoli decomposition)', note: 'условие написано заново; базис Clifford+T вместо нативного'}
+gui: true
+io:
+  input: 'произвольное состояние трёх кубитов'
+  output: '$CCX$: управляющие $q_0$, $q_1$, целевой $q_2$'
+statement: |
+  Реализуйте гейт Тоффоли: кубит $q_2$ инвертируется, когда $q_0=q_1=1$. Схема должна быть верна для любого
+  входа, глобальная фаза не учитывается.
+
+  **Разрешено:** гейты $H$, $T$, $T^\dagger$, $CX$; не больше 16 гейтов, из них не больше 6 $CX$ и не больше 7
+  гейтов $T$ и $T^\dagger$ вместе.
+hints:
+  - '$CCX=H_2\cdot CCZ\cdot H_2$, а $CCZ$ — диагональный гейт.'
+  - 'Гейт $T$ на кубите, где сейчас лежит чётность $a\oplus b$, добавляет фазу $\frac{\pi}{4}(a\oplus b)$.'
+editorial: |
+  $CCZ$ — фаза $\pi\,abc$. Тождество из ключевой идеи выражает её через семь чётностей с весами $\pm\frac{\pi}{4}$.
+  Шесть гейтов $CX$ по очереди собирают на кубитах нужные чётности, на каждой ставится $T$ или $T^\dagger$, в конце
+  кубиты возвращаются к исходным значениям. Два $H$ на целевом кубите превращают $CCZ$ в $CCX$.
+pitfalls:
+  - 'Вариант с тремя $CX$ и четырьмя $T$ (Тоффоли «с точностью до относительной фазы») верен на базисных входах, но не как оператор.'

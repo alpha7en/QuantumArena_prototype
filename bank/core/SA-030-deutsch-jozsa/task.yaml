@@ -1,0 +1,43 @@
+id: SA-030
+slug: deutsch-jozsa
+title: Дойч — Йожа за один запрос
+status: reference
+level: 1
+tree: {trunk: T4, branch: T4.1}
+facets:
+  input: oracle
+  answer: generator
+  params: [{name: n, kind: size, range: [1, 6]}, {name: oracle, kind: circuit, note: 'гейт на $n$ кубитах'}]
+  gates: {mode: basis, set: [h, x, z]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: final
+  check: prob
+qubits: {data: n}
+limits: {oracle_calls: 1}
+signature: 'solve(n: int, oracle: Gate) -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [суперпозиция, фазовый оракул, интерференция]
+  key_idea: 'Амплитуда при $|0\dots0\rangle$ после второго слоя $H$ равна среднему значению $(-1)^{f(x)}$.'
+source: {kind: adapted, ref: 'учебная классика; QuantumKatas DeutschJozsa; ladder_ec C04'}
+gui: false
+io:
+  input: 'оракул $|x\rangle\to(-1)^{f(x)}|x\rangle$; $f$ постоянна или сбалансирована'
+  output: 'измерение даёт $0\dots0$ тогда и только тогда, когда $f$ постоянна'
+statement: |
+  Функция $f:\{0,1\}^n\to\{0,1\}$ либо постоянна, либо сбалансирована (ровно на половине входов равна 1).
+  Платформа передаёт её как гейт `oracle` на $n$ кубитах: $|x\rangle\to(-1)^{f(x)}|x\rangle$.
+
+  Напишите функцию `solve(n, oracle)`. Она возвращает схему на $n$ кубитах с $n$ классическими битами (кубит $i$
+  измеряется в бит $i$). Результат измерения должен быть $0\dots0$ с вероятностью 1, если $f$ постоянна, и с
+  вероятностью 0, если сбалансирована. Оракул добавляется в схему вызовом `qc.append(oracle, range(n))`.
+
+  **Разрешено:** гейты $H$, $X$, $Z$, измерения в конце; оракул — не больше одного раза.
+hints:
+  - 'Подайте на оракул равную суперпозицию всех $x$.'
+editorial: |
+  $H$ на всех кубитах, оракул, снова $H$ на всех, измерение. Амплитуда при $|0\dots0\rangle$ равна
+  $\frac{1}{2^n}\sum_x(-1)^{f(x)}$: $\pm1$ для постоянной функции и $0$ для сбалансированной.
+pitfalls:
+  - 'Без второго слоя $H$ результат измерения равномерно случаен и о функции ничего не говорит.'

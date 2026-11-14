@@ -1,0 +1,50 @@
+id: SA-042
+slug: shrink-circuit
+title: Сожми схему
+status: reference
+level: 2
+tree: {trunk: T5, branch: T5.3, hybrid: [T2.1]}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, x, z, s, t, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 3}
+limits: {gates: 3}
+signature: 'solve() -> QuantumCircuit'
+starter: |
+  from qiskit import QuantumCircuit
+
+  def solve():
+      qc = QuantumCircuit(3)
+      qc.h(0); qc.h(1); qc.cx(1, 0); qc.h(0); qc.h(1)
+      qc.cx(1, 2); qc.cx(0, 1); qc.cx(1, 2); qc.cx(0, 1)
+      qc.t(2); qc.t(2); qc.s(2); qc.z(2)
+      qc.h(2); qc.z(2); qc.h(2)
+      return qc
+method:
+  kind: reverse
+  elements: [анализ готовой схемы, тождества, сокращение гейтов]
+  key_idea: 'Схема читается блоками: развёрнутый $CX$, мост через соседа, степени фазового гейта, сопряжение $HZH$.'
+source: {kind: own, ref: 'sparq arena (демо v2: формат «стартовая схема»)'}
+gui: true
+io:
+  input: 'готовая схема из 16 гейтов на трёх кубитах'
+  output: 'та же матрица не более чем тремя гейтами'
+statement: |
+  В редакторе уже лежит схема из 16 гейтов (стартовый код). Она работает, но слишком длинна. Постройте схему с
+  той же матрицей — с точностью до глобальной фазы — не более чем из трёх гейтов.
+
+  **Разрешено:** гейты $H$, $X$, $Z$, $S$, $T$, $CX$; не больше 3 гейтов.
+hints:
+  - 'Разбейте схему на строки стартового кода: каждая строка — известное тождество.'
+  - '$T^2=S$, $S^2=Z$, $Z^2=I$.'
+editorial: |
+  Первая строка — $CX$, «развёрнутый» четырьмя $H$: это `cx(0, 1)`. Вторая — мост через средний кубит: `cx(0, 2)`.
+  Третья: $T\,T\,S\,Z=Z^2=I$. Четвёртая: $HZH=X$ на кубите 2. Итог: `cx(0, 1)`, `cx(0, 2)`, `x(2)`.
+pitfalls:
+  - 'Потерять гейт $X$ из последней строки.'

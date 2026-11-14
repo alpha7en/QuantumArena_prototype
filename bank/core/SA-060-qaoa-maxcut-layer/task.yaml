@@ -1,0 +1,49 @@
+id: SA-060
+slug: qaoa-maxcut-layer
+title: Слой QAOA для взвешенного разреза
+status: reference
+level: 2
+tree: {trunk: T8, branch: T8.3, hybrid: [T8.1]}
+facets:
+  input: zero
+  answer: generator
+  params:
+    - {name: n, kind: size, range: [2, 8]}
+    - {name: edges, kind: data, note: 'список троек $(i, j, w)$: ребро и вещественный вес'}
+    - {name: gamma, kind: angle, note: 'вещественное'}
+    - {name: beta, kind: angle, note: 'вещественное'}
+  gates: {mode: basis, set: [h, cx, rz, rx, rzz]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq0_phase
+qubits: {data: n}
+limits: {gates: '2*n + 3*n*(n-1)/2'}
+signature: 'solve(n: int, edges: list[tuple[int, int, float]], gamma: float, beta: float) -> QuantumCircuit'
+method:
+  kind: transfer
+  elements: [задача о разрезе, фаза стоимости, смеситель, классические данные]
+  key_idea: 'Ребро графа — один множитель $e^{i\gamma w Z_iZ_j/2}$; вес ребра входит в угол.'
+source: {kind: real, ref: 'QOSF Monthly Challenge 2021-02 (скрининг менторской программы), Task 4', note: 'взято ядро задачи — обобщение слоя QAOA на взвешенные графы; условие написано заново'}
+gui: false
+io:
+  input: 'взвешенный граф, углы $\gamma$, $\beta$'
+  output: '$e^{-i\beta\sum X_i}\,e^{-i\gamma C}\,|+\rangle^{\otimes n}$'
+statement: |
+  Дан граф на $n$ вершинах ($2\le n\le8$) со списком рёбер `edges`: тройка $(i,j,w)$ — ребро между вершинами $i$
+  и $j$ веса $w$. Строке $x$ соответствует разрез; его вес
+  $$C(x)=\sum_{(i,j,w)} w\,[x_i\ne x_j] .$$
+  Напишите функцию `solve(n, edges, gamma, beta)`, которая возвращает схему одного слоя QAOA: из
+  $|0\dots0\rangle$ она готовит
+  $$e^{-i\beta\sum_i X_i}\;e^{-i\gamma C}\;|+\rangle^{\otimes n}$$
+  с точностью до глобальной фазы ($C$ — диагональный оператор со значениями $C(x)$).
+
+  **Разрешено:** гейты $H$, $CX$, $R_z$, $R_x$, $R_{zz}$; не больше $2n+\frac{3n(n-1)}{2}$ гейтов.
+hints:
+  - '$[x_i\ne x_j]=\frac{1-z_iz_j}{2}$, где $z=\pm1$ — собственные значения $Z$.'
+  - 'Постоянное слагаемое в $C$ — глобальная фаза.'
+editorial: |
+  $H$ на всех кубитах. Для каждого ребра $e^{-i\gamma w(1-Z_iZ_j)/2}$ с точностью до фазы равно
+  $e^{i\gamma w Z_iZ_j/2}=R_{zz}(-\gamma w)$ (или `cx`, `rz(-γw)`, `cx`). Затем $R_x(2\beta)$ на всех кубитах.
+pitfalls:
+  - 'Одинаковый угол на всех рёбрах: веса потеряны.'

@@ -1,0 +1,40 @@
+id: SA-043
+slug: controlled-s-tcount
+title: Управляемый S за три T
+status: reference
+level: 2
+tree: {trunk: T5, branch: T5.4, hybrid: [T2.4]}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [t, tdg, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 2}
+limits: {t: 3, cx: 2}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [фазовый полином, T-счёт]
+  key_idea: '$2ab=a+b-(a\oplus b)$: фаза $\frac{\pi}{2}ab$ — это три фазы по $\frac{\pi}{4}$ на $a$, $b$ и $a\oplus b$.'
+source: {kind: own, ref: 'sparq arena'}
+gui: true
+io:
+  input: 'произвольное состояние двух кубитов'
+  output: 'управляемый $S$: $\mathrm{diag}(1,1,1,i)$'
+statement: |
+  В отказоустойчивых вычислениях дорогой ресурс — гейты $T$. Реализуйте управляемый гейт $S$ с матрицей
+  $\mathrm{diag}(1,1,1,i)$ с точностью до глобальной фазы.
+
+  **Разрешено:** гейты $T$, $T^\dagger$, $CX$; не больше 3 гейтов $T$ и $T^\dagger$ вместе и не больше 2 гейтов $CX$.
+hints:
+  - 'Гейт $T$ на кубите со значением $v$ даёт фазу $\frac{\pi}{4}v$.'
+  - 'После `cx(0, 1)` во втором кубите лежит $a\oplus b$.'
+editorial: |
+  Нужна фаза $\frac{\pi}{2}ab=\frac{\pi}{4}\left(a+b-(a\oplus b)\right)$. `cx(0, 1)`, $T^\dagger$ на кубите 1 (там
+  $a\oplus b$), `cx(0, 1)`, затем $T$ на обоих кубитах.
+pitfalls:
+  - 'Два гейта $T$ без слагаемого $a\oplus b$: получается $T\otimes T$ с лишними фазами у $|01\rangle$ и $|10\rangle$.'

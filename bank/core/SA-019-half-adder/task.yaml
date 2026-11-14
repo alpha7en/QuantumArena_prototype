@@ -1,0 +1,40 @@
+id: SA-019
+slug: half-adder
+title: Полусумматор
+status: reference
+level: 1
+tree: {trunk: T3, branch: T3.4, hybrid: [T3.1]}
+facets:
+  input: reg_anc
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [cx, ccx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_anc_phase
+qubits: {data: 3}
+limits: {gates: 2}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [обратимая логика, порядок гейтов]
+  key_idea: 'Перенос считается до суммы: $CCX$ читает $b$, пока его не изменил $CX$.'
+source: {kind: adapted, ref: 'презентация классификации, T2.1; демо v2 (half-adder)'}
+gui: true
+io:
+  input: '$|a\rangle|b\rangle|0\rangle$ на кубитах $q_0,q_1,q_2$'
+  output: '$|a\rangle|a\oplus b\rangle|a\cdot b\rangle$'
+statement: |
+  На кубитах $q_0$ и $q_1$ записаны биты $a$ и $b$, кубит $q_2$ находится в $|0\rangle$. Реализуйте полусумматор:
+  $$|a\rangle|b\rangle|0\rangle\;\longmapsto\;|a\rangle\,|a\oplus b\rangle\,|a\cdot b\rangle .$$
+  Схема должна быть верна и для суперпозиций значений $a$ и $b$.
+
+  **Разрешено:** гейты $CX$, $CCX$; не больше 2 гейтов.
+hints:
+  - 'Сумма по модулю 2 — это $CX$, перенос — $CCX$. Важен порядок.'
+editorial: |
+  Сначала `ccx(0, 1, 2)` записывает перенос $a\cdot b$, затем `cx(0, 1)` превращает $b$ в $a\oplus b$. В обратном
+  порядке $CCX$ увидел бы уже изменённый кубит и записал $a\cdot(a\oplus b)$.
+pitfalls:
+  - 'Обратный порядок гейтов: перенос считается от испорченного $b$.'

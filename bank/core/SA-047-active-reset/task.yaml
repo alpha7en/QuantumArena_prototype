@@ -1,0 +1,40 @@
+id: SA-047
+slug: active-reset
+title: Сброс кубита обратной связью
+status: reference
+level: 1
+tree: {trunk: T6, branch: T6.2}
+facets:
+  input: any
+  answer: dynamic
+  params: []
+  gates: {mode: basis, set: [x]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: mid
+  check: channel
+qubits: {data: 1}
+limits: {gates: 1, measurements: 1}
+forbid: [reset]
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [промежуточное измерение, условный гейт]
+  key_idea: 'Измерение сообщает, в каком состоянии кубит; условный $X$ исправляет единицу.'
+source: {kind: real, ref: 'IBM Quantum Challenge Spring 2023, Lab 1 (dynamic circuits)', note: 'условие написано заново'}
+gui: true
+io:
+  input: 'кубит в произвольном состоянии'
+  output: 'кубит в $|0\rangle$ при любом исходе измерения'
+statement: |
+  Кубит находится в произвольном неизвестном состоянии. Постройте схему с одним классическим битом, после
+  которой кубит гарантированно окажется в $|0\rangle$. Инструкция `reset` недоступна.
+
+  **Разрешено:** одно измерение, гейт $X$ под классическим условием (`with qc.if_test((бит, 1)):`).
+hints:
+  - 'После измерения кубит находится в $|0\rangle$ или $|1\rangle$ — и вы знаете, в каком.'
+editorial: |
+  Измерить кубит в бит $c$; если $c=1$, применить $X$. Это первая задача банка с классической обратной связью:
+  гейт зависит от результата измерения внутри той же схемы.
+pitfalls:
+  - 'Безусловный $X$ после измерения: единица исправляется, а ноль портится.'

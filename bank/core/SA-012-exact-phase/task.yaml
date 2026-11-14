@@ -1,0 +1,42 @@
+id: SA-012
+slug: exact-phase
+title: Матрица без права на фазу
+status: reference
+level: 1
+tree: {trunk: T2, branch: T2.6}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [x, z, h, s]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq
+qubits: {data: 1}
+limits: {gates: 2}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [порядок гейтов, глобальная фаза]
+  key_idea: 'Гейты применяются справа налево: схема «$X$, затем $Z$» имеет матрицу $ZX$.'
+source: {kind: own, ref: 'sparq arena'}
+gui: true
+io:
+  input: 'произвольное состояние кубита'
+  output: 'оператор с матрицей $\begin{pmatrix}0&1\\-1&0\end{pmatrix}$, фаза учитывается'
+statement: |
+  Постройте схему на одном кубите, матрица которой **в точности** равна
+  $$\begin{pmatrix}0&1\\-1&0\end{pmatrix}.$$
+  В этой задаче глобальная фаза учитывается: гейт будет использоваться как управляемый, и общий множитель $-1$
+  превратится в наблюдаемый относительный знак.
+
+  **Разрешено:** гейты $X$, $Z$, $H$, $S$; не больше 2 гейтов.
+hints:
+  - 'Матрица схемы — произведение матриц гейтов в обратном порядке.'
+editorial: |
+  $ZX=\begin{pmatrix}1&0\\0&-1\end{pmatrix}\begin{pmatrix}0&1\\1&0\end{pmatrix}=\begin{pmatrix}0&1\\-1&0\end{pmatrix}$:
+  сначала $X$, затем $Z$. Обратный порядок даёт $XZ=-ZX$ — то же состояние с точностью до фазы, но другой
+  управляемый гейт.
+pitfalls:
+  - 'Порядок «$Z$, затем $X$»: матрица отличается знаком и проходит только проверку «с точностью до фазы».'
