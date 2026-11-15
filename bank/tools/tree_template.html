@@ -1,0 +1,195 @@
+<title>Дерево задач sparq arena</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Раскладка: слева ствол (архетип), от него красная линия к ветвям-концепциям, на ветвях — плоды-задачи. */
+:root {
+  --bg: #0b0c0e; --panel: #141517; --raised: #222325; --inset: #060608;
+  --line: #28292b; --line-strong: #46484b;
+  --fg: #ffffff; --fg-2: #cbced3; --fg-3: #a2a5aa;
+  --accent: #cc0000; --accent-text: #ff4b4b;
+  --display: "Unbounded", "Segoe UI", system-ui, sans-serif;
+  --body: "Onest", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --bg: #f2f4f6; --panel: #ffffff; --raised: #e8eaee; --inset: #f8f9fb;
+  --line: #dadce1; --line-strong: #bec1c8;
+  --fg: #0c0d10; --fg-2: #3f424a; --fg-3: #5b5f67;
+  --accent: #cc0000; --accent-text: #b80000; color-scheme: light } }
+:root[data-theme="light"] {
+  --bg: #f2f4f6; --panel: #ffffff; --raised: #e8eaee; --inset: #f8f9fb;
+  --line: #dadce1; --line-strong: #bec1c8;
+  --fg: #0c0d10; --fg-2: #3f424a; --fg-3: #5b5f67;
+  --accent: #cc0000; --accent-text: #b80000; color-scheme: light }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font: 400 15px/1.5 var(--body); }
+.wrap { max-width: 1280px; margin: 0 auto; padding-block: 28px 140px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.kicker { font: 500 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--fg-3);
+  display: flex; align-items: center; gap: 8px; }
+.kicker::before { content: ""; width: 14px; height: 1px; background: var(--accent); }
+h1 { font: 500 clamp(22px, 3.4vw, 34px)/1.15 var(--display); margin: 12px 0 10px; text-wrap: balance; }
+.lead { color: var(--fg-2); max-width: 68ch; margin: 0; }
+.stats { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 22px 0 6px; }
+.stat b { font: 500 22px/1 var(--display); font-variant-numeric: tabular-nums; display: block; }
+.stat span { font: 400 12px/1.3 var(--mono); color: var(--fg-3); }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg);
+  border-bottom: 1px solid var(--line); padding-block: 10px; margin-top: 14px;
+  display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+.group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.group > span { font: 400 12px/1 var(--mono); color: var(--fg-3); margin-right: 2px; }
+button.f { font: 500 13px/1 var(--body); color: var(--fg-2); background: transparent; border: 1px solid var(--line-strong);
+  border-radius: 10px; padding: 7px 11px; cursor: pointer; }
+button.f[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+button.f:focus-visible, .chip:focus-visible, .close:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font: 400 12px/1.4 var(--mono); color: var(--fg-3); margin-left: auto; }
+.legend i { display: inline-block; width: 22px; height: 12px; border-radius: 4px; vertical-align: -1px; margin-right: 6px; }
+.legend .c { background: var(--raised); border: 1px solid var(--line-strong); }
+.legend .r { border: 1px dashed var(--line-strong); }
+.trunk { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 0 20px; padding-block: 26px 6px; border-bottom: 1px solid var(--line); }
+.thead { position: relative; }
+.tid { font: 500 13px/1 var(--mono); color: var(--accent-text); }
+.thead h2 { font: 500 17px/1.25 var(--display); margin: 8px 0 8px; text-wrap: balance; }
+.thead p { margin: 0 0 8px; color: var(--fg-3); font-size: 13px; }
+.sig { font: 400 11px/1.5 var(--mono); color: var(--fg-3); }
+.tcount { font: 400 12px/1.4 var(--mono); color: var(--fg-2); margin-top: 8px; }
+.branches { border-left: 2px solid var(--accent); min-width: 0; }
+.branch { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 4px 16px; padding: 0 0 18px 18px; position: relative; }
+.branch::before { content: ""; position: absolute; left: 0; top: 10px; width: 12px; height: 2px; background: var(--accent); }
+.bname { font-weight: 600; font-size: 14px; line-height: 1.35; }
+.bname small { font: 400 11px/1 var(--mono); color: var(--fg-3); margin-right: 6px; }
+.bidea { color: var(--fg-3); font-size: 12.5px; line-height: 1.45; margin-top: 3px; }
+.fruits { display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; min-width: 0; }
+.chip { font: 500 12px/1 var(--mono); display: inline-flex; align-items: center; gap: 7px; padding: 6px 8px; border-radius: 9px;
+  background: var(--raised); color: var(--fg); border: 1px solid var(--line-strong); cursor: pointer; max-width: 100%; }
+.chip .t { font: 400 12.5px/1.2 var(--body); color: var(--fg-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 22ch; }
+.chip.res { background: transparent; border-style: dashed; color: var(--fg-3); }
+.chip.res .t { color: var(--fg-3); }
+.chip[aria-current="true"] { border-color: var(--accent-text); border-style: solid; box-shadow: 0 0 0 1px var(--accent-text); }
+.lv { display: inline-flex; gap: 2px; }
+.lv i { width: 3px; height: 11px; border-radius: 1px; background: var(--line-strong); }
+.lv i.on { background: var(--accent-text); }
+.empty { color: var(--fg-3); font: 400 12px/1.6 var(--mono); }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--panel); border-top: 1px solid var(--line-strong);
+  padding: 16px max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  max-height: 62vh; overflow: auto; }
+.sheet-in { max-width: 1248px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 10px 32px; }
+.sheet h3 { font: 500 17px/1.3 var(--display); margin: 6px 0 8px; text-wrap: balance; }
+.sheet p { margin: 0 0 8px; color: var(--fg-2); max-width: 70ch; }
+.sheet .src { color: var(--fg-3); font-size: 13px; }
+.kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; font-size: 13px; align-content: start; }
+.kv dt { font: 400 12px/1.6 var(--mono); color: var(--fg-3); }
+.kv dd { margin: 0; color: var(--fg-2); }
+.close { position: absolute; top: 10px; right: max(12px, env(safe-area-inset-right, 0px)); background: transparent; color: var(--fg-2);
+  border: 1px solid var(--line-strong); border-radius: 10px; font: 500 13px/1 var(--body); padding: 7px 10px; cursor: pointer; }
+mjx-container { color: inherit; }
+@media (max-width: 900px) {
+  .trunk { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .branch { grid-template-columns: minmax(0, 1fr); }
+  .sheet-in { grid-template-columns: minmax(0, 1fr); }
+  .legend { margin-left: 0; }
+  .bar { position: static; }
+  .chip .t { max-width: 16ch; }
+}
+@media (prefers-reduced-motion: no-preference) { .chip, button.f { transition: background-color .12s, border-color .12s, color .12s; } }
+</style>
+
+<div class="wrap">
+  <div class="kicker">sparq arena · банк задач</div>
+  <h1>Дерево задач: стволы, ветви, плоды</h1>
+  <p class="lead">Ствол — архетип задачи: что на входе, что сдаёт участник и как это проверяется. Ветвь — ключевая концепция. Плод — задача. Сплошные плоды входят в ядро: у них есть условие, эталон и проверка. Пунктирные лежат в резерве как идеи.</p>
+  <div class="stats" id="stats"></div>
+  <div class="bar" id="bar">
+    <div class="group" id="g-level"><span>уровень</span></div>
+    <div class="group" id="g-bank"><span>банк</span></div>
+    <div class="group" id="g-answer"><span>ответ</span></div>
+    <div class="legend"><span><i class="c"></i>ядро</span><span><i class="r"></i>резерв</span><span>три риски — уровень</span></div>
+  </div>
+  <div id="tree"></div>
+</div>
+<div class="sheet" id="sheet" hidden>
+  <button class="close" id="close" type="button">Закрыть</button>
+  <div class="sheet-in" id="sheet-in"></div>
+</div>
+
+<script>
+window.MathJax = { tex: { inlineMath: [["$", "$"]] }, svg: { fontCache: "global" }, startup: { typeset: false } };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"></script>
+<script>
+const DATA = /*DATA*/;
+const L = {
+  input: { zero: "нулевое состояние", any: "произвольное состояние", reg_anc: "регистр и чистые анциллы", promise: "состояние из обещанного набора", oracle: "чёрный ящик", resource: "общая запутанность" },
+  answer: { fixed: "схема", generator: "генератор", dynamic: "динамическая схема", hybrid: "программа", value: "число или строка" },
+  check: { eq: "оператор, фаза учитывается", eq_phase: "оператор с точностью до фазы", eq0: "состояние, фаза учитывается", eq0_phase: "состояние с точностью до фазы", eq_anc: "оператор и чистые анциллы, фаза учитывается", eq_anc_phase: "оператор и чистые анциллы", dist: "распределение измерений", prob: "вероятность успеха", channel: "все ветви измерений", classical: "классический ответ", score: "оценка по стоимости", fidelity: "порог точности" },
+  method: { fact: "один факт", combo: "комбинация приёмов", constraint: "факт под ограничением", generalize: "обобщение по параметру", reverse: "реверс-инжиниринг", transfer: "перенос сюжета", open: "открытый оптимум" },
+};
+const state = { level: 0, bank: "all", answer: "all", open: null };
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const typeset = (el) => { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {}); };
+const lv = (n) => '<span class="lv" aria-label="уровень ' + n + '">' + [1, 2, 3].map((i) => '<i class="' + (i <= n ? "on" : "") + '"></i>').join("") + "</span>";
+
+function buttons(host, key, options) {
+  for (const [value, label] of options) {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "f"; b.textContent = label; b.id = "f-" + key + "-" + value;
+    b.setAttribute("aria-pressed", String(state[key] === value));
+    b.onclick = () => { state[key] = value; host.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); render(); };
+    host.appendChild(b);
+  }
+}
+const visible = (t) => (!state.level || t.level === state.level) && (state.bank === "all" || t.bank === state.bank) && (state.answer === "all" || t.answer === state.answer);
+
+function render() {
+  const shown = DATA.tasks.filter(visible);
+  $("tree").innerHTML = DATA.trunks.map((tr) => {
+    const inTrunk = shown.filter((t) => t.branch.startsWith(tr.id + "."));
+    const core = inTrunk.filter((t) => t.bank === "core").length;
+    return '<section class="trunk"><div class="thead"><div class="tid">' + tr.id + "</div><h2>" + esc(tr.title) + "</h2><p>" + esc(tr.about) +
+      '</p><div class="sig">вход: ' + L.input[tr.signature.input] + "<br>проверка: " + L.check[tr.signature.check] +
+      '</div><div class="tcount">ядро ' + core + " · резерв " + (inTrunk.length - core) + '</div></div><div class="branches">' +
+      tr.branches.map((b) => {
+        const fruits = inTrunk.filter((t) => t.branch === b.id).sort((x, y) => (x.bank < y.bank ? -1 : x.bank > y.bank ? 1 : x.level - y.level));
+        return '<div class="branch"><div><div class="bname"><small>' + b.id + "</small>" + esc(b.title) + '</div><div class="bidea">' + esc(b.idea) +
+          '</div></div><div class="fruits">' + (fruits.length ? fruits.map((t) =>
+            '<button type="button" class="chip' + (t.bank === "reserve" ? " res" : "") + '" data-id="' + t.id + '" aria-current="' + (state.open === t.id) + '">' +
+            lv(t.level) + t.id + '<span class="t">' + esc(t.title) + "</span></button>").join("") : '<span class="empty">нет задач под фильтром</span>') + "</div></div>";
+      }).join("") + "</div></section>";
+  }).join("");
+  typeset($("tree"));
+}
+
+function open(id) {
+  const t = DATA.tasks.find((x) => x.id === id);
+  if (!t) return;
+  state.open = id;
+  const br = DATA.trunks.flatMap((x) => x.branches).find((b) => b.id === t.branch);
+  const rows = [["уровень", t.level + " из 3"], ["ветвь", t.branch + " · " + br.title], ["вход", L.input[t.input]], ["ответ", L.answer[t.answer]],
+    ["проверка", L.check[t.check]], ["как составлена", L.method[t.method]]];
+  if (t.hybrid && t.hybrid.length) rows.push(["смежные ветви", t.hybrid.join(", ")]);
+  if (t.limits) rows.push(["ограничения", t.limits]);
+  $("sheet-in").innerHTML = '<div><div class="kicker">' + t.id + " · " + (t.bank === "core" ? "ядро" : "резерв, идея") + "</div><h3>" + esc(t.title) + "</h3>" +
+    (t.io ? "<p><b>Вход.</b> " + esc(t.io.input) + "</p><p><b>Выход.</b> " + esc(t.io.output) + "</p>" : "") +
+    (t.idea ? "<p>" + esc(t.idea) + "</p>" : "") + '<p class="src">Источник: ' + esc(t.source) + '</p></div><dl class="kv">' +
+    rows.map(([k, v]) => "<dt>" + k + "</dt><dd>" + esc(v) + "</dd>").join("") + "</dl>";
+  $("sheet").hidden = false;
+  typeset($("sheet-in"));
+  document.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-current", String(c.dataset.id === id)));
+}
+
+$("tree").addEventListener("click", (e) => { const c = e.target.closest(".chip"); if (c) open(c.dataset.id); });
+$("close").onclick = () => { $("sheet").hidden = true; state.open = null; document.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-current", "false")); };
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("sheet").hidden) $("close").click(); });
+
+const core = DATA.tasks.filter((t) => t.bank === "core");
+$("stats").innerHTML = [[DATA.trunks.length, "стволов"], [DATA.trunks.reduce((s, t) => s + t.branches.length, 0), "ветвей"], [core.length, "задач в ядре"],
+  [DATA.tasks.length - core.length, "идей в резерве"], [[1, 2, 3].map((n) => core.filter((t) => t.level === n).length).join(" / "), "ядро по уровням 1 / 2 / 3"]]
+  .map(([n, label]) => '<div class="stat"><b>' + n + "</b><span>" + label + "</span></div>").join("");
+buttons($("g-level"), "level", [[0, "все"], [1, "1"], [2, "2"], [3, "3"]]);
+buttons($("g-bank"), "bank", [["all", "все"], ["core", "ядро"], ["reserve", "резерв"]]);
+buttons($("g-answer"), "answer", [["all", "все"], ...Object.entries(L.answer)]);
+render();
+</script>

@@ -42,10 +42,24 @@ def load_module(path, name):
     return mod
 
 
+def schema_errors(task):
+    """Проверка по schema/task.schema.json, если установлен пакет jsonschema."""
+    try:
+        import json
+
+        import jsonschema
+    except ImportError:
+        return []
+    schema = json.load(open(os.path.join(BANK, "schema", "task.schema.json"), encoding="utf-8"))
+    return [f"схема: {'/'.join(map(str, e.path))} {e.message[:80]}"
+            for e in jsonschema.Draft202012Validator(schema).iter_errors(task)]
+
+
 def validate_card(task, tree):
     errs = [f"нет поля {k}" for k in REQUIRED if k not in task]
     if errs:
         return errs
+    errs += schema_errors(task)
     f = task["facets"]
     for key in ("input", "answer", "coupling", "measure", "check"):
         if f.get(key, "none" if key == "measure" else None) not in ENUMS[key] and not (key == "coupling" and key not in f):
