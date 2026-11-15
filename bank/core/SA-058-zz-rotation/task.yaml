@@ -34,7 +34,7 @@ statement: |
 hints:
   - 'На состоянии $|ab\rangle$ оператор даёт фазу $e^{-i\theta}$ при $a=b$ и $e^{i\theta}$ при $a\ne b$.'
 editorial: |
-  `cx(0, 1)` кладёт в кубит 1 чётность $a\oplus b$; `rz(2θ)` на нём даёт фазу $e^{\mp i\theta}$; второй `cx`
+  `cx(0, 1)` кладёт в кубит 1 чётность $a\oplus b$; `rz(2*theta)` на нём даёт фазу $e^{\mp i\theta}$; второй `cx`
   возвращает кубит. Множитель 2 — из определения $R_z(\lambda)=e^{-i\lambda Z/2}$.
 pitfalls:
   - 'Угол $\theta$ вместо $2\theta$.'
