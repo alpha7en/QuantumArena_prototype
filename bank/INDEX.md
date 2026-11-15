@@ -43,13 +43,13 @@
 | id | Задача | Ур. | Ветвь | Вход | Ответ | Проверка | Как составлена | Источник |
 |---|---|:-:|---|---|---|---|---|---|
 | [SA-019](core/SA-019-half-adder/task.yaml) | Полусумматор | 1 | T3.4 | регистр + анциллы | схема | `eq_anc_phase` | один факт | презентация классификации, T2.1; демо v2 (half-adder) |
-| [SA-020](core/SA-020-parity-oracle/task.yaml) | Оракул чётности | 1 | T3.1 | регистр + анциллы | генератор | `eq_anc_phase` | один факт | QCoder QPC001 B2 (XOR Oracle) |
-| [SA-021](core/SA-021-equals-const/task.yaml) | Оракул равенства константе | 1 | T3.3 | регистр + анциллы | генератор | `eq_anc_phase` | один факт | презентация классификации, T3.2 |
-| [SA-022](core/SA-022-alternating-bits/task.yaml) | Чередующиеся биты | 2 | T3.2 | регистр + анциллы | генератор | `eq_anc_phase` | комбинация | QOSF Monthly Challenge 2021-09 (скрининг менторской программы), Task 1 |
-| [SA-023](core/SA-023-palindrome-oracle/task.yaml) | Оракул палиндрома без анцилл | 2 | T3.5 | регистр + анциллы | схема | `eq_anc_phase` | под ограничением | QOSF Monthly Challenge 2022-07 (Palindrome Integer); спецификация 04 проекта (оракул палиндрома) |
+| [SA-020](core/SA-020-parity-oracle/task.yaml) | Оракул чётности | 1 | T3.1 | регистр + анциллы | генератор | `eq_phase` | один факт | QCoder QPC001 B2 (XOR Oracle) |
+| [SA-021](core/SA-021-equals-const/task.yaml) | Оракул равенства константе | 1 | T3.3 | регистр + анциллы | генератор | `eq_phase` | один факт | презентация классификации, T3.2 |
+| [SA-022](core/SA-022-alternating-bits/task.yaml) | Чередующиеся биты | 2 | T3.2 | регистр + анциллы | генератор | `eq_phase` | комбинация | QOSF Monthly Challenge 2021-09 (скрининг менторской программы), Task 1 |
+| [SA-023](core/SA-023-palindrome-oracle/task.yaml) | Оракул палиндрома без анцилл | 2 | T3.5 | регистр + анциллы | схема | `eq_phase` | под ограничением | QOSF Monthly Challenge 2022-07 (Palindrome Integer); спецификация 04 проекта (оракул палиндрома) |
 | [SA-024](core/SA-024-mcx-vchain/task.yaml) | Многоконтрольный X лестницей Тоффоли | 2 | T3.5 | регистр + анциллы | генератор | `eq_anc_phase` | комбинация | A. Barenco et al., 1995; ladder_ec, класс B12 и Q06 (refl_vchain) |
-| [SA-025](core/SA-025-decrement/task.yaml) | Декремент по модулю степени двойки | 2 | T3.4 | регистр + анциллы | генератор | `eq_anc_phase` | комбинация | QCoder QPC004 A5 |
-| [SA-026](core/SA-026-less-than-phase/task.yaml) | Фазовый оракул «меньше L» | 3 | T3.3 | регистр + анциллы | генератор | `eq_anc_phase` | комбинация | QCoder QPC001 B3, B4 (Less Than Oracle) |
+| [SA-025](core/SA-025-decrement/task.yaml) | Декремент по модулю степени двойки | 2 | T3.4 | регистр + анциллы | генератор | `eq_phase` | комбинация | QCoder QPC004 A5 |
+| [SA-026](core/SA-026-less-than-phase/task.yaml) | Фазовый оракул «меньше L» | 3 | T3.3 | регистр + анциллы | генератор | `eq_phase` | комбинация | QCoder QPC001 B3, B4 (Less Than Oracle) |
 | [SA-027](core/SA-027-even-nonzero/task.yaml) | Чётный, но не ноль | 3 | T3.5 | регистр + анциллы | генератор | `eq_anc_phase` | комбинация | sparq arena, пример SA-205 из материалов к акселератору |
 | [SA-028](core/SA-028-ripple-adder/task.yaml) | Сумматор с одной анциллой | 3 | T3.4 | регистр + анциллы | генератор | `eq_anc_phase` | комбинация | S. Cuccaro et al., 2004 (arXiv:quant-ph/0410184); QuantumKatas RippleCarryAdder; ladder_ec C11 |
 | [SA-029](core/SA-029-borrowed-ancilla/task.yaml) | Заимствованный кубит | 3 | T3.5 | любое | схема | `eq_phase` | реверс | A. Barenco et al., 1995, лемма 7.3 |

@@ -14,7 +14,7 @@ facets:
   coupling: all
   ancilla: {kind: none, max: 0}
   measure: none
-  check: eq_anc_phase
+  check: eq_phase
 qubits: {data: n}
 limits: {two_qubit: n, gates: '2*n*n+3*n'}
 signature: 'solve(n: int, L: int) -> QuantumCircuit'
