@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Песочница — sparq arena</title>
+<meta name="description" content="Редактор квантовых схем sparq arena: схема и код Qiskit синхронны, результаты считаются в браузере.">
+<link rel="stylesheet" href="../assets/css/fonts.css">
+<link rel="stylesheet" href="sandbox.css">
+</head>
+<body>
+<div class="app" id="app">
+  <header class="nav">
+    <a class="logo" href="../#/" aria-label="sparq arena — на главную">sparq<i></i><small>arena</small></a>
+    <nav class="links" aria-label="разделы"><a href="../#/tasks">задачи</a><a href="../#/contests">контесты</a><a href="../#/rating">рейтинг</a><a class="on" href="./" aria-current="page">песочница</a><a href="../#/learn">обучение</a></nav>
+    <div class="sp"></div>
+    <button class="ibtn" id="themeBtn" title="тема" aria-label="переключить тему"></button>
+    <button class="ibtn" id="keysBtn" title="горячие клавиши" aria-label="горячие клавиши"></button>
+  </header>
+
+  <div class="pbar" id="pbar">
+    <button class="btn ghost" id="projBtn" title="проекты"><span data-i="doc"></span><span id="projName"></span><span data-i="chev-d" class="chevw"></span></button>
+    <span class="status" id="saveSt" role="status"><i></i><span></span></span>
+    <span class="rule"></span>
+    <button class="ibtn" id="undoBtn" title="отменить" aria-label="отменить"></button>
+    <button class="ibtn" id="redoBtn" title="повторить" aria-label="повторить"></button>
+    <span class="rule"></span>
+    <div class="seg" id="modeSeg" role="group" aria-label="режим"><button data-v="circ">схема</button><button data-v="split">схема + код</button><button data-v="code">код</button></div>
+    <div class="taskline" id="taskLine" hidden></div>
+    <div class="grow"></div>
+    <button class="ibtn" id="shareBtn" title="поделиться" aria-label="поделиться"></button>
+    <button class="btn ghost" id="expBtn"><span data-i="download"></span>экспорт<span data-i="chev-d" class="chevw"></span></button>
+    <span class="rule"></span>
+    <button class="btn ghost" id="runSetBtn" title="настройки запуска"><span data-i="sliders"></span><span id="runLbl"></span><span data-i="chev-d" class="chevw"></span></button>
+    <button class="btn primary" id="runBtn"><span data-i="play"></span>запустить<kbd id="runKbd"></kbd></button>
+    <button class="btn primary" id="submitBtn" hidden><span data-i="check"></span>отправить</button>
+  </div>
+
+  <div class="ws">
+    <aside class="rail" id="rail" aria-label="панели">
+      <button data-r="gates"><span data-i="gates"></span>гейты</button>
+      <button data-r="blocks"><span data-i="blocks"></span>блоки</button>
+      <button data-r="projects"><span data-i="folder"></span>проекты</button>
+      <button data-r="examples"><span data-i="book"></span>примеры</button>
+      <button data-r="versions"><span data-i="history"></span>версии</button>
+      <div class="sp"></div>
+    </aside>
+    <div class="main" id="main">
+      <section class="panel palette" id="palette" aria-label="палитра гейтов">
+        <div class="ph"><h2>гейты</h2><div class="grow"></div><button class="ibtn sm" id="palClose" title="свернуть" aria-label="свернуть палитру"></button></div>
+        <div class="body" id="palBody"></div>
+      </section>
+      <button class="reopen left" id="palOpen" hidden>гейты</button>
+
+      <div class="center" id="center"></div>
+
+      <section class="panel results" id="results" aria-label="результат">
+        <div class="ph"><h2 id="resTitle">результат</h2><div class="grow"></div><span class="pill" id="runChip">не запускалось</span><button class="ibtn sm" id="resClose" title="свернуть" aria-label="свернуть результат"></button></div>
+        <div id="resWrap" class="reswrap"></div>
+      </section>
+      <button class="reopen" id="resOpen" hidden>результат</button>
+      <div id="drawerHost"></div>
+    </div>
+  </div>
+  <footer class="sbar" id="sbar"></footer>
+</div>
+<div id="layer"></div>
+<noscript><p style="padding:24px">Песочнице нужен JavaScript: схема считается в вашем браузере.</p></noscript>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
