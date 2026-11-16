@@ -1,0 +1,42 @@
+id: SA-065
+slug: swap-three-cx
+title: SWAP из трёх CX
+status: reference
+level: 1
+tree: {trunk: T2, branch: T2.3}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 2}
+limits: {gates: 3}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [обмен через XOR, чередование направлений CX]
+  key_idea: 'Обмен двух значений тремя операциями XOR: $a\leftarrow a\oplus b$, $b\leftarrow a\oplus b$, $a\leftarrow a\oplus b$.'
+source: {kind: own, ref: 'sparq arena (демо v2, задача swap-cx); учебная классика'}
+gui: true
+io:
+  input: 'произвольное состояние двух кубитов'
+  output: '$SWAP$: $|a\rangle|b\rangle\to|b\rangle|a\rangle$'
+statement: |
+  Реализуйте гейт $SWAP$, который меняет местами состояния двух кубитов:
+  $|a\rangle|b\rangle\to|b\rangle|a\rangle$ для базисных состояний и по линейности для любых суперпозиций.
+
+  **Разрешено:** только гейт $CX$ (в любом направлении); не больше 3 гейтов.
+hints:
+  - 'Классический приём: обменять два числа без третьей переменной тремя операциями XOR.'
+  - 'Направление $CX$ должно чередоваться.'
+editorial: |
+  `cx(0, 1)`, `cx(1, 0)`, `cx(0, 1)`. На базисных состояниях: после первого гейта $(a,\,a\oplus b)$, после
+  второго $(b,\,a\oplus b)$, после третьего $(b,\,a)$. Схема из $CX$ переставляет базисные состояния без фаз,
+  поэтому верна и на суперпозициях.
+pitfalls:
+  - 'Два $CX$: один из кубитов остаётся с суммой $a\oplus b$.'
+  - 'Три $CX$ в одном направлении: два из них сокращаются, остаётся один $CX$.'

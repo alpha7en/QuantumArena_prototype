@@ -1,0 +1,42 @@
+id: SA-063
+slug: singlet
+title: Синглет
+status: reference
+level: 1
+tree: {trunk: T1, branch: T1.2}
+facets:
+  input: zero
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, x, z, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq0_phase
+qubits: {data: 2}
+limits: {gates: 4}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [состояние Белла, чётность строк, относительный знак]
+  key_idea: 'Два независимых признака пары Белла: $X$ задаёт противоположные биты, $Z$ — знак минус.'
+source: {kind: own, ref: 'sparq arena (демо v2, задача singlet)'}
+gui: true
+io:
+  input: '$|00\rangle$'
+  output: '$\frac{1}{\sqrt{2}}\left(|01\rangle-|10\rangle\right)$'
+statement: |
+  Два кубита находятся в состоянии $|00\rangle$. Получите синглет
+  $$|\Psi^-\rangle=\frac{1}{\sqrt{2}}\left(|01\rangle-|10\rangle\right).$$
+  Глобальная фаза не учитывается.
+
+  **Разрешено:** гейты $H$, $X$, $Z$, $CX$; не больше 4 гейтов.
+hints:
+  - 'От $|\Phi^+\rangle=\frac{1}{\sqrt2}(|00\rangle+|11\rangle)$ синглет отличается двумя признаками. Каждый меняется одним однокубитным гейтом.'
+editorial: |
+  $H$ и $CX$ дают $|\Phi^+\rangle$. Гейт $X$ на одном кубите делает биты противоположными:
+  $\frac{1}{\sqrt2}(|01\rangle+|10\rangle)$. Гейт $Z$ на одном кубите ставит знак минус перед одним из слагаемых.
+  Какое именно слагаемое получит минус, неважно: варианты отличаются глобальной фазой $-1$.
+pitfalls:
+  - 'Только $X$: получается $|\Psi^+\rangle$ со знаком плюс.'
+  - 'Только $Z$: получается $|\Phi^-\rangle$ — биты по-прежнему совпадают.'

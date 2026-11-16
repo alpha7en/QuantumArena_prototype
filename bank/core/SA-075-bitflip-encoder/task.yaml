@@ -1,0 +1,43 @@
+id: SA-075
+slug: bitflip-encoder
+title: Кодировщик кода повторения
+status: reference
+level: 1
+tree: {trunk: T6, branch: T6.3}
+facets:
+  input: reg_anc
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_anc_phase
+qubits: {data: 3}
+limits: {gates: 2}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [код повторения, разветвление базисных состояний]
+  key_idea: '$CX$ копирует базисное значение, а не состояние: суперпозиция превращается в запутанное кодовое слово, а не в три копии.'
+source: {kind: real, ref: 'IBM Quantum Challenge 2021, Ex. 3 (bit-flip code); QuantumKatas QEC_BitFlipCode (Encode)', note: 'условие написано заново'}
+gui: true
+io:
+  input: '$\left(\alpha|0\rangle+\beta|1\rangle\right)|00\rangle$: данные на $q_0$'
+  output: '$\alpha|000\rangle+\beta|111\rangle$'
+statement: |
+  Кубит $q_0$ находится в произвольном состоянии $\alpha|0\rangle+\beta|1\rangle$, кубиты $q_1$ и $q_2$ — в
+  $|0\rangle$. Закодируйте состояние трёхкубитным кодом повторения:
+  $$\left(\alpha|0\rangle+\beta|1\rangle\right)|00\rangle\;\longmapsto\;\alpha|000\rangle+\beta|111\rangle .$$
+
+  **Разрешено:** только гейт $CX$; не больше 2 гейтов.
+hints:
+  - 'Достаточно проверить схему на $|0\rangle$ и $|1\rangle$: остальное следует из линейности.'
+editorial: |
+  `cx(0, 1)` и `cx(0, 2)`: при $q_0=0$ ничего не происходит, при $q_0=1$ оба новых кубита переворачиваются.
+  Результат — не три копии состояния $\left(\alpha|0\rangle+\beta|1\rangle\right)^{\otimes3}$ (это запрещено теоремой
+  о невозможности клонирования), а запутанное состояние, в котором любой одиночный переворот бита виден по
+  чётностям соседних кубитов.
+pitfalls:
+  - 'Один $CX$: третий кубит не участвует в коде.'
+  - 'Порядок «`cx(1, 2)`, затем `cx(0, 1)`»: первый гейт срабатывает, пока $q_1$ ещё в нуле.'

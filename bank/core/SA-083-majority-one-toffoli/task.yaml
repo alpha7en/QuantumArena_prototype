@@ -1,0 +1,50 @@
+id: SA-083
+slug: majority-one-toffoli
+title: Большинство из трёх за один Тоффоли
+status: reference
+level: 2
+tree: {trunk: T3, branch: T3.5, hybrid: [T3.1]}
+facets:
+  input: reg_anc
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [cx, ccx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 4}
+limits: {gates: 6}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: constraint
+  elements: [мажоритарная функция, вычисление на месте и откат, бюджет гейтов Тоффоли]
+  key_idea: '$\mathrm{maj}(a,b,c)=a\oplus(a\oplus b)(a\oplus c)$: суммы временно записываются поверх $b$ и $c$, один $CCX$ берёт их произведение, затем входы возвращаются.'
+source: {kind: adapted, ref: 'S. Cuccaro и др., 2004 (блок MAJ сумматора); демо v2 (maj-oracle)', note: 'оракул вместо блока сумматора; бюджет — один CCX'}
+gui: true
+io:
+  input: '$|a\rangle|b\rangle|c\rangle|y\rangle$ на кубитах $q_0,q_1,q_2,q_3$'
+  output: '$|a\rangle|b\rangle|c\rangle|y\oplus\mathrm{maj}(a,b,c)\rangle$'
+statement: |
+  На кубитах $q_0,q_1,q_2$ записаны биты $a,b,c$, кубит $q_3$ — кубит ответа. Реализуйте оракул мажоритарной
+  функции:
+  $$|a\rangle|b\rangle|c\rangle|y\rangle\;\longmapsto\;|a\rangle|b\rangle|c\rangle\,|y\oplus\mathrm{maj}(a,b,c)\rangle,$$
+  где $\mathrm{maj}(a,b,c)=1$, если среди трёх битов хотя бы две единицы. Входные кубиты должны остаться
+  прежними; схема проверяется на любых входах, включая суперпозиции.
+
+  Формула $\mathrm{maj}=ab\oplus ac\oplus bc$ даёт три гейта $CCX$. Гейт $CCX$ дорог, поэтому бюджет — один.
+
+  **Разрешено:** гейты $CX$ и $CCX$; не больше 6 гейтов, из них не больше одного $CCX$; вспомогательных кубитов
+  нет.
+hints:
+  - 'Раскройте скобки в $(a\oplus b)(a\oplus c)$ и сравните с $ab\oplus ac\oplus bc$.'
+  - 'Сумму $a\oplus b$ можно временно записать прямо в кубит $q_1$ гейтом $CX$ — и тем же гейтом потом убрать.'
+editorial: |
+  $(a\oplus b)(a\oplus c)=a\oplus ab\oplus ac\oplus bc$, поэтому $\mathrm{maj}(a,b,c)=a\oplus(a\oplus b)(a\oplus c)$.
+  Схема: `cx(0, 1)` и `cx(0, 2)` превращают $q_1,q_2$ в $a\oplus b$ и $a\oplus c$; `ccx(1, 2, 3)` добавляет в ответ
+  их произведение; `cx(0, 3)` добавляет $a$; `cx(0, 2)` и `cx(0, 1)` возвращают входы. Один $CCX$ и пять $CX$.
+  Это блок MAJ из сумматора Куккаро: там перенос вычисляется точно так же.
+pitfalls:
+  - 'Три $CCX$ по формуле $ab\oplus ac\oplus bc$: бюджет превышен.'
+  - 'Входы не возвращены: $q_1$ и $q_2$ остаются равными $a\oplus b$ и $a\oplus c$.'
+  - 'Забыт `cx(0, 3)`: в ответе $(a\oplus b)(a\oplus c)$ без слагаемого $a$.'

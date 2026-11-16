@@ -27,7 +27,7 @@
 | 8 | `noisy-bell` | Белл в шумном канале | T5.5 | `zero` · `fixed` · `fidelity` | `constraint` | 2 | SR-120 |
 | 9 | `parity` | Проверка чётности | T3.1 | `reg_anc` · `fixed` · `eq_anc_phase` | `fact` | 1 | SA-020 (вариант) |
 | 10 | `syndrome` | Синдром кода повторения | T6.3 | `reg_anc` · `fixed` · `eq_anc_phase` | `fact` | 2 | SR-132; SA-052 |
-| 11 | `swap-cx` | SWAP из трёх CX | T2.3 | `any` · `fixed` · `eq_phase` | `fact` | 1 | SR-039 |
+| 11 | `swap-cx` | SWAP из трёх CX | T2.3 | `any` · `fixed` · `eq_phase` | `fact` | 1 | SA-065 |
 | 12 | `toffoli-ct` | Тоффоли из CX и T | T2.2 | `any` · `fixed` · `eq_phase` | `combo` | 3 | SA-014 |
 | 13 | `w3` | W на трёх кубитах | T1.3 | `zero` · `fixed` · `eq0_phase` | `combo` | 2 | SR-012; SA-006 |
 | 14 | `ghz3-line` | GHZ на цепочке, 3 кубита | T1.6 | `zero` · `fixed` · `eq0_phase` | `constraint` | 1 | SA-005 (вариант) |
@@ -35,15 +35,15 @@
 | 16 | `minus` | Состояние минус | T1.1 | `zero` · `fixed` · `eq0_phase` | `fact` | 1 | SR-007 |
 | 17 | `uniform-3` | Равная суперпозиция, 3 кубита | T1.1 | `zero` · `fixed` · `eq0_phase` | `fact` | 1 | SR-006 |
 | 18 | `copy-bit` | Копирование бита | T3.1 | `reg_anc` · `fixed` · `eq_anc_phase` | `fact` | 1 | SR-053 |
-| 19 | `and-oracle` | Оракул И | T3.1 | `reg_anc` · `fixed` · `eq_anc_phase` | `fact` | 1 | SR-054 |
-| 20 | `singlet` | Синглет | T1.2 | `zero` · `fixed` · `eq0_phase` | `fact` | 1 | SR-008 |
+| 19 | `and-oracle` | Оракул И | T3.1 | `reg_anc` · `fixed` · `eq_anc_phase` | `fact` | 1 | SA-069 (вариант: ИЛИ) |
+| 20 | `singlet` | Синглет | T1.2 | `zero` · `fixed` · `eq0_phase` | `fact` | 1 | SA-063 |
 | 21 | `rot-prep` | Поворот на заданный угол | T1.1 | `zero` · `fixed` · `eq0_phase` | `fact` | 1 | SR-003 |
-| 22 | `compare-bits` | Сравнение двух кубитов | T3.3 | `reg_anc` · `fixed` · `eq_anc_phase` | `fact` | 1 | SR-063 |
-| 23 | `maj-oracle` | Мажоритарный оракул | T3.1 | `reg_anc` · `fixed` · `eq_anc_phase` | `combo` | 2 | SR-055 |
+| 22 | `compare-bits` | Сравнение двух кубитов | T3.3 | `reg_anc` · `fixed` · `eq_anc_phase` | `fact` | 1 | SA-070 |
+| 23 | `maj-oracle` | Мажоритарный оракул | T3.1 | `reg_anc` · `fixed` · `eq_anc_phase` | `combo` | 2 | SA-083 |
 | 24 | `full-adder` | Полный сумматор | T3.4 | `reg_anc` · `fixed` · `eq_anc_phase` | `combo` | 2 | SR-073; SA-028 |
 | 25 | `add-mod4` | Сумматор по модулю 4 | T3.4 | `reg_anc` · `fixed` · `eq_anc_phase` | `combo` | 2 | SR-073; SA-028 |
-| 26 | `measure-y` | Измерение в базисе Y | T6.1 | `promise` · `fixed` · `dist` | `fact` | 1 | SR-123 |
-| 27 | `rep-encode` | Кодер кода повторения | T6.3 | `reg_anc` · `fixed` · `eq_anc_phase` | `fact` | 1 | SR-131; SA-050 |
+| 26 | `measure-y` | Измерение в базисе Y | T6.1 | `promise` · `fixed` · `dist` | `fact` | 1 | SA-074 |
+| 27 | `rep-encode` | Кодер кода повторения | T6.3 | `reg_anc` · `fixed` · `eq_anc_phase` | `fact` | 1 | SA-075; SA-050 |
 | 28 | `qft-3` | QFT, 3 кубита | T2.5 | `any` · `fixed` · `eq_phase` | `generalize` | 2 | SA-016 (вариант) |
 | 29 | `grover-2` | Гровер, 2 кубита | T4.2 | `oracle` · `fixed` · `prob` | `combo` | 2 | SA-031 |
 | 30 | `dj-4` | Дойч — Йожа, 4 кубита | T4.1 | `oracle` · `fixed` · `prob` | `fact` | 1 | SA-030 |
@@ -56,7 +56,7 @@
 | 37 | `even-nonzero` | Чётный, но не ноль | T3.5 | `reg_anc` · `generator` · `eq_anc_phase` | `combo` | 3 | SA-027 |
 | 38 | `parity-phase` | Фаза чётности | T3.2 | `reg_anc` · `fixed` · `eq_anc_phase` | `fact` | 1 | SR-060 |
 | 39 | `increment` | Инкремент на двух кубитах | T3.4 | `reg_anc` · `fixed` · `eq_anc_phase` | `fact` | 1 | SR-068; SA-025 |
-| 40 | `flip-cx` | Разверни CNOT | T2.1 | `any` · `fixed` · `eq_phase` | `fact` | 1 | SR-029 |
+| 40 | `flip-cx` | Разверни CNOT | T2.1 | `any` · `fixed` · `eq_phase` | `fact` | 1 | SA-072 |
 | 41 | `cry-from-cx` | Управляемый поворот из CX | T2.2 | `any` · `fixed` · `eq_phase` | `fact` | 2 | SR-033; SA-013 |
 | 42 | `chsh` | Игра CHSH | T7.2 | `resource` · `fixed` · `prob` | `transfer` | 2 | SA-054 |
 | 43 | `bitflip-fix` | Исправление бит-флипа | T6.4 | `promise` · `fixed` · `eq_anc_phase` | `combo` | 3 | SR-136; SA-051 |
@@ -92,7 +92,7 @@
 | 018 | QCoder QPC002 B7 | Булев оракул с лимитом глубины | T3.3 | `reg_anc` · `generator` · `eq_anc_phase` | `constraint` | 3 | SR-067 (вариант) |
 | 019 | QCoder QPC002 B8 | Булев оракул с лимитом глубины, усиленный | T3.3 | `reg_anc` · `generator` · `eq_anc_phase` | `constraint` | 3 | SR-067 (вариант) |
 | 020 | QCoder QPC002 Ex | Усиление амплитуды для неизвестной подготовки | T4.2 | `oracle` · `generator` · `prob` | `generalize` | 3 | SR-087 |
-| 021 | QCoder QPC003 A1 | Состояние с мнимой единицей при единице | T1.1 | `zero` · `fixed` · `eq0` | `fact` | 1 | SR-002 |
+| 021 | QCoder QPC003 A1 | Состояние с мнимой единицей при единице | T1.1 | `zero` · `fixed` · `eq0` | `fact` | 1 | SA-062 |
 | 022 | QCoder QPC003 A2 | Состояние Белла с противоположными битами | T1.2 | `zero` · `fixed` · `eq0_phase` | `fact` | 1 | SR-009 |
 | 023 | QCoder QPC003 A3 | W на трёх кубитах | T1.3 | `zero` · `fixed` · `eq0_phase` | `combo` | 2 | SR-012 |
 | 024 | QCoder QPC003 A4 | W на $n$ кубитах | T1.3 | `zero` · `generator` · `eq0_phase` | `combo` | 2 | SA-006 |
@@ -141,10 +141,10 @@ QuantumKatas, QOSF Monthly Challenges и собственными.
 |---|---|---|
 | [`ladder_ec` v1.0.0](https://github.com/alpha7en/ladder_ec/tree/v1.0.0): `data/own_generators`, классы B10–B17 | 14: SA-003, 004, 017, 018, 024, 025, 026, 028, 030, 032, 033, 036, 037, 059 | 10: SR-006, 045, 046, 047, 068, 069, 070, 076, 082, 083 |
 | [QOSF Monthly Challenges](https://github.com/qosf/monthly-challenges) | 11: SA-003, 006, 009, 015, 022, 023, 034, 045, 050, 051, 060 | 31: SR-017, 022, 024, 036, 037, 043, 044, 057, 065, 066, 072, 075, 080, 090, 092, 093, 103, 104, 106, 117, 121, 122, 138, 141, 151, 152, 154, 155, 156, 157, 160 |
-| QuantumKatas (набор из `ladder_ec/third_party`) | 12: SA-016, 028, 030, 031, 035, 037, 038, 046, 048, 053, 054, 055 | 14: SR-010, 015, 016, 038, 047, 054, 056, 084, 098, 101, 102, 105, 124, 139 |
-| QCoder (номера задач по архиву и по `ladder_ec`) | 12: SA-001, 004, 006, 010, 016, 017, 018, 020, 025, 026, 033, 036 | 22: SR-001, 002, 004, 005, 006, 009, 011, 012, 013, 030, 040, 045, 050, 053, 061, 067, 069, 070, 076, 086, 087, 091 |
-| IBM Quantum Challenge | 6: SA-014, 037, 044, 047, 049, 051 | 6: SR-074, 095, 099, 112, 114, 126 |
-| Xanadu QHack | 3: SA-058, 059, 061 | 4: SR-140, 148, 153, 159 |
+| QuantumKatas (набор из `ladder_ec/third_party`) | 18: SA-016, 028, 030, 031, 035, 037, 038, 046, 048, 053, 054, 055, 068, 069, 074, 075, 076, 077 | 13: SR-010, 015, 016, 038, 047, 056, 084, 098, 101, 102, 105, 124, 139 |
+| QCoder (номера задач по архиву и по `ladder_ec`) | 16: SA-001, 004, 006, 010, 016, 017, 018, 020, 025, 026, 033, 036, 062, 068, 071, 080 | 21: SR-001, 004, 005, 006, 009, 011, 012, 013, 030, 040, 045, 050, 053, 061, 067, 069, 070, 076, 086, 087, 091 |
+| IBM Quantum Challenge | 12: SA-014, 037, 044, 047, 049, 051, 075, 076, 081, 082, 085, 087 | 6: SR-074, 095, 099, 112, 114, 126 |
+| Xanadu QHack | 5: SA-058, 059, 061, 078, 079 | 4: SR-140, 148, 153, 159 |
 | НТО «Квантовый инжиниринг» | 2: SA-052, 056 | 3: SR-135, 137, 145 |
 
 Набор `ladder_ec` полезен банку ещё одним свойством: у каждой задачи там несколько стилей решения (цепочка,

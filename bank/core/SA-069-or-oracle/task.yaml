@@ -1,0 +1,46 @@
+id: SA-069
+slug: or-oracle
+title: Логическое ИЛИ в чистый кубит
+status: reference
+level: 1
+tree: {trunk: T3, branch: T3.1}
+facets:
+  input: reg_anc
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [x, cx, ccx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_anc
+qubits: {data: 3}
+limits: {gates: 6}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [обратимая логика, закон де Моргана]
+  key_idea: 'ИЛИ — это отрицание И от отрицаний; то же самое многочленом: $a\vee b=a\oplus b\oplus ab$.'
+source: {kind: real, ref: 'QuantumKatas MarkingOracles / GroversAlgorithm (оракул ИЛИ)', note: 'условие написано заново, фиксированный размер'}
+gui: true
+io:
+  input: '$|a\rangle|b\rangle|0\rangle$ на кубитах $q_0,q_1,q_2$'
+  output: '$|a\rangle|b\rangle|a\vee b\rangle$'
+statement: |
+  На кубитах $q_0$ и $q_1$ записаны биты $a$ и $b$, кубит $q_2$ находится в $|0\rangle$. Запишите в $q_2$
+  логическое ИЛИ:
+  $$|a\rangle|b\rangle|0\rangle\;\longmapsto\;|a\rangle\,|b\rangle\,|a\vee b\rangle .$$
+  Кубиты $q_0$ и $q_1$ должны остаться прежними. Схема проверяется и на суперпозициях входов, матрица
+  сравнивается точно.
+
+  **Разрешено:** гейты $X$, $CX$, $CCX$; не больше 6 гейтов.
+hints:
+  - 'Гейт $CCX$ вычисляет И. Закон де Моргана: $a\vee b=\neg(\neg a\wedge\neg b)$.'
+  - 'Всё, что вы инвертировали на входных кубитах, нужно вернуть обратно.'
+editorial: |
+  Через закон де Моргана: $X$ на $q_0$ и $q_1$, $CCX$ в $q_2$, $X$ на $q_2$, затем $X$ на $q_0$ и $q_1$, чтобы
+  вернуть входы, — 6 гейтов. Короче — через многочлен $a\vee b=a\oplus b\oplus ab$: `ccx(0, 1, 2)`, `cx(0, 2)`,
+  `cx(1, 2)`, 3 гейта и никаких отрицаний.
+pitfalls:
+  - 'Один $CCX$: это И, а не ИЛИ.'
+  - 'Забыт $X$ на $q_2$: получается отрицание ИЛИ.'
+  - 'Входные кубиты не возвращены: на суперпозициях ответ запутан с испорченным входом.'

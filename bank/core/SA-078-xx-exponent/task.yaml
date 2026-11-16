@@ -1,0 +1,47 @@
+id: SA-078
+slug: xx-exponent
+title: Экспонента XX за пять гейтов
+status: reference
+level: 2
+tree: {trunk: T8, branch: T8.1, hybrid: [T2.1]}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, cx, rz]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 2}
+limits: {gates: 5, cx: 2}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: constraint
+  elements: [экспонента паулиевой строки, распространение $X$ через CX, смена базиса, бюджет гейтов]
+  key_idea: '$CX$ переносит $X$ с управляющего кубита на оба: $CX\,(X\otimes I)\,CX=X\otimes X$. Поэтому хватает однокубитного поворота вокруг $X$ между двумя $CX$.'
+source: {kind: adapted, ref: 'Xanadu QHack 2023 (троттеризация, разобранная задача 044); развитие SA-058', note: 'фиксированный угол, базис без $R_x$ и бюджет, отсекающий схему со сменой базиса на обоих кубитах'}
+gui: true
+io:
+  input: 'произвольное состояние двух кубитов'
+  output: '$e^{-i\frac{\pi}{8}X\otimes X}$'
+statement: |
+  Реализуйте оператор эволюции под взаимодействием $X\otimes X$:
+  $$U=e^{-i\frac{\pi}{8}\,X\otimes X}=\cos\frac{\pi}{8}\cdot I-i\sin\frac{\pi}{8}\cdot X\otimes X$$
+  с точностью до глобальной фазы. Поворот задан как $R_z(\varphi)=e^{-i\frac{\varphi}{2}Z}$.
+
+  **Разрешено:** гейты $H$, $CX$, $R_z(\varphi)$ с углом, кратным $\frac{\pi}{8}$; не больше 5 гейтов, из них не
+  больше 2 гейтов $CX$.
+hints:
+  - 'Известная схема для $e^{-i\theta Z\otimes Z}$ — `cx`, $R_z(2\theta)$, `cx`. Если окружить её гейтами $H$ на обоих кубитах, выйдет 7 гейтов. Нужно сэкономить два.'
+  - 'Чему равно $CX\,(X\otimes I)\,CX$, если $X$ стоит на управляющем кубите?'
+editorial: |
+  Гейт $X$ на управляющем кубите «размножается» при проходе через $CX$: $CX\,(X\otimes I)\,CX=X\otimes X$. Значит,
+  $$e^{-i\theta X\otimes X}=CX\cdot e^{-i\theta X\otimes I}\cdot CX ,$$
+  и между двумя `cx(0, 1)` нужен поворот вокруг $X$ на управляющем кубите $q_0$. В базисе задачи он собирается
+  как $H\,R_z(2\theta)\,H$. Итого: `cx(0, 1)`, $H$ на $q_0$, $R_z\left(\frac{\pi}{4}\right)$ на $q_0$, $H$ на $q_0$,
+  `cx(0, 1)` — 5 гейтов. Схема со сменой базиса на обоих кубитах верна, но занимает 7 гейтов.
+pitfalls:
+  - 'Угол $R_z\left(\frac{\pi}{8}\right)$: в определении $R_z(\varphi)$ стоит половинный угол, нужен $\varphi=\frac{\pi}{4}$.'
+  - 'Поворот на целевом кубите $CX$: через $CX$ с целевого кубита размножается $Z$, а не $X$, и получается однокубитный поворот.'
+  - 'Гейты $H$ на обоих кубитах до и после лестницы: 7 гейтов при бюджете 5.'
