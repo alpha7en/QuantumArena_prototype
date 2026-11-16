@@ -1,0 +1,43 @@
+id: SA-015
+slug: diag-signs
+title: Диагональ из знаков
+status: reference
+level: 2
+tree: {trunk: T2, branch: T2.4}
+facets:
+  input: any
+  answer: generator
+  params: [{name: d, kind: data, note: 'список из четырёх чисел $\pm1$'}]
+  gates: {mode: basis, set: [z, cz]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 2}
+limits: {gates: 3}
+signature: 'solve(d: list[int]) -> QuantumCircuit'
+method:
+  kind: transfer
+  elements: [диагональный оператор, разложение по чётностям, классические данные]
+  key_idea: 'Любая диагональ из $\pm1$ на двух кубитах — это $\pm Z^{\alpha}\otimes Z^{\beta}\cdot CZ^{\gamma}$.'
+source: {kind: real, ref: 'QOSF Monthly Challenge 2020-11 (Diagonal Unitary Circuit Composer), уровень 1', note: 'условие написано заново, добавлены базис и бюджет'}
+gui: false
+io:
+  input: 'четыре знака $d_0,d_1,d_2,d_3$'
+  output: 'оператор $\mathrm{diag}(d_0,d_1,d_2,d_3)$ с точностью до фазы'
+statement: |
+  Дан список `d` из четырёх чисел, каждое равно $+1$ или $-1$. Напишите функцию `solve(d)`, которая возвращает
+  схему на двух кубитах с матрицей
+  $$\mathrm{diag}(d_0,d_1,d_2,d_3)$$
+  с точностью до глобальной фазы. Индекс — число $x=q_0+2q_1$.
+
+  **Разрешено:** гейты $Z$, $CZ$; не больше 3 гейтов.
+hints:
+  - 'Общий множитель $-1$ — глобальная фаза: можно считать, что $d_0=+1$.'
+  - 'Гейт $Z$ на кубите 0 даёт знаки $(+,-,+,-)$, на кубите 1 — $(+,+,-,-)$, гейт $CZ$ — $(+,+,+,-)$.'
+editorial: |
+  Нормируем: $e_x=d_x d_0$. Тогда $Z$ на кубите 0 нужен при $e_1=-1$, $Z$ на кубите 1 — при $e_2=-1$, а $CZ$ — когда
+  $e_3\ne e_1e_2$. Это разложение знака по функциям $x_0$, $x_1$ и $x_0x_1$; на $n$ кубитах оно обобщается до
+  преобразования Уолша — Адамара.
+pitfalls:
+  - 'Без $CZ$ получаются только 8 из 16 диагоналей: знак при $|11\rangle$ не независим.'

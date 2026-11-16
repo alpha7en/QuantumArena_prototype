@@ -1,0 +1,43 @@
+id: SA-053
+slug: superdense-coding
+title: Два бита одним кубитом
+status: reference
+level: 1
+tree: {trunk: T7, branch: T7.1}
+facets:
+  input: resource
+  answer: generator
+  params: [{name: b0, kind: data, note: 'бит'}, {name: b1, kind: data, note: 'бит'}]
+  gates: {mode: basis, set: [x, z]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: prob
+qubits: {data: 1}
+limits: {gates: 2}
+signature: 'solve(b0: int, b1: int) -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [пара Белла как ресурс, локальные гейты]
+  key_idea: 'Локальные $X$ и $Z$ переводят $|\Phi^+\rangle$ в четыре ортогональных состояния Белла.'
+source: {kind: adapted, ref: 'учебная классика; QuantumKatas SuperdenseCoding'}
+gui: false
+io:
+  input: 'половина пары Белла у Алисы; два бита $b_0$, $b_1$'
+  output: 'Боб после декодирования читает $b_0$ и $b_1$'
+statement: |
+  Алиса и Боб делят пару $|\Phi^+\rangle=\frac{1}{\sqrt2}(|00\rangle+|11\rangle)$: кубит $q_0$ у Алисы, $q_1$ у Боба.
+  Алиса хочет передать два бита, отправив только свой кубит. Напишите функцию `solve(b0, b1)`: она возвращает
+  схему на **одном** кубите — операцию Алисы над её половиной пары.
+
+  Получив кубит, Боб выполняет `cx(0, 1)`, затем $H$ на $q_0$ и измеряет оба кубита. Результат измерения $q_0$
+  должен быть равен $b_0$, результат измерения $q_1$ — $b_1$, с вероятностью 1.
+
+  **Разрешено:** гейты $X$, $Z$; не больше 2 гейтов.
+hints:
+  - 'Декодер Боба — измерение в базисе Белла (SA-048): $q_0$ показывает знак, $q_1$ — тип состояния.'
+editorial: |
+  $Z$ на кубите Алисы меняет знак — его увидит $q_0$; $X$ меняет тип $\Phi\to\Psi$ — его увидит $q_1$. Значит,
+  $X$ ставится при $b_1=1$, $Z$ — при $b_0=1$.
+pitfalls:
+  - 'Перепутать роли гейтов: биты приходят в обратном порядке.'

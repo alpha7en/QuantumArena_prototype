@@ -1,0 +1,43 @@
+id: SA-066
+slug: cy-from-cx
+title: CY из CX и фазовых гейтов
+status: reference
+level: 1
+tree: {trunk: T2, branch: T2.1}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [s, sdg, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 2}
+limits: {gates: 3}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [сопряжение фазовым гейтом, порядок множителей]
+  key_idea: '$SXS^\dagger=Y$: сопряжение целевого кубита гейтом $S$ превращает $CX$ в $CY$.'
+source: {kind: own, ref: 'sparq arena'}
+gui: true
+io:
+  input: 'произвольное состояние двух кубитов'
+  output: '$CY$: гейт $Y$ на $q_1$, если $q_0=1$'
+statement: |
+  Реализуйте управляемый гейт $Y$: если кубит $q_0$ равен 1, к кубиту $q_1$ применяется
+  $$Y=\begin{pmatrix}0&-i\\ i&0\end{pmatrix},$$
+  иначе ничего не происходит. Схема должна быть верна для любого входного состояния.
+
+  **Разрешено:** гейты $S$, $S^\dagger$, $CX$; не больше 3 гейтов.
+hints:
+  - 'Вычислите произведение $S\,X\,S^\dagger$.'
+  - 'В схеме гейты идут слева направо, в произведении матриц — справа налево.'
+editorial: |
+  $S^\dagger$ на целевом кубите, `cx(0, 1)`, $S$ на целевом. При $q_0=0$ гейты $S^\dagger$ и $S$ сокращаются; при
+  $q_0=1$ на целевом кубите получается $S\,X\,S^\dagger=Y$. Если поменять $S$ и $S^\dagger$ местами, выйдет
+  $S^\dagger X S=-Y$: под управлением знак минус становится относительной фазой, и это уже другой гейт.
+pitfalls:
+  - 'Порядок «$S$, $CX$, $S^\dagger$» даёт управляемый $-Y$, а не $CY$.'
+  - 'Гейт $CX$ без сопряжения: у $X$ нет мнимых элементов.'

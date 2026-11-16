@@ -1,0 +1,51 @@
+id: SA-059
+slug: trotter-ising
+title: Шаги Троттера для цепочки Изинга
+status: reference
+level: 3
+tree: {trunk: T8, branch: T8.2, hybrid: [T8.1, T5.2]}
+facets:
+  input: any
+  answer: generator
+  params:
+    - {name: n, kind: size, range: [2, 6]}
+    - {name: J, kind: angle, note: 'вещественное'}
+    - {name: h, kind: angle, note: 'вещественное'}
+    - {name: t, kind: angle, note: 'время, вещественное'}
+    - {name: r, kind: repeat, range: [1, 4]}
+  gates: {mode: basis, set: [cx, rz, rx]}
+  coupling: line
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: n}
+limits: {depth: '7*r'}
+signature: 'solve(n: int, J: float, h: float, t: float, r: int) -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [формула Троттера, экспонента ZZ, коммутирующие слагаемые, линейная связность, бюджет глубины]
+  key_idea: 'Слагаемые $Z_iZ_{i+1}$ коммутируют: чётные и нечётные связи выполняются двумя параллельными слоями.'
+source: {kind: adapted, ref: 'Xanadu QHack 2023 (Trotter simulation); ladder_ec C09 (trotter_brick)', note: 'условие написано для банка'}
+gui: false
+io:
+  input: 'параметры $n, J, h, t, r$'
+  output: '$\left(e^{i h\,\delta\sum X_i}\,e^{i J\,\delta\sum Z_iZ_{i+1}}\right)^r$, $\delta=t/r$'
+statement: |
+  Цепочка из $n$ спинов описывается гамильтонианом
+  $$H=-J\sum_{i=0}^{n-2}Z_iZ_{i+1}-h\sum_{i=0}^{n-1}X_i .$$
+  Эволюцию за время $t$ приближают $r$ шагами формулы Троттера первого порядка с $\delta=t/r$:
+  $$U=\left(e^{\,i h\delta\sum_i X_i}\;e^{\,i J\delta\sum_i Z_iZ_{i+1}}\right)^{r}$$
+  (в каждом шаге сначала действует множитель с $ZZ$, затем с $X$). Напишите функцию `solve(n, J, h, t, r)`,
+  которая возвращает схему с оператором $U$ с точностью до глобальной фазы; $2\le n\le6$, $1\le r\le4$.
+
+  **Разрешено:** гейты $CX$ между соседями по цепочке, $R_z$, $R_x$; глубина не больше $7r$.
+hints:
+  - 'Один множитель $e^{iJ\delta Z_iZ_{i+1}}$ — задача SA-058.'
+  - 'Связи $(0,1)$ и $(2,3)$ не имеют общих кубитов.'
+editorial: |
+  Шаг: сначала связи с чётным $i$ (три слоя: $CX$, $R_z(-2J\delta)$, $CX$), затем с нечётным $i$ (ещё три слоя),
+  затем $R_x(-2h\delta)$ на всех кубитах. Порядок связей внутри множителя $ZZ$ не важен — они коммутируют.
+  Глубина шага 7 при любом $n$.
+pitfalls:
+  - 'Связи по очереди слева направо: глубина шага $3(n-1)+1$.'
+  - 'Знаки углов: $R_z(\lambda)=e^{-i\lambda Z/2}$, а в формуле стоит $e^{+iJ\delta ZZ}$.'

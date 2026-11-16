@@ -1,0 +1,40 @@
+id: SA-033
+slug: diffusion
+title: Оператор диффузии
+status: reference
+level: 2
+tree: {trunk: T4, branch: T4.2, hybrid: [T2.6]}
+facets:
+  input: any
+  answer: generator
+  params: [{name: n, kind: size, range: [2, 8]}]
+  gates: {mode: basis, set: [h, x, mcx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: n}
+limits: {gates: '4*n+3'}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [отражение относительно нуля, смена базиса]
+  key_idea: 'Отражение относительно $|s\rangle=H^{\otimes n}|0\dots0\rangle$ — это отражение относительно нуля между двумя слоями $H$.'
+source: {kind: real, ref: 'QCoder QPC003 B5 (Reflection Operator 2)', note: 'условие написано заново; эталон совпадает по идее с ladder_ec Q07 (diff_conj)'}
+gui: false
+io:
+  input: 'произвольное состояние $n$ кубитов'
+  output: '$2|s\rangle\langle s|-I$, где $|s\rangle$ — равная суперпозиция'
+statement: |
+  Пусть $|s\rangle=\frac{1}{\sqrt{2^n}}\sum_x|x\rangle$. Напишите функцию `solve(n)`, которая для $2\le n\le 8$
+  возвращает схему оператора диффузии Гровера
+  $$D=2\,|s\rangle\langle s|-I$$
+  с точностью до глобальной фазы. Схема должна быть верна для любого входа.
+
+  **Разрешено:** гейты $H$, $X$, многоконтрольный $X$ (`mcx`); не больше $4n+3$ гейтов; вспомогательных кубитов нет.
+hints:
+  - '$|s\rangle=H^{\otimes n}|0\dots0\rangle$, поэтому $D=H^{\otimes n}\left(2|0\dots0\rangle\langle0\dots0|-I\right)H^{\otimes n}$.'
+editorial: |
+  Слой $H$, отражение относительно нуля (задача SA-017: $X$ на всех, многоконтрольный $Z$, $X$ на всех), слой $H$.
+pitfalls:
+  - 'Без слоёв $H$ это отражение относительно $|0\dots0\rangle$, а не $|s\rangle$.'

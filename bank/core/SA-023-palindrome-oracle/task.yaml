@@ -1,0 +1,43 @@
+id: SA-023
+slug: palindrome-oracle
+title: Оракул палиндрома без анцилл
+status: reference
+level: 2
+tree: {trunk: T3, branch: T3.5, hybrid: [T3.3]}
+facets:
+  input: reg_anc
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [x, cx, ccx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 5}
+limits: {gates: 9}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: constraint
+  elements: [битовый оракул, вычисление на месте, запрет анцилл]
+  key_idea: 'Сравнение пар записывается в сам входной регистр и отменяется после гейта $CCX$.'
+source: {kind: adapted, ref: 'QOSF Monthly Challenge 2022-07 (Palindrome Integer); спецификация 04 проекта (оракул палиндрома)', note: 'в исходных версиях две анциллы и 13 гейтов; здесь анциллы запрещены'}
+gui: true
+io:
+  input: '$|x_0x_1x_2x_3\rangle|y\rangle$ на кубитах $q_0..q_4$'
+  output: '$|x\rangle|y\oplus[x_0=x_3\ \text{и}\ x_1=x_2]\rangle$'
+statement: |
+  На кубитах $q_0,\dots,q_3$ записана строка из четырёх битов, $q_4$ — кубит ответа $y$. Реализуйте оракул
+  палиндрома:
+  $$|x\rangle|y\rangle\;\longmapsto\;|x\rangle\,|y\oplus f(x)\rangle ,\qquad f(x)=1\iff x_0=x_3\ \text{и}\ x_1=x_2 .$$
+  Регистр $x$ после схемы должен остаться прежним.
+
+  **Разрешено:** гейты $X$, $CX$, $CCX$; не больше 9 гейтов; схема занимает ровно 5 кубитов — вспомогательных нет.
+hints:
+  - 'Равенство двух битов — это ноль в их сумме по модулю 2.'
+  - 'Сумму можно временно записать в один из сравниваемых кубитов.'
+editorial: |
+  `cx(0, 3)` и `cx(1, 2)` превращают $q_3$ и $q_2$ в $x_0\oplus x_3$ и $x_1\oplus x_2$. Гейты $X$ на них дают единицу
+  при равенстве, `ccx(3, 2, 4)` пишет ответ, затем $X$ и $CX$ отменяются. Девять гейтов и ни одной анциллы против
+  тринадцати гейтов и двух анцилл у решения «в лоб».
+pitfalls:
+  - 'Оставить разности в $q_2$ и $q_3$: на базисных входах ответ верный, но суперпозиция запутывается с мусором.'

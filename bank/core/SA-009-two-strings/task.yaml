@@ -1,0 +1,49 @@
+id: SA-009
+slug: two-strings
+title: Суперпозиция двух строк
+status: reference
+level: 2
+tree: {trunk: T1, branch: T1.5}
+facets:
+  input: zero
+  answer: generator
+  params:
+    - {name: n, kind: size, range: [1, 10]}
+    - {name: a, kind: data, note: 'целое, $0\le a<2^n$'}
+    - {name: b, kind: data, note: 'целое, $0\le b<2^n$, $b\ne a$'}
+    - {name: p, kind: angle, note: 'вещественное, $0<p<1$'}
+  gates: {mode: basis, set: [x, ry, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq0_phase
+qubits: {data: n}
+limits: {gates: '2*n'}
+signature: 'solve(n: int, a: int, b: int, p: float) -> QuantumCircuit'
+method:
+  kind: generalize
+  elements: [расчётный угол, разветвление CX, классические данные]
+  key_idea: 'Один кубит, где строки различаются, несёт веса; остальные различающиеся биты копируются с него.'
+source: {kind: real, ref: 'QOSF Monthly Challenge 2024-09 (Classiq, Sparse State Preparation), первая целевая задача', note: 'обобщено до произвольной пары строк, условие написано заново'}
+gui: false
+io:
+  input: '$|0\dots0\rangle$; числа $a\ne b$, вероятность $p$'
+  output: '$\sqrt{p}\,|a\rangle+\sqrt{1-p}\,|b\rangle$'
+statement: |
+  Напишите функцию `solve(n, a, b, p)`. Она возвращает схему на $n$ кубитах ($1\le n\le 10$), которая переводит
+  $|0\dots0\rangle$ в состояние
+  $$\sqrt{p}\,|a\rangle+\sqrt{1-p}\,|b\rangle ,$$
+  где $a\ne b$ — целые числа от $0$ до $2^n-1$ (кубит $i$ — бит $i$ числа), $0<p<1$.
+
+  **Пример.** `solve(6, 0b000011, 0b111111, 0.4)` готовит $\sqrt{0{,}4}\,|000011\rangle+\sqrt{0{,}6}\,|111111\rangle$.
+
+  **Разрешено:** гейты $X$, $R_y$, $CX$; не больше $2n$ гейтов; вспомогательных кубитов нет.
+hints:
+  - 'Биты, в которых $a$ и $b$ совпадают, ставятся гейтом $X$ и ни с чем не запутаны.'
+  - 'Выберите один бит, где строки различаются, и задайте на нём веса гейтом $R_y$.'
+editorial: |
+  Пусть $k$ — младший бит, где $a$ и $b$ различаются. $R_y(\theta)$ на кубите $k$ даёт амплитуду $\sqrt p$ при
+  значении $a_k$. Для остальных битов $j$: если $a_j=b_j=1$ — гейт $X$; если $a_j\ne b_j$ — `cx(k, j)` и ещё
+  $X$, когда $a_j\ne a_k$. Гейтов не больше $2n-1$.
+pitfalls:
+  - 'Разветвление без поправки $X$: строки с противоположными битами в позициях $k$ и $j$ не получаются.'

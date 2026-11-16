@@ -1,0 +1,41 @@
+id: SA-017
+slug: reflect-zero
+title: Отражение относительно нуля
+status: reference
+level: 2
+tree: {trunk: T2, branch: T2.6}
+facets:
+  input: any
+  answer: generator
+  params: [{name: n, kind: size, range: [2, 8]}]
+  gates: {mode: basis, set: [x, h, mcx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: n}
+limits: {gates: '2*n+3'}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [многоконтрольный гейт, сопряжение X, фаза из H-X-H]
+  key_idea: 'Знак на $|1\dots1\rangle$ ставит многоконтрольный $Z$; гейты $X$ переносят его на $|0\dots0\rangle$.'
+source: {kind: real, ref: 'QCoder QPC003 B4 (Reflection Operator)', note: 'условие написано заново; эталон совпадает по идее с ladder_ec Q06 (refl_mcx)'}
+gui: false
+io:
+  input: 'произвольное состояние $n$ кубитов'
+  output: '$2|0\dots0\rangle\langle0\dots0|-I$ с точностью до фазы'
+statement: |
+  Напишите функцию `solve(n)`, которая для $2\le n\le 8$ возвращает схему оператора отражения
+  $$2\,|0\dots0\rangle\langle0\dots0|-I$$
+  с точностью до глобальной фазы: амплитуда при $|0\dots0\rangle$ получает знак, противоположный всем остальным.
+
+  **Разрешено:** гейты $X$, $H$, многоконтрольный $X$ (`mcx`); не больше $2n+3$ гейтов; вспомогательных кубитов нет.
+hints:
+  - 'Многоконтрольный $X$ между двумя $H$ на целевом кубите — это многоконтрольный $Z$.'
+editorial: |
+  $X$ на всех кубитах, $H$ на последнем, `mcx` с остальными в роли управляющих, снова $H$ и $X$ на всех. Схема
+  меняет знак только у $|0\dots0\rangle$, то есть реализует $I-2|0\dots0\rangle\langle0\dots0|$ — тот же оператор с
+  точностью до фазы $-1$.
+pitfalls:
+  - 'Без гейтов $X$ отражается $|1\dots1\rangle$.'

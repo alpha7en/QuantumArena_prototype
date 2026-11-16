@@ -1,0 +1,45 @@
+id: SA-016
+slug: qft-n
+title: Квантовое преобразование Фурье
+status: reference
+level: 2
+tree: {trunk: T2, branch: T2.5}
+facets:
+  input: any
+  answer: generator
+  params: [{name: n, kind: size, range: [1, 8]}]
+  gates: {mode: basis, set: [h, cp, swap]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: n}
+limits: {gates: 'n*(n+1)/2 + floor(n/2)'}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: generalize
+  elements: [управляемые фазы, порядок битов, параметр n]
+  key_idea: 'Образ $|j\rangle$ — произведение однокубитных состояний; фаза кубита $i$ набирается от младших битов $j$.'
+source: {kind: real, ref: 'QCoder QPC002 B4; QuantumKatas QFT', note: 'условие написано заново'}
+gui: false
+io:
+  input: '$|j\rangle$, $0\le j<2^n$'
+  output: '$\frac{1}{\sqrt{2^n}}\sum_{k=0}^{2^n-1}e^{2\pi i\,jk/2^n}|k\rangle$'
+statement: |
+  Напишите функцию `solve(n)`, которая для $1\le n\le 8$ возвращает схему квантового преобразования Фурье на $n$
+  кубитах:
+  $$|j\rangle\;\longmapsto\;\frac{1}{\sqrt{2^n}}\sum_{k=0}^{2^n-1}e^{2\pi i\,jk/2^n}\,|k\rangle .$$
+  Кубит $i$ — бит $i$ чисел $j$ и $k$ (младший бит — кубит 0). Схема должна быть верна для любой суперпозиции.
+
+  **Разрешено:** гейты $H$, управляемая фаза `cp(lam, a, b)`, $SWAP$; не больше $\frac{n(n+1)}{2}+\lfloor n/2\rfloor$
+  гейтов. Библиотечный `QFTGate` не входит в базис.
+hints:
+  - 'Запишите образ $|j\rangle$ как тензорное произведение: кубит $i$ получает $\frac{1}{\sqrt2}\left(|0\rangle+e^{2\pi i\,j/2^{n-i}}|1\rangle\right)$.'
+  - 'Без перестановки в конце получится тот же результат с обратным порядком кубитов.'
+editorial: |
+  Для $i$ от $n-1$ до $0$: $H$ на кубите $i$, затем `cp(pi/2**(i-j), j, i)` для всех $j<i$. После этого кубит $i$
+  несёт фазу, которая должна быть у кубита $n-1-i$, поэтому в конце $\lfloor n/2\rfloor$ гейтов $SWAP$ разворачивают
+  регистр.
+pitfalls:
+  - 'Нет финальных $SWAP$: обратный порядок кубитов.'
+  - 'Углы с минусом: это обратное преобразование.'

@@ -1,0 +1,49 @@
+id: SA-071
+slug: phase-kickback
+title: Фазовый отклик
+status: reference
+level: 1
+tree: {trunk: T4, branch: T4.1, hybrid: [T2.1]}
+facets:
+  input: reg_anc
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, x, cx]}
+  coupling: all
+  ancilla: {kind: clean, max: 1}
+  measure: none
+  check: eq_anc_phase
+qubits: {data: 1, ancilla_max: 1}
+limits: {gates: 5, cx: 1}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [фазовый отклик, состояние минус на целевом кубите, развычисление]
+  key_idea: 'Если целевой кубит $CX$ находится в $|-\rangle$, гейт не меняет его, а управляющий кубит получает знак минус при $|1\rangle$.'
+source: {kind: adapted, ref: 'QCoder QPC003 B2 (Convert Bit-Flip into Phase-Flip 1); учебная классика (алгоритм Дойча)', note: 'оракул заменён одним гейтом CX, размер фиксирован'}
+gui: true
+io:
+  input: 'кубит $q_0$ в произвольном состоянии, кубит $q_1$ в $|0\rangle$'
+  output: 'гейт $Z$ на $q_0$; $q_1$ снова в $|0\rangle$'
+statement: |
+  Кубит $q_0$ находится в произвольном состоянии $\alpha|0\rangle+\beta|1\rangle$, вспомогательный кубит $q_1$ — в
+  $|0\rangle$. Примените к $q_0$ гейт $Z$, то есть получите $\alpha|0\rangle-\beta|1\rangle$, и верните $q_1$ в
+  $|0\rangle$.
+
+  Однокубитные гейты разрешены только на вспомогательном кубите $q_1$. Кубит $q_0$ может участвовать только как
+  управляющий в гейте $CX$ — как в алгоритмах с оракулом, который «читает» вход и пишет ответ в отдельный кубит.
+
+  **Разрешено:** $H$ и $X$ на кубите $q_1$, гейт `cx(0, 1)`; не больше 5 гейтов, из них один $CX$.
+hints:
+  - 'Что делает гейт $X$ с состоянием $|-\rangle=\frac{1}{\sqrt2}\left(|0\rangle-|1\rangle\right)$?'
+  - 'После $CX$ вспомогательный кубит нужно вернуть из $|-\rangle$ в $|0\rangle$.'
+editorial: |
+  $X$ и $H$ переводят $q_1$ в $|-\rangle$. Гейт $X$ умножает $|-\rangle$ на $-1$, поэтому `cx(0, 1)` даёт
+  $$\left(\alpha|0\rangle+\beta|1\rangle\right)|-\rangle\;\to\;\left(\alpha|0\rangle-\beta|1\rangle\right)|-\rangle:$$
+  целевой кубит не изменился, а знак «вернулся» на управляющий. Затем $H$ и $X$ возвращают $q_1$ в $|0\rangle$. На
+  этом приёме построены алгоритмы Дойча — Йожи, Бернштейна — Вазирани и Гровера: битовый оракул с целевым кубитом
+  в $|-\rangle$ становится фазовым.
+pitfalls:
+  - 'Целевой кубит в $|0\rangle$ или $|+\rangle$: знака нет, а в первом случае кубиты ещё и запутываются.'
+  - 'Вспомогательный кубит оставлен в $|-\rangle$.'
+  - '$H$, $X$, $H$ прямо на $q_0$: матрица верная, но контракт задачи нарушен.'

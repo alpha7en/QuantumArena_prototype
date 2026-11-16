@@ -1,0 +1,41 @@
+id: SA-050
+slug: phase-flip-encoder
+title: Код от фазовых ошибок
+status: reference
+level: 2
+tree: {trunk: T6, branch: T6.3}
+facets:
+  input: reg_anc
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_anc_phase
+qubits: {data: 3}
+limits: {gates: 5}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [код повторения, смена базиса]
+  key_idea: 'Фазовая ошибка $Z$ в базисе Адамара выглядит как переворот бита: код повторения плюс слой $H$.'
+source: {kind: adapted, ref: 'QOSF Monthly Challenge 2021-02 (скрининг менторской программы), Task 2', note: 'взят шаг кодирования; условие написано заново'}
+gui: true
+io:
+  input: '$(\alpha|0\rangle+\beta|1\rangle)|00\rangle$'
+  output: '$\alpha|{+}{+}{+}\rangle+\beta|{-}{-}{-}\rangle$'
+statement: |
+  Кубит $q_0$ находится в состоянии $\alpha|0\rangle+\beta|1\rangle$, кубиты $q_1$, $q_2$ — в $|0\rangle$.
+  Закодируйте его трёхкубитным кодом от фазовых ошибок:
+  $$\alpha|0\rangle+\beta|1\rangle\;\longmapsto\;\alpha\,|{+}{+}{+}\rangle+\beta\,|{-}{-}{-}\rangle .$$
+
+  **Разрешено:** гейты $H$, $CX$; не больше 5 гейтов.
+hints:
+  - 'Код от переворота бита: $\alpha|000\rangle+\beta|111\rangle$ — два гейта $CX$.'
+editorial: |
+  `cx(0, 1)` и `cx(0, 2)` дают $\alpha|000\rangle+\beta|111\rangle$. Слой $H$ переводит $|0\rangle\to|+\rangle$,
+  $|1\rangle\to|-\rangle$. Ошибка $Z$ на любом кубите меняет $|+\rangle\leftrightarrow|-\rangle$ и обнаруживается
+  так же, как переворот бита в обычном коде повторения.
+pitfalls:
+  - 'Без слоя $H$: код защищает от переворота бита, а не от фазовой ошибки.'

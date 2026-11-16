@@ -1,0 +1,41 @@
+id: SA-035
+slug: z-or-s
+title: 'Что в ящике: Z или S'
+status: reference
+level: 2
+tree: {trunk: T4, branch: T4.5}
+facets:
+  input: oracle
+  answer: generator
+  params: [{name: oracle, kind: circuit, note: 'гейт на одном кубите: $Z$ или $S$'}]
+  gates: {mode: basis, set: [h, x]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: final
+  check: prob
+qubits: {data: 1}
+limits: {oracle_calls: 2}
+signature: 'solve(oracle: Gate) -> QuantumCircuit'
+method:
+  kind: reverse
+  elements: [различение гейтов, степени гейта, смена базиса]
+  key_idea: '$Z^2=I$, а $S^2=Z$: два вызова превращают трудноразличимую пару в пару $I$ и $Z$.'
+source: {kind: adapted, ref: 'QuantumKatas DistinguishUnitaries', note: 'условие написано заново'}
+gui: false
+io:
+  input: 'неизвестный гейт: $Z$ или $S$'
+  output: 'измерение даёт 0 для $Z$ и 1 для $S$ с вероятностью 1'
+statement: |
+  Гейт `oracle` на одном кубите — это либо $Z$, либо $S$. Напишите функцию `solve(oracle)`, которая возвращает
+  схему на одном кубите с одним классическим битом. Результат измерения должен быть 0, если в ящике $Z$, и 1,
+  если $S$, — с вероятностью 1.
+
+  **Разрешено:** гейты $H$, $X$, измерение в конце; оракул — не больше двух раз.
+hints:
+  - 'Одного вызова недостаточно: состояния $Z|+\rangle$ и $S|+\rangle$ не ортогональны.'
+  - 'Сравните квадраты гейтов.'
+editorial: |
+  $H$, оракул, оракул, $H$, измерение. Для $Z$ два вызова дают $I$, и $HH|0\rangle=|0\rangle$. Для $S$ два вызова
+  дают $Z$, и $HZH|0\rangle=|1\rangle$.
+pitfalls:
+  - 'Один вызов: для $S$ результат случаен.'

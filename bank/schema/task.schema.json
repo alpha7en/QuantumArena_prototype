@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/alpha7en/QuantumArena_prototype/bank/schema/task.schema.json",
+  "title": "Карточка задачи sparq arena (task.yaml)",
+  "type": "object",
+  "required": ["id", "slug", "title", "status", "level", "tree", "facets", "qubits", "signature", "method", "source", "gui", "io", "statement", "editorial", "pitfalls"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "string", "pattern": "^SA-[0-9]{3,}$"},
+    "slug": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+    "title": {"type": "string", "maxLength": 80},
+    "aliases": {"type": "array", "items": {"type": "string"}},
+    "status": {"enum": ["idea", "draft", "reference", "reviewed", "published"]},
+    "level": {"enum": [1, 2, 3]},
+    "tree": {
+      "type": "object",
+      "required": ["trunk", "branch"],
+      "additionalProperties": false,
+      "properties": {
+        "trunk": {"type": "string", "pattern": "^T[0-9]+$"},
+        "branch": {"type": "string", "pattern": "^T[0-9]+\\.[0-9]+$"},
+        "hybrid": {"type": "array", "items": {"type": "string", "pattern": "^T[0-9]+\\.[0-9]+$"}}
+      }
+    },
+    "facets": {
+      "type": "object",
+      "required": ["input", "answer", "params", "gates", "coupling", "ancilla", "measure", "check"],
+      "additionalProperties": false,
+      "properties": {
+        "input": {"enum": ["zero", "any", "reg_anc", "promise", "oracle", "resource"]},
+        "answer": {"enum": ["fixed", "generator", "dynamic", "hybrid", "value"]},
+        "params": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "kind"],
+            "additionalProperties": false,
+            "properties": {
+              "name": {"type": "string"},
+              "kind": {"enum": ["size", "data", "angle", "repeat", "circuit", "callback"]},
+              "range": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+              "note": {"type": "string"}
+            }
+          }
+        },
+        "gates": {
+          "type": "object",
+          "required": ["mode", "set"],
+          "additionalProperties": false,
+          "properties": {
+            "mode": {"enum": ["free", "basis", "native"]},
+            "set": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "coupling": {"enum": ["all", "line", "ring", "star", "custom"]},
+        "edges": {"type": "array", "items": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2}},
+        "ancilla": {
+          "type": "object",
+          "required": ["kind", "max"],
+          "additionalProperties": false,
+          "properties": {"kind": {"enum": ["none", "clean", "dirty"]}, "max": {"type": ["integer", "string"]}}
+        },
+        "measure": {"enum": ["none", "final", "mid"]},
+        "check": {"enum": ["eq", "eq_phase", "eq0", "eq0_phase", "eq_anc", "eq_anc_phase", "dist", "prob", "channel", "classical", "fidelity", "score"]}
+      }
+    },
+    "qubits": {
+      "type": "object",
+      "required": ["data"],
+      "additionalProperties": false,
+      "properties": {"data": {"type": ["integer", "string"]}, "ancilla_max": {"type": ["integer", "string"]}}
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "gates": {"type": ["integer", "string"]}, "depth": {"type": ["integer", "string"]},
+        "two_qubit": {"type": ["integer", "string"]}, "cx": {"type": ["integer", "string"]},
+        "t": {"type": ["integer", "string"]}, "oracle_calls": {"type": ["integer", "string"]},
+        "measurements": {"type": ["integer", "string"]},
+        "time_ms": {"type": "integer"}, "memory_mb": {"type": "integer"}
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {"runs": {"type": ["integer", "string"]}, "shots": {"type": "integer"}, "tolerance": {"type": "number"}}
+    },
+    "scoring": {
+      "type": "object",
+      "required": ["mode", "relation", "metric", "formula"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {"enum": ["cost"]},
+        "relation": {"enum": ["eq", "eq_phase", "eq0", "eq0_phase", "eq_anc", "eq_anc_phase"]},
+        "metric": {"type": "string"}, "formula": {"type": "string"}, "note": {"type": "string"}
+      }
+    },
+    "forbid": {"type": "array", "items": {"type": "string"}},
+    "signature": {"type": "string"},
+    "starter": {"type": "string"},
+    "method": {
+      "type": "object",
+      "required": ["kind", "elements", "key_idea"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {"enum": ["fact", "combo", "constraint", "generalize", "reverse", "transfer", "open"]},
+        "elements": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "key_idea": {"type": "string"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["kind", "ref"],
+      "additionalProperties": false,
+      "properties": {"kind": {"enum": ["own", "adapted", "real"]}, "ref": {"type": "string"}, "note": {"type": "string"}}
+    },
+    "gui": {"type": "boolean"},
+    "io": {
+      "type": "object",
+      "required": ["input", "output"],
+      "additionalProperties": false,
+      "properties": {"input": {"type": "string"}, "output": {"type": "string"}}
+    },
+    "statement": {"type": "string"},
+    "hints": {"type": "array", "items": {"type": "string"}},
+    "editorial": {"type": "string"},
+    "pitfalls": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+  }
+}

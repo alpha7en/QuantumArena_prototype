@@ -1,0 +1,47 @@
+id: SA-054
+slug: chsh-game
+title: Игра CHSH
+status: reference
+level: 2
+tree: {trunk: T7, branch: T7.2}
+facets:
+  input: resource
+  answer: generator
+  params: [{name: player, kind: data, note: "'A' или 'B'"}, {name: bit, kind: data, note: 'вопрос рефери, 0 или 1'}]
+  gates: {mode: basis, set: [ry, h, x, z]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: prob
+qubits: {data: 1}
+limits: {gates: 1}
+signature: "solve(player: str, bit: int) -> QuantumCircuit"
+method:
+  kind: transfer
+  elements: [нелокальная игра, базисы измерения, расчётные углы]
+  key_idea: 'Вероятность совпадения ответов равна $\cos^2\frac{\theta_A-\theta_B}{2}$; углы подбираются так, чтобы все четыре случая давали $\cos^2\frac{\pi}{8}$.'
+source: {kind: real, ref: 'QuantumKatas CHSHGame', note: 'условие написано заново'}
+gui: false
+io:
+  input: 'пара $|\Phi^+\rangle$; вопросы $x$ и $y$'
+  output: 'ответы $a$, $b$ с $a\oplus b=x\wedge y$; вероятность выигрыша не меньше 0,85'
+statement: |
+  Алиса и Боб делят пару $|\Phi^+\rangle$ и не могут общаться. Рефери даёт Алисе бит $x$, Бобу — бит $y$
+  (все четыре пары равновероятны). Каждый применяет к своему кубиту операцию, зависящую от своего бита, и измеряет
+  его: результаты — ответы $a$ и $b$. Игроки выигрывают, если $a\oplus b=x\wedge y$. Любая классическая стратегия
+  выигрывает не чаще чем в 75 % случаев.
+
+  Напишите функцию `solve(player, bit)`: для `player='A'` и `player='B'` она возвращает схему на одном кубите —
+  операцию игрока перед измерением. Средняя по четырём парам вопросов вероятность выигрыша должна быть не меньше
+  $0{,}85$.
+
+  **Разрешено:** гейты $R_y$, $H$, $X$, $Z$; не больше одного гейта у игрока.
+hints:
+  - 'Гейт $R_y(-\theta)$ перед измерением — это измерение вдоль оси, повёрнутой на угол $\theta$ в плоскости $xz$.'
+  - 'Для $|\Phi^+\rangle$ ответы совпадают с вероятностью $\cos^2\frac{\theta_A-\theta_B}{2}$.'
+editorial: |
+  Алиса: углы $0$ и $\frac{\pi}{2}$. Боб: $\frac{\pi}{4}$ и $-\frac{\pi}{4}$. В трёх случаях разность углов равна
+  $\pm\frac{\pi}{4}$, и ответы совпадают с вероятностью $\cos^2\frac{\pi}{8}\approx0{,}854$. При $x=y=1$ разность
+  $\frac{3\pi}{4}$, ответы различаются с той же вероятностью — как и требуется.
+pitfalls:
+  - 'Измерение без поворотов — классическая стратегия: 75 %.'

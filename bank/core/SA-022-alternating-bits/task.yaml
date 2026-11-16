@@ -1,0 +1,43 @@
+id: SA-022
+slug: alternating-bits
+title: Чередующиеся биты
+status: reference
+level: 2
+tree: {trunk: T3, branch: T3.2, hybrid: [T3.5]}
+facets:
+  input: reg_anc
+  answer: generator
+  params: [{name: n, kind: size, range: [2, 9]}]
+  gates: {mode: basis, set: [x, h, z, cx, mcx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: n}
+limits: {gates: '2*n+1'}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [фазовый оракул, вычисление на месте, развычисление]
+  key_idea: 'Разности соседних битов вычисляются прямо в регистре: $q_i\leftarrow x_i\oplus x_{i+1}$.'
+source: {kind: real, ref: 'QOSF Monthly Challenge 2021-09 (скрининг менторской программы), Task 1', note: 'взята часть задачи — оракул; условие написано заново, добавлен запрет на анциллы'}
+gui: false
+io:
+  input: '$|x\rangle$, $n$ кубитов'
+  output: '$(-1)^{f(x)}|x\rangle$, $f(x)=1$, когда соседние биты $x$ всюду различны'
+statement: |
+  Строка $x$ из $n$ битов называется чередующейся, если любые два соседних бита различны: при $n=4$ это $0101$ и
+  $1010$. Напишите функцию `solve(n)`, которая для $2\le n\le 9$ возвращает фазовый оракул
+  $$|x\rangle\;\longmapsto\;(-1)^{f(x)}\,|x\rangle ,\qquad f(x)=1\iff x\ \text{чередующаяся}.$$
+
+  **Разрешено:** гейты $X$, $H$, $Z$, $CX$, многоконтрольный $X$ (`mcx`); не больше $2n+1$ гейтов;
+  вспомогательных кубитов нет — схема занимает ровно $n$ кубитов.
+hints:
+  - 'Условие «$x_i\ne x_{i+1}$» — это $x_i\oplus x_{i+1}=1$.'
+  - 'Гейт `cx(i+1, i)` записывает разность в кубит $i$; после метки знаком его можно отменить.'
+editorial: |
+  Для $i=0,\dots,n-2$ гейт `cx(i+1, i)` превращает кубит $i$ в $x_i\oplus x_{i+1}$. Строка чередующаяся, когда
+  кубиты $0,\dots,n-2$ все равны 1: на них ставится многоконтрольный $Z$ ($H$, `mcx`, $H$). Затем гейты $CX$
+  отменяются в обратном порядке. Анциллы не нужны: вычисление шло на месте.
+pitfalls:
+  - 'Не отменить $CX$: знак верный, но регистр испорчен.'

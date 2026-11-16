@@ -1,0 +1,46 @@
+id: SA-027
+slug: even-nonzero
+title: Чётный, но не ноль
+aliases: [SA-205]
+status: reference
+level: 3
+tree: {trunk: T3, branch: T3.5, hybrid: [T3.1]}
+facets:
+  input: reg_anc
+  answer: generator
+  params: [{name: n, kind: size, range: [2, 7]}]
+  gates: {mode: basis, set: [x, cx, mcx]}
+  coupling: all
+  ancilla: {kind: clean, max: 1}
+  measure: none
+  check: eq_anc_phase
+qubits: {data: 'n+1', ancilla_max: 1}
+limits: {gates: '3*n+2'}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [оракул чётности, оракул нуля, бюджет анцилл, параметр n]
+  key_idea: 'Ноль — чётная строка, поэтому $f(x)=1\oplus\mathrm{parity}(x)\oplus[x=0]$: два условия складываются прямо в $y$.'
+source: {kind: own, ref: 'sparq arena, пример SA-205 из материалов к акселератору'}
+gui: false
+io:
+  input: '$|x\rangle|y\rangle$, $n$ входных кубитов'
+  output: '$|x\rangle|y\oplus f(x)\rangle$, $f(x)=1$ при чётном числе единиц и $x\ne0$'
+statement: |
+  Напишите функцию `solve(n)`, которая для $2\le n\le 7$ возвращает оракул
+  $$|x\rangle|y\rangle\;\longmapsto\;|x\rangle\,|y\oplus f(x)\rangle ,$$
+  где $f(x)=1$, если в $x$ чётное число единиц и $x\ne 0\dots0$. Регистр $x$ — кубиты $0,\dots,n-1$, кубит $y$ —
+  номер $n$. Можно использовать не более одного вспомогательного кубита (номер $n+1$); после схемы он должен
+  вернуться в $|0\rangle$.
+
+  **Разрешено:** гейты $X$, $CX$, многоконтрольный $X$ (`mcx`); не больше $3n+2$ гейтов.
+hints:
+  - 'Логическое «и» двух условий требует анциллы. А нельзя ли обойтись сложением по модулю 2?'
+  - 'Строка из одних нулей сама чётная.'
+editorial: |
+  Условия «чётная» и «не ноль» не нужно перемножать. Среди чётных строк лишняя ровно одна — нулевая, значит
+  $f(x)=\mathrm{even}(x)\oplus[x=0]$. Гейты `cx(i, n)` и один $X$ на $y$ прибавляют $\mathrm{even}(x)$, затем $X$ на
+  всех входах, `mcx` и снова $X$ прибавляют $[x=0]$. Вспомогательный кубит не понадобился.
+pitfalls:
+  - 'Чётность в анцилле без очистки: запутывание с мусором.'
+  - 'Забыть про нулевую строку: оракул «чётная» вместо «чётная и не ноль».'

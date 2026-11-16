@@ -1,0 +1,41 @@
+id: SA-020
+slug: parity-oracle
+title: Оракул чётности
+status: reference
+level: 1
+tree: {trunk: T3, branch: T3.1}
+facets:
+  input: reg_anc
+  answer: generator
+  params: [{name: n, kind: size, range: [1, 9]}]
+  gates: {mode: basis, set: [cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 'n+1'}
+limits: {gates: n}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [битовый оракул, XOR на CX]
+  key_idea: 'Каждый $CX$ прибавляет к $y$ один бит по модулю 2.'
+source: {kind: real, ref: 'QCoder QPC001 B2 (XOR Oracle)', note: 'условие написано заново'}
+gui: false
+io:
+  input: '$|x\rangle|y\rangle$: $x$ на кубитах $0..n-1$, $y$ — кубит $n$'
+  output: '$|x\rangle|y\oplus x_0\oplus\dots\oplus x_{n-1}\rangle$'
+statement: |
+  Напишите функцию `solve(n)`, которая для $1\le n\le 9$ возвращает схему оракула чётности на $n+1$ кубите:
+  $$|x\rangle|y\rangle\;\longmapsto\;|x\rangle\,|y\oplus x_0\oplus x_1\oplus\dots\oplus x_{n-1}\rangle .$$
+  Регистр $x$ занимает кубиты $0,\dots,n-1$, кубит $y$ имеет номер $n$. Схема должна быть верна для любой
+  суперпозиции.
+
+  **Разрешено:** только гейты $CX$; не больше $n$ гейтов.
+hints:
+  - 'Что делает один гейт $CX$ с управляющим $x_i$ и целевым $y$?'
+editorial: |
+  $n$ гейтов `cx(i, n)`: каждый прибавляет к $y$ бит $x_i$. Регистр $x$ не меняется, вспомогательные кубиты не
+  нужны.
+pitfalls:
+  - 'Перепутать управляющий и целевой: тогда меняется $x$, а не $y$.'

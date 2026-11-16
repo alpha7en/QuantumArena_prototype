@@ -1,0 +1,40 @@
+id: SA-013
+slug: ch-from-cx
+title: Управляемый Адамар из одного CX
+status: reference
+level: 2
+tree: {trunk: T2, branch: T2.1, hybrid: [T2.2]}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [ry, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 2}
+limits: {gates: 3, cx: 1}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [сопряжение поворотом, управляемый гейт]
+  key_idea: '$H$ — это $X$, повёрнутый вокруг оси $y$ на $\frac{\pi}{4}$: $H=R_y(-\frac{\pi}{4})\,X\,R_y(\frac{\pi}{4})$.'
+source: {kind: own, ref: 'sparq arena'}
+gui: true
+io:
+  input: 'произвольное состояние двух кубитов'
+  output: 'управляемый $H$: управляющий $q_0$, целевой $q_1$'
+statement: |
+  Реализуйте управляемый гейт Адамара: если кубит $q_0$ равен 1, к кубиту $q_1$ применяется $H$, иначе ничего не
+  происходит. Схема должна быть верна для любого входа, глобальная фаза не учитывается.
+
+  **Разрешено:** гейты $R_y(\theta)$ с любым углом и $CX$; не больше 3 гейтов, из них один $CX$.
+hints:
+  - 'Если $A A^{-1}=I$ и $A\,X\,A^{-1}=H$, то схема «$A^{-1}$, $CX$, $A$» на целевом кубите — управляемый $H$.'
+  - '$H=\frac{1}{\sqrt2}(X+Z)$ — отражение относительно оси посередине между $x$ и $z$.'
+editorial: |
+  `ry(pi/4)` на $q_1$, затем `cx(0, 1)`, затем `ry(-pi/4)` на $q_1$. При $q_0=0$ повороты сокращаются. При $q_0=1$
+  получается $R_y(-\frac{\pi}{4})\,X\,R_y(\frac{\pi}{4})=\frac{1}{\sqrt2}(X+Z)=H$.
+pitfalls:
+  - 'Углы с обратными знаками дают $\frac{1}{\sqrt2}(X-Z)$, а не $H$.'

@@ -1,0 +1,41 @@
+id: SA-007
+slug: three-of-four
+title: Три строки из четырёх
+status: reference
+level: 2
+tree: {trunk: T1, branch: T1.3}
+facets:
+  input: zero
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [x, ry, ch, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq0_phase
+qubits: {data: 2}
+limits: {gates: 5}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [расчётный угол, управляемый Адамар, управление по нулю]
+  key_idea: 'Сначала вес $\frac13:\frac23$ на одном кубите, затем ветвь с весом $\frac23$ делится пополам.'
+source: {kind: own, ref: 'sparq arena'}
+gui: true
+io:
+  input: '$|00\rangle$'
+  output: '$\frac{1}{\sqrt{3}}\left(|01\rangle+|10\rangle+|11\rangle\right)$'
+statement: |
+  Два кубита находятся в состоянии $|00\rangle$. Получите равную суперпозицию трёх строк — всех, кроме $00$:
+  $$\frac{1}{\sqrt{3}}\left(|01\rangle+|10\rangle+|11\rangle\right).$$
+
+  **Разрешено:** гейты $X$, $R_y(\theta)$ с любым углом, управляемый $H$ (`ch`), $CX$; не больше 5 гейтов.
+hints:
+  - '$R_y(\theta)|0\rangle=\cos\frac{\theta}{2}|0\rangle+\sin\frac{\theta}{2}|1\rangle$. Какой угол даёт вероятности $\frac13$ и $\frac23$?'
+  - 'Гейт, управляемый значением 0, получается из обычного, если окружить управляющий кубит двумя $X$.'
+editorial: |
+  $R_y(\theta)$ на кубите 0 с $\cos\frac{\theta}{2}=\frac{1}{\sqrt3}$. Управляемый $H$ от кубита 0 к кубиту 1 делит
+  ветвь $q_0=1$ на $|01\rangle$ и $|11\rangle$ (строки записаны как $q_1q_0$). Осталась ветвь $q_0=0$ с амплитудой
+  $\frac{1}{\sqrt3}$ при $|00\rangle$: гейт $CX$, управляемый нулём ($X$, $CX$, $X$), превращает её в $|10\rangle$.
+pitfalls:
+  - 'Без последнего шага в суперпозиции остаётся $|00\rangle$ вместо $|10\rangle$.'

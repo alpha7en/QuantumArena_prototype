@@ -1,0 +1,42 @@
+id: SA-036
+slug: grover-optimal
+title: Поиск Гровера с оптимальным числом итераций
+status: reference
+level: 3
+tree: {trunk: T4, branch: T4.2}
+facets:
+  input: oracle
+  answer: generator
+  params: [{name: n, kind: size, range: [2, 6]}, {name: oracle, kind: circuit, note: 'гейт на $n$ кубитах'}]
+  gates: {mode: basis, set: [h, x, z, mcx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: final
+  check: prob
+qubits: {data: n}
+limits: {oracle_calls: 'floor(pi/4*2**(n/2))'}
+signature: 'solve(n: int, oracle: Gate) -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [фазовый оракул, диффузия, число итераций, параметр n]
+  key_idea: 'Итерация поворачивает на угол $2\arcsin 2^{-n/2}$; останавливаться нужно около $\frac{\pi}{4}\sqrt{2^n}$ шагов.'
+source: {kind: real, ref: "QCoder QPC003 B6, B8 (Grover's Algorithm)", note: 'условие написано заново; эталон совпадает по идее с ladder_ec C07'}
+gui: false
+io:
+  input: 'оракул, меняющий знак у одного из $2^n$ состояний'
+  output: 'измерение даёт отмеченное состояние с вероятностью не меньше 0,9'
+statement: |
+  Гейт `oracle` на $n$ кубитах ($2\le n\le 6$) меняет знак амплитуды ровно у одного базисного состояния
+  $|w\rangle$. Напишите функцию `solve(n, oracle)`. Она возвращает схему на $n$ кубитах с $n$ классическими битами
+  (кубит $i$ — в бит $i$); измерение должно давать $w$ с вероятностью не меньше $0{,}9$.
+
+  **Разрешено:** гейты $H$, $X$, $Z$, многоконтрольный $X$ (`mcx`), измерения в конце; оракул — не больше
+  $\left\lfloor\frac{\pi}{4}\sqrt{2^n}\right\rfloor$ раз; вспомогательных кубитов нет.
+hints:
+  - 'Вероятность успеха после $k$ итераций равна $\sin^2\left((2k+1)\theta\right)$, $\sin\theta=2^{-n/2}$.'
+  - 'Лишние итерации уводят состояние дальше от цели.'
+editorial: |
+  Равная суперпозиция, затем $k=\left\lfloor\frac{\pi}{4}\sqrt{2^n}\right\rfloor$ раз: оракул и диффузия (SA-033).
+  Вероятности успеха при $n=2,\dots,6$: $1{,}000$; $0{,}945$; $0{,}961$; $0{,}999$; $0{,}997$.
+pitfalls:
+  - 'Одна итерация при любом $n$: при $n=4$ вероятность всего $0{,}47$.'

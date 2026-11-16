@@ -1,0 +1,40 @@
+id: SA-039
+slug: hadamard-native
+title: Адамар в нативном базисе
+status: reference
+level: 1
+tree: {trunk: T5, branch: T5.1}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: native, set: [rz, sx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 1}
+limits: {gates: 3}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [нативный базис, углы Эйлера]
+  key_idea: '$H=R_z\left(\frac{\pi}{2}\right)\sqrt{X}\,R_z\left(\frac{\pi}{2}\right)$ с точностью до фазы.'
+source: {kind: adapted, ref: 'презентация классификации, T5.2 (нативный базис IBM)'}
+gui: true
+io:
+  input: 'произвольное состояние кубита'
+  output: 'гейт $H$ с точностью до фазы'
+statement: |
+  Сверхпроводниковый процессор умеет выполнять на одном кубите только гейты $R_z(\lambda)$ с любым углом и
+  $\sqrt{X}$ (`sx`). Реализуйте на нём гейт Адамара с точностью до глобальной фазы.
+
+  **Разрешено:** гейты $R_z$, $\sqrt{X}$; не больше 3 гейтов.
+hints:
+  - '$\sqrt{X}$ — поворот вокруг оси $x$ на $\frac{\pi}{2}$. Любой однокубитный гейт раскладывается на повороты $z$–$x$–$z$.'
+editorial: |
+  `rz(pi/2)`, `sx`, `rz(pi/2)`. Поворот вокруг $z$ на четверть оборота переводит ось $x$ в $y$, поэтому тройка
+  реализует поворот на $\frac{\pi}{2}$ вокруг $y$ с дополнительными фазами — это и есть $H$ с точностью до
+  множителя.
+pitfalls:
+  - 'Один гейт $\sqrt{X}$ даёт равные вероятности из $|0\rangle$, но не $H$: фазы другие.'

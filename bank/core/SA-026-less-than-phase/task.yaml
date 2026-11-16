@@ -1,0 +1,46 @@
+id: SA-026
+slug: less-than-phase
+title: Фазовый оракул «меньше L»
+status: reference
+level: 3
+tree: {trunk: T3, branch: T3.3, hybrid: [T3.2]}
+facets:
+  input: reg_anc
+  answer: generator
+  params:
+    - {name: n, kind: size, range: [1, 8]}
+    - {name: L, kind: data, note: 'целое, $0\le L\le 2^n$'}
+  gates: {mode: basis, set: [x, h, z, mcx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: n}
+limits: {two_qubit: n, gates: '2*n*n+3*n'}
+signature: 'solve(n: int, L: int) -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [фазовый оракул, поразрядное сравнение, параметры n и L]
+  key_idea: '$x<L$ тогда и только тогда, когда в каком-то разряде $t$ у $L$ единица, у $x$ ноль, а старшие разряды совпадают; эти случаи не пересекаются.'
+source: {kind: real, ref: 'QCoder QPC001 B3, B4 (Less Than Oracle)', note: 'условие написано заново; эталон совпадает по идее с ladder_ec Q04 (flipL_compare)'}
+gui: false
+io:
+  input: '$|x\rangle$, число $L$'
+  output: '$(-1)^{[x<L]}|x\rangle$'
+statement: |
+  Напишите функцию `solve(n, L)`, которая возвращает схему на $n$ кубитах ($1\le n\le 8$, $0\le L\le 2^n$):
+  $$|x\rangle\;\longmapsto\;(-1)^{[x<L]}\,|x\rangle .$$
+  Кубит $i$ — бит $i$ числа $x$. Глобальная фаза не учитывается.
+
+  **Разрешено:** гейты $X$, $H$, $Z$, многоконтрольный $X$ (`mcx`); не больше $n$ гейтов, действующих на два и
+  более кубитов; вспомогательных кубитов нет.
+hints:
+  - 'Перебор всех $x<L$ по одному требует до $2^n$ многокубитных гейтов и не проходит.'
+  - 'Сравнивайте числа со старшего разряда: первое различие решает, какое меньше.'
+editorial: |
+  Для каждого разряда $t$, где $L_t=1$, отметим знаком все $x$ с $x_t=0$ и $x_j=L_j$ при $j>t$. Это один
+  многоконтрольный $Z$ на кубитах $t,\dots,n-1$ с шаблоном (гейты $X$ вокруг тех кубитов, где нужен ноль). Случаи
+  для разных $t$ не пересекаются, поэтому знаки не накладываются. Многокубитных гейтов не больше $n$. При $L=2^n$
+  знак получают все состояния — это глобальная фаза, схема пуста.
+pitfalls:
+  - 'По гейту на каждое $x<L$: экспоненциальное число гейтов.'

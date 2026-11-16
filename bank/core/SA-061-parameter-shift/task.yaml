@@ -1,0 +1,51 @@
+id: SA-061
+slug: parameter-shift
+title: Градиент по правилу сдвига параметра
+status: reference
+level: 3
+tree: {trunk: T8, branch: T8.4}
+facets:
+  input: zero
+  answer: hybrid
+  params:
+    - {name: theta, kind: angle, note: 'вещественное'}
+    - {name: expval, kind: callback, note: 'оценивает $\langle Z_1\rangle$ схемы по 4000 измерениям'}
+  gates: {mode: basis, set: [ry, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: classical
+qubits: {data: 2}
+limits: {gates: 3}
+budget: {runs: 4, shots: 4000, tolerance: 0.1}
+signature: 'solve(theta: float, expval: Callable[[QuantumCircuit], float]) -> float'
+method:
+  kind: transfer
+  elements: [правило сдвига параметра, параметр в двух гейтах, оценка по выборке]
+  key_idea: 'Производная по общему параметру — сумма сдвигов по каждому вхождению; конечная разность с малым шагом тонет в статистическом шуме.'
+source: {kind: adapted, ref: 'Xanadu QHack 2023 (parameter-shift gradient)', note: 'условие и контракт написаны для банка: анзац с параметром в двух гейтах, оценка по выборке'}
+gui: false
+io:
+  input: 'угол $\theta$; функция оценки $\langle Z_1\rangle$ по выборке'
+  output: 'число: оценка $\frac{d}{d\theta}\langle Z_1\rangle$ с точностью 0,1'
+statement: |
+  Анзац на двух кубитах: `ry(theta, 0)`, `cx(0, 1)`, `ry(theta, 1)` — один и тот же угол $\theta$ стоит в двух гейтах.
+  Пусть $f(\theta)=\langle Z_1\rangle$ — среднее значение $Z$ на кубите 1 после анзаца.
+
+  Напишите функцию `solve(theta, expval)`, которая возвращает оценку производной $f'(\theta)$ с ошибкой не больше
+  $0{,}1$. Функция `expval(qc)` принимает схему на двух кубитах без измерений и возвращает оценку
+  $\langle Z_1\rangle$ по 4000 измерениям — со статистической погрешностью.
+
+  **Разрешено:** в каждой схеме — гейты $R_y$, $CX$, не больше 3 гейтов; функцию `expval` можно вызвать не больше
+  4 раз.
+hints:
+  - 'Для гейта $R_y(a)$: $\frac{\partial}{\partial a}\langle O\rangle=\frac12\left[\langle O\rangle_{a+\pi/2}-\langle O\rangle_{a-\pi/2}\right]$ — точное равенство, а не приближение.'
+  - 'Параметр входит в два гейта: производная сложной функции — сумма по вхождениям.'
+editorial: |
+  Обозначим углы двух гейтов $a$ и $b$; $f(\theta)=g(\theta,\theta)$, поэтому
+  $f'=\partial_a g+\partial_b g$. Каждая частная производная — разность двух запусков со сдвигом своего угла на
+  $\pm\frac{\pi}{2}$, итого четыре запуска. Погрешность каждого запуска около $0{,}016$, градиента — столько же.
+  Конечная разность с шагом $0{,}05$ делит ту же погрешность на $0{,}1$ и не укладывается в точность.
+pitfalls:
+  - 'Сдвигать оба угла одновременно: получается ноль вместо $-\sin2\theta$.'
+  - 'Конечная разность с малым шагом: статистический шум усиливается в десятки раз.'

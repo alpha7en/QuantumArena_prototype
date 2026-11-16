@@ -1,0 +1,43 @@
+id: SA-024
+slug: mcx-vchain
+title: Многоконтрольный X лестницей Тоффоли
+status: reference
+level: 2
+tree: {trunk: T3, branch: T3.5, hybrid: [T2.2]}
+facets:
+  input: reg_anc
+  answer: generator
+  params: [{name: n, kind: size, range: [3, 6]}]
+  gates: {mode: basis, set: [ccx]}
+  coupling: all
+  ancilla: {kind: clean, max: 'n-2'}
+  measure: none
+  check: eq_anc_phase
+qubits: {data: 'n+1', ancilla_max: 'n-2'}
+limits: {gates: '2*n-3'}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [разложение многоконтрольного гейта, чистые анциллы, развычисление]
+  key_idea: 'Анциллы копят частичные произведения $x_0x_1$, $x_0x_1x_2$, …; после записи ответа лестница проходится назад.'
+source: {kind: adapted, ref: 'A. Barenco et al., 1995; ladder_ec, класс B12 и Q06 (refl_vchain)', note: 'условие написано для банка'}
+gui: false
+io:
+  input: '$|x\rangle|y\rangle|0\dots0\rangle$: $n$ управляющих, целевой, $n-2$ анциллы'
+  output: '$|x\rangle|y\oplus x_0x_1\cdots x_{n-1}\rangle|0\dots0\rangle$'
+statement: |
+  Напишите функцию `solve(n)`, которая для $3\le n\le 6$ возвращает схему гейта $X$ с $n$ управляющими кубитами:
+  $$|x\rangle|y\rangle\;\longmapsto\;|x\rangle\,|y\oplus x_0x_1\cdots x_{n-1}\rangle .$$
+  Управляющие — кубиты $0,\dots,n-1$, целевой — кубит $n$. Можно использовать до $n-2$ вспомогательных кубитов с
+  номерами $n+1,\dots,2n-2$: они начинают в $|0\rangle$ и обязаны вернуться в $|0\rangle$.
+
+  **Разрешено:** только гейты $CCX$; не больше $2n-3$ гейтов.
+hints:
+  - 'Один $CCX$ записывает в анциллу произведение двух битов.'
+  - 'Последний гейт лестницы пишет в целевой кубит, а не в анциллу.'
+editorial: |
+  `ccx(0, 1, a_0)`, затем `ccx(i, a_{i-2}, a_{i-1})` для $i=2,\dots,n-2$: анцилла $a_{i-1}$ хранит
+  $x_0\cdots x_i$. Гейт `ccx(n-1, a_{n-3}, n)` пишет ответ. Те же $n-2$ гейтов в обратном порядке очищают
+  анциллы. Всего $2(n-2)+1$ гейтов.
+pitfalls:
+  - 'Не пройти лестницу назад: анциллы остаются запутанными с входом.'

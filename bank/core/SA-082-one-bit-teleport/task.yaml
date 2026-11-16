@@ -1,0 +1,50 @@
+id: SA-082
+slug: one-bit-teleport
+title: Переезд кубита за один CX
+status: reference
+level: 2
+tree: {trunk: T6, branch: T6.2}
+facets:
+  input: any
+  answer: dynamic
+  params: []
+  gates: {mode: basis, set: [h, x, z, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: mid
+  check: channel
+qubits: {data: 2}
+limits: {gates: 3, cx: 1, measurements: 1}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: constraint
+  elements: [однобитная телепортация, измерение в базисе X, условная поправка, бюджет CX]
+  key_idea: 'Один $CX$ размазывает состояние по двум кубитам; измерение исходного кубита в базисе $X$ стирает его «копию», оставляя неизвестным только знак.'
+source: {kind: adapted, ref: 'X. Zhou, D. Leung, I. Chuang, 2000 (однобитная телепортация); IBM Quantum Challenge Spring 2023, Lab 2', note: 'условие написано заново; пары Белла нет, бюджет — один CX'}
+gui: true
+io:
+  input: '$|\psi\rangle$ на кубите $q_0$, кубит $q_1$ в $|0\rangle$'
+  output: 'кубит $q_1$ в состоянии $|\psi\rangle$ при любом исходе измерения'
+statement: |
+  Кубит $q_0$ находится в произвольном состоянии $|\psi\rangle=\alpha|0\rangle+\beta|1\rangle$, кубит $q_1$ — в
+  $|0\rangle$. Перенесите состояние: после схемы кубит $q_1$ должен находиться в $|\psi\rangle$ при любом
+  результате измерения. Что останется в $q_0$, неважно.
+
+  Перестановка $SWAP$ потребовала бы трёх $CX$ (двух — с учётом того, что $q_1$ начинает в нуле). Здесь $CX$
+  всего один, зато есть измерение.
+
+  **Разрешено:** гейты $H$, $X$, $Z$, $CX$, одно измерение и гейты под классическим условием
+  (`with qc.if_test((бит, 1)):`); не больше 3 гейтов, из них один $CX$.
+hints:
+  - 'После `cx(0, 1)` состояние равно $\alpha|00\rangle+\beta|11\rangle$. Измерять $q_0$ в вычислительном базисе нельзя: суперпозиция схлопнется.'
+  - 'Разложите $q_0$ по $|\pm\rangle$ и посмотрите, что остаётся в $q_1$ при каждом исходе.'
+editorial: |
+  `cx(0, 1)` даёт $\alpha|00\rangle+\beta|11\rangle$. Гейт $H$ на $q_0$ и измерение — это измерение в базисе $X$:
+  $$\alpha|0\rangle|0\rangle+\beta|1\rangle|1\rangle=\frac{1}{\sqrt2}\Big(|+\rangle\left(\alpha|0\rangle+\beta|1\rangle\right)+|-\rangle\left(\alpha|0\rangle-\beta|1\rangle\right)\Big)$$
+  (первым записан $q_0$). При исходе 0 в $q_1$ уже $|\psi\rangle$, при исходе 1 — $Z|\psi\rangle$, и условный $Z$ на
+  $q_1$ исправляет знак. Это «половина» телепортации (SA-049): один бит классической связи и ни одной пары Белла;
+  из двух таких блоков собирается и полная телепортация, и телепортация гейтов (SA-086).
+pitfalls:
+  - 'Измерение $q_0$ без $H$: в $q_1$ остаётся $|0\rangle$ или $|1\rangle$.'
+  - 'Нет условного $Z$: в половине запусков получается $\alpha|0\rangle-\beta|1\rangle$.'
+  - 'Два $CX$ без измерения: состояние переносится, но бюджет $CX$ превышен.'

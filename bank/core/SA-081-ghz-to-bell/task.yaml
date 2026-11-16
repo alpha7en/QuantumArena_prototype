@@ -1,0 +1,52 @@
+id: SA-081
+slug: ghz-to-bell
+title: Третий выходит из GHZ
+status: reference
+level: 2
+tree: {trunk: T7, branch: T7.1, hybrid: [T6.2]}
+facets:
+  input: resource
+  answer: dynamic
+  params: []
+  gates: {mode: basis, set: [h, x, z]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: mid
+  check: channel
+qubits: {data: 3}
+limits: {gates: 2, measurements: 1}
+forbid: [reset]
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: combo
+  elements: [общий ресурс GHZ, измерение в базисе X, поправка по классическому сообщению]
+  key_idea: 'Измерение третьего кубита в базисе $Z$ разрушает запутанность остальных, в базисе $X$ — сохраняет, оставляя неизвестным только знак; его исправляет $Z$ по результату.'
+source: {kind: adapted, ref: 'IBM Quantum Challenge Spring 2023 (динамические схемы: GHZ и измерения с прямой связью); M. Hillery, V. Bužek, A. Berthiaume, 1999 (разделение секрета)', note: 'условие написано заново'}
+gui: true
+io:
+  input: '$\frac{1}{\sqrt2}\left(|000\rangle+|111\rangle\right)$ на кубитах $q_0,q_1,q_2$'
+  output: 'кубиты $q_0,q_1$ в состоянии $|\Phi^+\rangle$ при любом исходе измерения $q_2$'
+statement: |
+  Алиса ($q_0$), Боб ($q_1$) и Чарли ($q_2$) делят состояние $\frac{1}{\sqrt2}\left(|000\rangle+|111\rangle\right)$.
+  Чарли выходит из протокола: он измеряет свой кубит и сообщает результат остальным. После этого кубиты Алисы и
+  Боба должны оказаться в состоянии
+  $$|\Phi^+\rangle=\frac{1}{\sqrt2}\left(|00\rangle+|11\rangle\right)$$
+  при любом исходе измерения. Схема получает на вход уже готовое состояние GHZ; двухкубитных гейтов нет —
+  участники далеко друг от друга.
+
+  **Разрешено:** однокубитные гейты $H$, $X$, $Z$, одно измерение кубита $q_2$ и гейты под классическим условием
+  (`with qc.if_test((бит, 1)):`); не больше 2 гейтов.
+hints:
+  - 'Если Чарли измерит кубит сразу, у Алисы и Боба останется $|00\rangle$ или $|11\rangle$ — никакой запутанности.'
+  - 'Запишите GHZ через состояния $|\pm\rangle$ третьего кубита: $|0\rangle=\frac{1}{\sqrt2}(|+\rangle+|-\rangle)$, $|1\rangle=\frac{1}{\sqrt2}(|+\rangle-|-\rangle)$.'
+editorial: |
+  В базисе $X$ третьего кубита
+  $$\frac{1}{\sqrt2}\left(|000\rangle+|111\rangle\right)=\frac{1}{\sqrt2}\left(|\Phi^+\rangle|+\rangle+|\Phi^-\rangle|-\rangle\right),$$
+  где $|\Phi^\pm\rangle$ — состояния Алисы и Боба. Поэтому Чарли применяет $H$ и измеряет: при исходе 0 пара уже
+  в $|\Phi^+\rangle$, при исходе 1 — в $|\Phi^-\rangle$, и гейт $Z$ на кубите Алисы или Боба под условием
+  исправляет знак. Это простейший пример того, как измерение с обратной связью «вырезает» участника из
+  запутанного состояния, не разрушая остальное.
+pitfalls:
+  - 'Измерение без $H$: пара Алисы и Боба распадается в $|00\rangle$ или $|11\rangle$.'
+  - 'Нет поправки: в половине случаев остаётся $|\Phi^-\rangle$.'
+  - 'Поправка $X$ вместо $Z$: гейт $X$ не меняет знак между слагаемыми.'

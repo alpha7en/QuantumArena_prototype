@@ -1,0 +1,44 @@
+id: SA-005
+slug: ghz-line-depth
+title: GHZ на цепочке
+aliases: [SA-101]
+status: reference
+level: 2
+tree: {trunk: T1, branch: T1.6, hybrid: [T5.2]}
+facets:
+  input: zero
+  answer: generator
+  params: [{name: n, kind: size, range: [2, 12]}]
+  gates: {mode: basis, set: [h, cx]}
+  coupling: line
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq0_phase
+qubits: {data: n}
+limits: {depth: 'ceil(n/2)+1'}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: constraint
+  elements: [GHZ, линейная связность, бюджет глубины]
+  key_idea: 'Начать с середины цепочки и распространять запутанность в обе стороны.'
+source: {kind: own, ref: 'sparq arena, пример SA-101 из материалов к акселератору'}
+gui: false
+io:
+  input: '$|0\dots0\rangle$, цепочка $q_0 - q_1 - \dots - q_{n-1}$'
+  output: '$\frac{1}{\sqrt{2}}\left(|0\dots0\rangle+|1\dots1\rangle\right)$'
+statement: |
+  Даны $n$ кубитов ($2\le n\le 12$) в состоянии $|0\dots0\rangle$, соединённые в цепочку
+  $q_0 - q_1 - \dots - q_{n-1}$. Двухкубитные гейты разрешены только между соседями. Напишите функцию
+  `solve(n)`, которая возвращает схему, готовящую
+  $$\frac{1}{\sqrt{2}}\left(|0\dots0\rangle+|1\dots1\rangle\right).$$
+
+  **Разрешено:** гейты $H$, $CX$ между соседними кубитами; глубина не больше $\lceil n/2\rceil+1$.
+hints:
+  - 'Цепочка $CX$ слева направо имеет глубину $n$ и не проходит.'
+  - 'Гейты на непересекающихся парах кубитов выполняются одновременно.'
+editorial: |
+  $H$ на среднем кубите $m=\lfloor (n-1)/2\rfloor$, затем $CX(m, m+1)$. Дальше за один слой — по одному гейту
+  влево и вправо: $CX(l, l-1)$ и $CX(r, r+1)$. Каждый слой добавляет два кубита, итоговая глубина
+  $\lceil n/2\rceil+1$.
+pitfalls:
+  - 'Старт с края цепочки: глубина $n$.'

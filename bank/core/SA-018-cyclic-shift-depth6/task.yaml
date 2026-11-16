@@ -1,0 +1,40 @@
+id: SA-018
+slug: cyclic-shift-depth6
+title: Циклический сдвиг кубитов за глубину 6
+status: reference
+level: 3
+tree: {trunk: T2, branch: T2.3, hybrid: [T5.3]}
+facets:
+  input: any
+  answer: generator
+  params: [{name: n, kind: size, range: [2, 10]}]
+  gates: {mode: basis, set: [cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: n}
+limits: {depth: 6}
+signature: 'solve(n: int) -> QuantumCircuit'
+method:
+  kind: constraint
+  elements: [перестановка кубитов, SWAP из трёх CX, бюджет глубины]
+  key_idea: 'Сдвиг — это два разворота; разворот — один слой непересекающихся $SWAP$.'
+source: {kind: real, ref: 'QCoder QPC004 A3', note: 'условие написано заново; эталон совпадает по идее с ladder_ec Q08 (shift_reversals)'}
+gui: false
+io:
+  input: '$|x_{n-1}\dots x_1x_0\rangle$'
+  output: '$|x_{n-2}\dots x_0x_{n-1}\rangle$: содержимое кубита $i$ переходит в кубит $(i+1)\bmod n$'
+statement: |
+  Напишите функцию `solve(n)`, которая для $2\le n\le 10$ возвращает схему циклического сдвига: состояние кубита
+  $i$ переходит в кубит $(i+1)\bmod n$. Схема должна быть верна для любого входа.
+
+  **Разрешено:** только гейты $CX$ между любыми кубитами; глубина не больше 6. Гейт $SWAP$ в базис не входит.
+hints:
+  - '$SWAP$ — это три $CX$. Цепочка из $n-1$ обменов имеет глубину $3(n-1)$.'
+  - 'Разворот отрезка — это обмены крайних пар, и все они выполняются одновременно.'
+editorial: |
+  Развернём все кубиты: $i\leftrightarrow n-1-i$. Затем развернём кубиты $1,\dots,n-1$: $i\leftrightarrow n-i$.
+  Композиция переводит $i$ в $i+1$, а $n-1$ в $0$. Каждый разворот — слой непересекающихся $SWAP$ глубины 3.
+pitfalls:
+  - 'Цепочка обменов соседей: глубина $3(n-1)$.'

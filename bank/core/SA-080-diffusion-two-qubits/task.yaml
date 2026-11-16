@@ -1,0 +1,46 @@
+id: SA-080
+slug: diffusion-two-qubits
+title: Диффузия на двух кубитах за семь гейтов
+status: reference
+level: 2
+tree: {trunk: T4, branch: T4.2, hybrid: [T2.6, T2.4]}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, x, z, cz]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 2}
+limits: {gates: 7, two_qubit: 1}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: constraint
+  elements: [оператор диффузии, отражение относительно нуля, глобальная фаза, бюджет гейтов]
+  key_idea: 'С точностью до глобальной фазы «минус у всех, кроме $|00\rangle$» — это диагональ $(1,-1,-1,-1)=(Z\otimes Z)\cdot CZ$: три гейта вместо пяти.'
+source: {kind: adapted, ref: 'QCoder QPC003 B4–B5 (Reflection Operator 1, 2)', note: 'фиксированный размер и бюджет, который не проходит схема из SA-033'}
+gui: true
+io:
+  input: 'произвольное состояние двух кубитов'
+  output: '$2|s\rangle\langle s|-I$, где $|s\rangle=\frac12\left(|00\rangle+|01\rangle+|10\rangle+|11\rangle\right)$'
+statement: |
+  Пусть $|s\rangle=\frac12\left(|00\rangle+|01\rangle+|10\rangle+|11\rangle\right)$. Реализуйте оператор диффузии
+  Гровера на двух кубитах
+  $$D=2\,|s\rangle\langle s|-I$$
+  с точностью до глобальной фазы.
+
+  **Разрешено:** гейты $H$, $X$, $Z$, $CZ$; не больше 7 гейтов, из них один $CZ$.
+hints:
+  - '$D=(H\otimes H)\left(2|00\rangle\langle00|-I\right)(H\otimes H)$. На слои $H$ уходит 4 гейта, на середину остаётся 3.'
+  - 'Выпишите диагональ $2|00\rangle\langle00|-I$ и диагональ $CZ$. Какими однокубитными гейтами одна превращается в другую?'
+editorial: |
+  Середина — диагональ $(1,-1,-1,-1)$. Привычная схема «$X$ на обоих, $CZ$, $X$ на обоих» даёт
+  $(-1,1,1,1)$ — то же с точностью до фазы, но это 5 гейтов, а вместе со слоями $H$ — 9. Короче так:
+  $Z\otimes Z=\mathrm{diag}(1,-1,-1,1)$, $CZ=\mathrm{diag}(1,1,1,-1)$, их произведение — ровно $(1,-1,-1,-1)$.
+  Итого: $H$, $H$, $Z$, $Z$, $CZ$, $H$, $H$ — 7 гейтов.
+pitfalls:
+  - 'Схема с четырьмя $X$: 9 гейтов при бюджете 7.'
+  - 'Один $CZ$ между слоями $H$: это отражение относительно состояния $H^{\otimes2}|11\rangle$, а не $|s\rangle$.'
+  - 'Без слоёв $H$: отражение относительно $|00\rangle$.'

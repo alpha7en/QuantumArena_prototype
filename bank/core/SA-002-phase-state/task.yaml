@@ -1,0 +1,39 @@
+id: SA-002
+slug: phase-state
+title: Кубит с фазой три восьмых оборота
+status: reference
+level: 1
+tree: {trunk: T1, branch: T1.1}
+facets:
+  input: zero
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, s, t]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq0_phase
+qubits: {data: 1}
+limits: {gates: 3}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [суперпозиция, фазовые гейты]
+  key_idea: 'Фазы $S$ и $T$ складываются: $\frac{\pi}{2}+\frac{\pi}{4}=\frac{3\pi}{4}$.'
+source: {kind: own, ref: 'sparq arena'}
+gui: true
+io:
+  input: '$|0\rangle$'
+  output: '$\frac{1}{\sqrt{2}}\left(|0\rangle+e^{3i\pi/4}|1\rangle\right)$'
+statement: |
+  Кубит находится в состоянии $|0\rangle$. Получите состояние
+  $$\frac{1}{\sqrt{2}}\left(|0\rangle+e^{3i\pi/4}|1\rangle\right).$$
+
+  **Разрешено:** гейты $H$, $S$, $T$; не больше 3 гейтов.
+hints:
+  - '$S=\mathrm{diag}(1,i)$, $T=\mathrm{diag}(1,e^{i\pi/4})$.'
+editorial: |
+  $H$ даёт равные амплитуды. Диагональные гейты умножают амплитуду при $|1\rangle$: $S$ на $e^{i\pi/2}$,
+  $T$ на $e^{i\pi/4}$. Вместе получается $e^{3i\pi/4}$. Порядок $S$ и $T$ не важен, но оба идут после $H$.
+pitfalls:
+  - 'Фазовый гейт до $H$ ничего не меняет: у $|0\rangle$ нет амплитуды при $|1\rangle$.'

@@ -1,0 +1,45 @@
+id: SA-073
+slug: y-native
+title: Гейт Y в нативном базисе
+status: reference
+level: 1
+tree: {trunk: T5, branch: T5.1}
+facets:
+  input: any
+  answer: fixed
+  params: []
+  gates: {mode: native, set: [rz, sx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_phase
+qubits: {data: 1}
+limits: {gates: 3}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [нативный базис, произведение матриц Паули]
+  key_idea: '$Y=iXZ$: с точностью до фазы $Y$ — это $Z$, затем $X$; $X=\sqrt{X}\cdot\sqrt{X}$, а $Z$ — виртуальный поворот $R_z(\pi)$.'
+source: {kind: adapted, ref: 'набор гейтов процессоров IBM Quantum ($R_z$, $\sqrt{X}$, $X$, CX/ECR)', note: 'по образцу SA-039'}
+gui: true
+io:
+  input: 'произвольное состояние кубита'
+  output: 'гейт $Y$ с точностью до глобальной фазы'
+statement: |
+  Сверхпроводниковый процессор исполняет на одном кубите только два гейта:
+  $$R_z(\varphi)=\begin{pmatrix}e^{-i\varphi/2}&0\\0&e^{i\varphi/2}\end{pmatrix},\qquad
+    \sqrt{X}=\frac12\begin{pmatrix}1+i&1-i\\1-i&1+i\end{pmatrix}.$$
+  Реализуйте гейт $Y=\begin{pmatrix}0&-i\\ i&0\end{pmatrix}$ с точностью до глобальной фазы.
+
+  **Разрешено:** гейты $R_z(\varphi)$ с углом, кратным $\frac{\pi}{2}$, и $\sqrt{X}$; не больше 3 гейтов.
+hints:
+  - 'Перемножьте матрицы $X$ и $Z$ и сравните результат с $Y$.'
+  - 'Чему равен квадрат гейта $\sqrt{X}$? Чему равен $R_z(\pi)$ с точностью до фазы?'
+editorial: |
+  $XZ=-iY$, то есть гейт $Y$ с точностью до фазы — это $Z$, затем $X$. В нативном базисе $Z\simeq R_z(\pi)$, а
+  $X=\sqrt{X}\cdot\sqrt{X}$. Итого: $R_z(\pi)$, $\sqrt{X}$, $\sqrt{X}$. Порядок можно и обратный: $ZX=iY$.
+  Повороты $R_z$ на таких процессорах «виртуальные» — выполняются сдвигом фазы следующих импульсов и не стоят
+  времени, так что реальная цена $Y$ — два импульса $\sqrt{X}$, как и у гейта $X$.
+pitfalls:
+  - 'Два $\sqrt{X}$ без поворота: это гейт $X$.'
+  - 'Поворот $R_z\left(\frac{\pi}{2}\right)$ вместо $R_z(\pi)$: это $S$, а не $Z$.'

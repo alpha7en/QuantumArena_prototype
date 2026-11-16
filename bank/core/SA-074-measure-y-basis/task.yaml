@@ -1,0 +1,45 @@
+id: SA-074
+slug: measure-y-basis
+title: По часовой или против
+status: reference
+level: 1
+tree: {trunk: T6, branch: T6.1}
+facets:
+  input: promise
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [h, s, sdg]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: final
+  check: dist
+qubits: {data: 1}
+limits: {gates: 2, measurements: 1}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [измерение в базисе Y, смена базиса перед измерением]
+  key_idea: 'Измерение в базисе $Y$ — это $S^\dagger$ и $H$ перед обычным измерением: $S^\dagger$ переводит $|\pm i\rangle$ в $|\pm\rangle$, $H$ — в $|0\rangle$ и $|1\rangle$.'
+source: {kind: adapted, ref: 'QuantumKatas Measurements (различение двух ортогональных состояний); демо v2 (measure-y)', note: 'пара состояний заменена собственными состояниями $Y$'}
+gui: true
+io:
+  input: '$|{+i}\rangle$ или $|{-i}\rangle$'
+  output: 'бит $c_0$: 0 для $|{+i}\rangle$, 1 для $|{-i}\rangle$'
+statement: |
+  Кубит находится в одном из двух состояний:
+  $$|{+i}\rangle=\frac{1}{\sqrt2}\left(|0\rangle+i|1\rangle\right)\qquad\text{или}\qquad
+    |{-i}\rangle=\frac{1}{\sqrt2}\left(|0\rangle-i|1\rangle\right).$$
+  Постройте схему с одним классическим битом $c_0$, которая определяет состояние наверняка: $c_0=0$ для
+  $|{+i}\rangle$ и $c_0=1$ для $|{-i}\rangle$.
+
+  **Разрешено:** гейты $H$, $S$, $S^\dagger$ и одно измерение в конце; не больше 2 гейтов.
+hints:
+  - 'Задача «плюс или минус» решается одним $H$. Каким гейтом превратить $|{\pm i}\rangle$ в $|\pm\rangle$?'
+editorial: |
+  $S^\dagger=\mathrm{diag}(1,-i)$ убирает множитель $i$: $|{+i}\rangle\to|+\rangle$, $|{-i}\rangle\to|-\rangle$.
+  Затем $H$ переводит $|+\rangle$ в $|0\rangle$, а $|-\rangle$ в $|1\rangle$, и измерение даёт ответ с
+  вероятностью 1. С гейтом $S$ вместо $S^\dagger$ ответы поменяются местами.
+pitfalls:
+  - 'Один $H$: оба исхода равновероятны для каждого из состояний.'
+  - 'Гейт $S$ вместо $S^\dagger$: ответы меняются местами.'
+  - 'Порядок «$H$, затем $S^\dagger$»: фазовый гейт перед измерением ни на что не влияет.'

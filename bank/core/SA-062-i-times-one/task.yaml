@@ -1,0 +1,42 @@
+id: SA-062
+slug: i-times-one
+title: Мнимая единица при единице
+status: reference
+level: 1
+tree: {trunk: T1, branch: T1.1, hybrid: [T2.6]}
+facets:
+  input: zero
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [x, z, s, h]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq0
+qubits: {data: 1}
+limits: {gates: 2}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [фазовый гейт, порядок гейтов]
+  key_idea: '$S$ умножает на $i$ только амплитуду при $|1\rangle$, поэтому он должен стоять после $X$.'
+source: {kind: real, ref: 'QCoder QPC003 A1 (Generate State i|1>)', note: 'механика исходной задачи, условие написано заново'}
+gui: true
+io:
+  input: '$|0\rangle$'
+  output: '$i|1\rangle$ — фаза учитывается'
+statement: |
+  Кубит находится в состоянии $|0\rangle$. Получите состояние $i|1\rangle$. Проверка сравнивает вектор состояния
+  точно: множитель $i$ обязателен, состояние $|1\rangle$ без него не принимается.
+
+  **Разрешено:** гейты $X$, $Z$, $S$, $H$; не больше 2 гейтов.
+hints:
+  - 'Гейт $S$ имеет матрицу $\mathrm{diag}(1,\,i)$. На какое базисное состояние он действует нетривиально?'
+editorial: |
+  $X$ переводит $|0\rangle$ в $|1\rangle$, затем $S$ умножает амплитуду при $|1\rangle$ на $i$. В обратном порядке
+  $S$ действует на $|0\rangle$ и ничего не меняет. Обычно такой множитель — ненаблюдаемая глобальная фаза, но если
+  схему поставить под управление, он превратится в относительную фазу; поэтому в задачах на точное равенство его
+  приходится отслеживать.
+pitfalls:
+  - 'Один гейт $X$: получается $|1\rangle$ без множителя $i$.'
+  - 'Порядок «$S$, затем $X$»: на $|0\rangle$ гейт $S$ не действует.'

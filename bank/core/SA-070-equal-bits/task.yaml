@@ -1,0 +1,42 @@
+id: SA-070
+slug: equal-bits
+title: Равны ли два бита
+status: reference
+level: 1
+tree: {trunk: T3, branch: T3.3}
+facets:
+  input: reg_anc
+  answer: fixed
+  params: []
+  gates: {mode: basis, set: [x, cx]}
+  coupling: all
+  ancilla: {kind: none, max: 0}
+  measure: none
+  check: eq_anc_phase
+qubits: {data: 3}
+limits: {gates: 3}
+signature: 'solve() -> QuantumCircuit'
+method:
+  kind: fact
+  elements: [предикат равенства, XOR]
+  key_idea: 'Равенство битов — это отрицание их суммы по модулю 2; гейт И для него не нужен.'
+source: {kind: own, ref: 'sparq arena (демо v2, задача compare-bits)'}
+gui: true
+io:
+  input: '$|a\rangle|b\rangle|0\rangle$ на кубитах $q_0,q_1,q_2$'
+  output: '$|a\rangle|b\rangle|[a=b]\rangle$'
+statement: |
+  На кубитах $q_0$ и $q_1$ записаны биты $a$ и $b$, кубит $q_2$ находится в $|0\rangle$. Запишите в $q_2$
+  единицу, если $a=b$, и ноль иначе:
+  $$|a\rangle|b\rangle|0\rangle\;\longmapsto\;|a\rangle\,|b\rangle\,|[a=b]\rangle .$$
+  Кубиты $q_0$ и $q_1$ должны остаться прежними; схема проверяется и на суперпозициях входов.
+
+  **Разрешено:** гейты $X$ и $CX$; не больше 3 гейтов.
+hints:
+  - 'Чему равно $a\oplus b$, когда биты совпадают?'
+editorial: |
+  `cx(0, 2)` и `cx(1, 2)` собирают в $q_2$ сумму $a\oplus b$ — она равна 1, когда биты различны. Гейт $X$ на
+  $q_2$ превращает «различны» в «равны». Входные кубиты служат только управляющими и не меняются.
+pitfalls:
+  - 'Без завершающего $X$ в ответе признак неравенства.'
+  - 'Гейт $CX$ между входными кубитами: сумма попадает в $q_1$ и портит вход.'
